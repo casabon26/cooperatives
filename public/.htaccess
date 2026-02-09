@@ -1,0 +1,53 @@
+# ----------------------------------------------------------------------
+# Increase PHP limits for large file uploads (only works with mod_php / Apache)
+# ----------------------------------------------------------------------
+<IfModule mod_php.c>
+    php_value upload_max_filesize 200M
+    php_value post_max_size 200M
+    php_value memory_limit 512M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 200M
+    php_value post_max_size 200M
+    php_value memory_limit 512M
+    php_value max_execution_time 300
+</IfModule>
+
+<IfModule mod_php8.c>
+    php_value upload_max_filesize 200M
+    php_value post_max_size 200M
+    php_value memory_limit 512M
+    php_value max_execution_time 300
+</IfModule>
+
+# ----------------------------------------------------------------------
+# Standard Laravel routing + security headers
+# ----------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header (for API auth / Sanctum / Passport)
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Optional: Handle X-XSRF-TOKEN if you're using it explicitly
+    RewriteCond %{HTTP:X-XSRF-TOKEN} .
+    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-TOKEN}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>

@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Cabuyao Main Store",
+    "address": "Cabuyao City, Laguna",
+    "lat": 14.3333,
+    "lng": 121.1333,
+    "description": "Main cooperative store in Cabuyao"
+  },
+  {
+    "id": 2,
+    "name": "Laguna Branch",
+    "address": "San Pedro, Laguna",
+    "lat": 14.3338,
+    "lng": 121.0600,
+    "description": "Satellite branch"
+  }
+]

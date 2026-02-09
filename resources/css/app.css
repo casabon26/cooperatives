@@ -1,0 +1,144 @@
+@import 'tailwindcss';
+
+/* Theme variables (primary, danger, bg, accent) */
+:root{
+    --primary: #3B54A6;
+    --danger: #EC2426;
+    --bg: #FFFFFF;
+    --accent: #FECA16;
+    --muted: #f3f4f6;
+    --card-border: rgba(11,37,77,0.06);
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --radius: 10px;
+}
+
+html,body{background:var(--bg);color:#172033}
+
+/* Source references (tooling) - preserved as comments to avoid unknown at-rule diagnostics */
+/* ../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php */
+/* ../../storage/framework/views/*.php */
+/* ../**/*.blade.php */
+/* ../**/*.js */
+
+/* Custom helpers for portal hero */
+.logo-circle{
+    width:44px;
+    height:44px;
+    border-radius:9999px;
+    font-weight:600;
+}
+.feature-box{transition:transform .12s ease,box-shadow .12s ease}
+.feature-box:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(15,23,42,0.08)}
+
+/* Card and sidebar helpers */
+.card{border:1px solid #edf2f7}
+.sidebar-card{border:1px solid #edf2f7}
+.logo-circle{width:44px;height:44px;border-radius:9999px;font-weight:600;display:inline-flex;align-items:center;justify-content:center}
+/* Colored placeholders to imitate reference */
+.preview-large{background:linear-gradient(90deg,#f8fafc 0%,#eef2ff 100%);border-radius:8px}
+.preview-small{background:linear-gradient(90deg,#fff7ed 0%,#fff1f2 100%);border-radius:6px}
+.preview-accent{background:linear-gradient(90deg,#eef2ff 0%,#f5f3ff 100%)}
+
+/* More vivid blocks to match reference */
+.preview-large{background:linear-gradient(90deg,#fff5f5 0%,#fff1f1 100%);}
+.preview-small{background:linear-gradient(90deg,#fff7f7 0%,#fff1f1 100%);}
+.preview-accent{background:linear-gradient(90deg,#fff2f2 0%,#fff7f7 100%);}
+.preview-large, .preview-small, .preview-accent{border:1px solid #f3d6d6}
+
+/* logo circle neutral red accents */
+.logo-circle{background:#fee2e2;color:#991b1b}
+
+/* Responsive adjustments */
+:root{--logo-size:44px;--logo-size-sm:36px}
+
+@media (max-width:640px){
+    .logo-circle{width:var(--logo-size-sm);height:var(--logo-size-sm);font-size:.9rem}
+    .preview-large{height:12rem}
+    .card{padding:0.75rem}
+    .sidebar-card{padding:0.75rem}
+}
+
+@media (min-width:641px) and (max-width:1024px){
+    .logo-circle{width:40px;height:40px}
+    .preview-large{height:14rem}
+}
+
+@media (min-width:1025px){
+    .preview-large{height:16rem}
+}
+
+/* Placeholder grid helper when Tailwind classes may not control specific preview behavior */
+.preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+@media (max-width:640px){
+    .preview-grid{grid-template-columns:1fr}
+}
+
+/* Make images and hero scale smoothly */
+.responsive-img{width:100%;height:auto;max-height:40vh;object-fit:cover}
+
+/* Color chips used inside preview placeholders */
+.color-chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.color-chip{width:36px;height:36px;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.04)}
+.color-chip.small{width:28px;height:28px;border-radius:6px}
+.color-chip.chip-red{background:linear-gradient(180deg,#ffefef,#ffd7d7)}
+.color-chip.chip-blue{background:linear-gradient(180deg,#eef6ff,#d7e9ff)}
+.color-chip.chip-green{background:linear-gradient(180deg,#ecfff4,#d7ffea)}
+.color-chip.chip-yellow{background:linear-gradient(180deg,#fff9e6,#fff2c9)}
+
+@media (max-width:640px){
+    .color-chip{width:28px;height:28px}
+    .color-chip.small{width:20px;height:20px}
+}
+
+/* Word box styles for source CSS parity */
+.word-box{display:flex;align-items:center;justify-content:center;padding:12px;border-radius:8px;font-weight:600;color:#2b2b2b}
+.word-box.w-100{width:100%}
+.word-box.red{background:linear-gradient(180deg,#fff5f5,#fff1f1);border:1px solid #f3d6d6;color:#991b1b}
+.word-box.blue{background:linear-gradient(180deg,#eef6ff,#d7e9ff);border:1px solid #d0e6ff;color:#0b3b66}
+.word-box.green{background:linear-gradient(180deg,#ecfff4,#d7ffea);border:1px solid #cfeee0;color:#0b6a3a}
+.word-box.accent{background:linear-gradient(180deg,#fff9e6,#fff2c9);border:1px solid #f5e7b2;color:#6a4b00}
+
+@media (max-width:640px){
+    .word-box{padding:8px;font-size:.95rem}
+}
+
+
+/* Global alert / flash styles used across the app and layout */
+.alert{
+    border-radius:10px;
+    padding:.75rem 1rem;
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+    box-shadow:0 8px 30px rgba(15,23,42,0.06);
+    border:1px solid rgba(11,37,77,0.06);
+    font-weight:600;
+}
+.alert .alert-icon{width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.alert .alert-body{flex:1 1 auto}
+.alert .alert-title{display:block;font-weight:700;margin-bottom:2px}
+.alert .alert-message{display:block;font-weight:500;color:#334155}
+
+/* Success */
+.alert-success{background:linear-gradient(180deg,#ecfdf5 0%,#f0fdf4 100%);border-color:rgba(34,197,94,0.12);color:#065f46}
+.alert-success .alert-icon{background:linear-gradient(180deg,#bbf7d0,#86efac);color:#065f46}
+
+/* Danger / Error */
+.alert-danger{background:linear-gradient(180deg,#fff1f2 0%,#fff5f5 100%);border-color:rgba(236,36,38,0.08);color:#7f1d1d}
+.alert-danger .alert-icon{background:linear-gradient(180deg,#fecaca,#feb2b2);color:#7f1d1d}
+
+/* Info / Primary */
+.alert-info{background:linear-gradient(180deg,#eef2ff 0%,#eef6ff 100%);border-color:rgba(59,84,166,0.08);color:#0b3b66}
+.alert-info .alert-icon{background:linear-gradient(180deg,#dbeafe,#bfdbfe);color:#0b3b66}
+
+/* Small close button spacing inside alerts */
+.alert .btn-close{margin-left:8px;flex:0 0 auto}
+
+/* Utility for centered, top-fixed global flash (keeps parity with #flash-success) */
+.global-flash{position:fixed;top:72px;left:50%;transform:translateX(-50%);z-index:1060;max-width:760px;width:calc(100% - 48px)}
+
+/* Simple pop-in animation helper used by layout JS */
+.flash-init{opacity:0;transform:translateX(-50%) translateY(-8px) scale(.98)}
+.flash-visible{opacity:1;transform:translateX(-50%) translateY(0) scale(1);transition:transform .18s cubic-bezier(.2,.9,.2,1),opacity .18s ease}
+

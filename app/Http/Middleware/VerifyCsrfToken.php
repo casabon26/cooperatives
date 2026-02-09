@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class VerifyCsrfToken
+{
+    public function handle(Request $request, Closure $next)
+    {
+        // Minimal stub: in production use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+        return $next($request);
+    }
+}
