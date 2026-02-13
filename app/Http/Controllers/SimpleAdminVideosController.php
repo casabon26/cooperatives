@@ -18,6 +18,16 @@ class SimpleAdminVideosController extends Controller
     public function index()
     {
         $this->ensureAdmin();
+        // Ensure videos without an enterprise highlight are marked as landing highlights
+        try {
+            \App\Models\Video::where(function($q){
+                $q->whereNull('highlight_enterprise')->orWhere('highlight_enterprise', false);
+            })->where(function($q){
+                $q->whereNull('highlight_landing')->orWhere('highlight_landing', false);
+            })->update(['highlight_landing' => true]);
+        } catch (\Throwable $e) {
+            // don't block index on update failures
+        }
         $videos = Video::orderByDesc('created_at')->paginate(20);
         return view('admin.videos.index', compact('videos'));
     }
@@ -35,6 +45,8 @@ class SimpleAdminVideosController extends Controller
                 'url' => 'nullable|url',
                 // increased max to 200MB (value is in KB)
                 'file' => $fileRule,
+                'highlight_landing' => 'nullable|boolean',
+                'highlight_enterprise' => 'nullable|boolean',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect('/admin/manage-videos')
@@ -55,6 +67,13 @@ class SimpleAdminVideosController extends Controller
                 $data['url'] = null;
             }
 
+            // Ensure boolean flags are set and keep them mutually exclusive
+            $hl = $request->boolean('highlight_landing');
+            $he = $request->boolean('highlight_enterprise');
+            if ($hl) { $he = false; }
+            elseif ($he) { $hl = false; }
+            $data['highlight_landing'] = $hl;
+            $data['highlight_enterprise'] = $he;
             Video::create($data);
         } catch (\Throwable $e) {
             Log::error('Video store failed', ['err' => $e->getMessage()]);
@@ -82,6 +101,8 @@ class SimpleAdminVideosController extends Controller
                 'description' => 'nullable|string',
                 'url' => 'nullable|url',
                 'file' => $fileRule,
+                'highlight_landing' => 'nullable|boolean',
+                'highlight_enterprise' => 'nullable|boolean',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect('/admin/manage-videos')
@@ -104,6 +125,13 @@ class SimpleAdminVideosController extends Controller
                 $data['url'] = null;
             }
 
+            // Ensure boolean flags are set and keep them mutually exclusive
+            $hl = $request->boolean('highlight_landing');
+            $he = $request->boolean('highlight_enterprise');
+            if ($hl) { $he = false; }
+            elseif ($he) { $hl = false; }
+            $data['highlight_landing'] = $hl;
+            $data['highlight_enterprise'] = $he;
             $video->update($data);
         } catch (\Throwable $e) {
             Log::error('Video update failed', ['err' => $e->getMessage()]);

@@ -18,15 +18,22 @@ class StoreCategoryController extends Controller
 
     public function storeItem(Request $request)
     {
-        $request->validate([ 'category' => 'required|string', 'item' => 'required|string', 'map_url' => 'nullable|string' ]);
+        $request->validate([ 'category' => 'required|string', 'item' => 'required|string', 'map_url' => 'nullable|string', 'origin' => 'nullable|string' ]);
         $cat = $request->input('category');
         $label = $request->input('item');
         $mapUrl = trim((string) $request->input('map_url')) ?: null;
+        $origin = trim((string) $request->input('origin')) ?: null;
         $data = $this->readData();
         $items = $data[$cat] ?? [];
 
-        // Normalize new item: if map_url provided, store as object {label, map_url}, otherwise store as string
-        $new = $mapUrl ? ['label' => $label, 'map_url' => $mapUrl] : $label;
+        // Normalize new item: include map_url and optional origin when provided
+        if($mapUrl || $origin){
+            $new = ['label' => $label];
+            if($mapUrl) $new['map_url'] = $mapUrl;
+            if($origin) $new['origin'] = $origin;
+        } else {
+            $new = $label;
+        }
 
         // Avoid duplicates by label
         $exists = false;
@@ -40,6 +47,43 @@ class StoreCategoryController extends Controller
             $this->writeData($data);
         }
         return redirect()->back()->with('success','Item added.');
+    }
+
+    public function updateItem(Request $request)
+    {
+        $request->validate([ 'category' => 'required|string', 'old_item' => 'required|string', 'new_item' => 'required|string', 'map_url' => 'nullable|string' ]);
+        $cat = $request->input('category');
+        $old = $request->input('old_item');
+        $newLabel = $request->input('new_item');
+        $mapUrl = trim((string) $request->input('map_url')) ?: null;
+        $data = $this->readData();
+        if(empty($data[$cat])) return redirect()->back()->with('success','Category not found.');
+        // Remove old
+        $data[$cat] = array_values(array_filter($data[$cat], function($v) use($old){
+            if(is_array($v) && array_key_exists('label', $v)) return $v['label'] !== $old;
+            return $v !== $old;
+        }));
+        // Add new
+        $new = $mapUrl ? ['label' => $newLabel, 'map_url' => $mapUrl] : $newLabel;
+        $data[$cat][] = $new;
+        $this->writeData($data);
+        return redirect()->back()->with('success','Item updated.');
+    }
+
+    public function updateCategory(Request $request)
+    {
+        $request->validate([ 'old_category' => 'required|string', 'new_category' => 'required|string' ]);
+        $old = $request->input('old_category');
+        $new = $request->input('new_category');
+        $data = $this->readData();
+        if(!array_key_exists($old, $data)) return redirect()->back()->with('success','Category not found.');
+        if($old === $new) return redirect()->back()->with('success','No change.');
+        // Avoid overwrite
+        if(array_key_exists($new, $data)) return redirect()->back()->with('success','Target category already exists.');
+        $data[$new] = $data[$old];
+        unset($data[$old]);
+        $this->writeData($data);
+        return redirect()->back()->with('success','Category renamed.');
     }
 
     public function storeCategory(Request $request)

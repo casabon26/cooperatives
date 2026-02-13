@@ -21,6 +21,14 @@
                             <label class="form-label">Video URL (YouTube/Vimeo or direct link)</label>
                             <input name="url" class="form-control" value="{{ $video->url }}" placeholder="https://...">
                         </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="highlight_landing" id="highlight_landing" value="1" class="form-check-input" {{ $video->highlight_landing ? 'checked' : '' }}>
+                            <label class="form-check-label" for="highlight_landing">Highlight on landing page</label>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="highlight_enterprise" id="highlight_enterprise" value="1" class="form-check-input" {{ $video->highlight_enterprise ? 'checked' : '' }}>
+                            <label class="form-check-label" for="highlight_enterprise">Highlight on Enterprise Portal</label>
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">Or Upload Video (mp4, webm)</label>
                             <input type="file" name="file" accept="video/*" class="form-control">

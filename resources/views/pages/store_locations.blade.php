@@ -3,11 +3,38 @@
 @section('content')
 <div class="py-4">
   <div class="container">
-    <h1 class="h3">Store locations</h1>
+    <h1 class="h3">Enterprise Map</h1>
     <p class="text-muted">Below is the map for the provided location. Interact with the map to zoom or open in Google Maps.</p>
 
     <div class="card">
       <div class="card-body">
+        <style>
+          /* Theme-aligned buttons for categories/items */
+          .category-btn {
+            border-radius: 9999px;
+            padding: 6px 12px;
+            color: #7f1d1d;
+            border-color: rgba(185,28,28,0.18);
+            background: linear-gradient(180deg, rgba(185,28,28,0.04), rgba(255,255,255,0));
+            font-weight:600;
+          }
+          .category-btn:hover, .category-btn:focus { background: linear-gradient(180deg, rgba(185,28,28,0.09), rgba(185,28,28,0.02)); color:#7f1d1d; }
+          .category-btn.active {
+            background: linear-gradient(180deg,#b91c1c,#991b1b);
+            color: #fff; border-color: rgba(185,28,28,0.28);
+            box-shadow: 0 8px 20px rgba(185,28,28,0.06);
+          }
+
+          .item-btn {
+            border-radius: 9999px;
+            padding: 6px 14px;
+            color: #7f1d1d;
+            border-color: rgba(185,28,28,0.12);
+            background: rgba(249,246,246,0.6);
+            font-weight:600;
+          }
+          .item-btn:hover, .item-btn:focus { background: linear-gradient(180deg, rgba(185,28,28,0.06), rgba(255,255,255,0.98)); color:#7f1d1d; }
+        </style>
         <div class="mb-3">
           <label class="form-label">Categories</label>
           <div class="d-flex flex-wrap gap-2">
@@ -15,25 +42,21 @@
               $storeCats = @json_decode(@file_get_contents(resource_path('data/store_categories.json')), true) ?: [];
             @endphp
             @foreach($storeCats as $cname => $items)
-              <button class="btn btn-outline-primary btn-sm category-btn" data-category="{{ $cname }}">{{ $cname }}</button>
+              <button class="btn btn-outline-danger btn-sm category-btn" data-category="{{ $cname }}">{{ $cname }}</button>
             @endforeach
           </div>
         </div>
         
 
         <div id="categoryItems" class="mb-3" style="display:none">
-          <label class="form-label">Items</label>
-          <div id="itemsList" class="row g-2"></div>
+          <label class="form-label d-block">Items</label>
+          <div id="itemsList" class="d-flex flex-wrap gap-2"></div>
         </div>
 
         <div id="mapWrap">
           <div id="map" style="width:100%;height:420px;border-radius:8px;overflow:hidden"></div>
         </div>
 
-        <div class="mt-3">
-          <div><strong>Plus Code:</strong> 74GF+XH Cabuyao City, Laguna</div>
-          <div class="small text-muted">This page can use Google Maps for richer search. Add `GOOGLE_MAPS_API_KEY` to your `.env` and reload to enable.</div>
-        </div>
       </div>
     </div>
   </div>
@@ -282,10 +305,11 @@
         const items = categories[category] || [];
         items.forEach(it =>{
           const label = (typeof it === 'string') ? it : (it.label || '');
-          const mapUrl = (typeof it === 'object' && it.map_url) ? it.map_url : '';
+          const mapUrl = (typeof it === 'object' && (it.map_url || it.mapUrl)) ? (it.map_url || it.mapUrl) : '';
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = 'btn btn-outline-secondary btn-sm me-2 mb-2 item-btn';
+          btn.className = 'btn btn-outline-danger btn-sm rounded-pill item-btn';
+          btn.style.padding = '6px 12px';
           btn.dataset.category = category;
           btn.dataset.item = label;
           btn.dataset.mapurl = mapUrl;

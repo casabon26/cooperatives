@@ -31,8 +31,6 @@ class StoreLocationController extends Controller
             'category' => 'nullable|string|max:120',
             'tags' => 'nullable|string|max:1000',
             'item' => 'nullable|string|max:255',
-            'item_map_url' => 'nullable|url',
-            'plus_code' => 'nullable|string|max:64',
             'lat' => 'nullable|numeric',
             'lng' => 'nullable|numeric',
             'map_url' => 'nullable|url',
@@ -42,10 +40,6 @@ class StoreLocationController extends Controller
         // If an 'item' was selected, save it into tags so public API can filter by tag
         if(!empty($data['item'])){
             $data['tags'] = $data['item'];
-            // store the optional item_map_url into item_map_url column
-            if(!empty($data['item_map_url'])){
-                $data['item_map_url'] = $data['item_map_url'];
-            }
         }
         // If lat/lng not provided but map_url is, try to parse coordinates from the URL
         if((empty($data['lat']) || empty($data['lng'])) && !empty($data['map_url'])){
@@ -80,8 +74,6 @@ class StoreLocationController extends Controller
             'category' => 'nullable|string|max:120',
             'tags' => 'nullable|string|max:1000',
             'item' => 'nullable|string|max:255',
-            'item_map_url' => 'nullable|url',
-            'plus_code' => 'nullable|string|max:64',
             'lat' => 'nullable|numeric',
             'lng' => 'nullable|numeric',
             'map_url' => 'nullable|url',
@@ -90,7 +82,6 @@ class StoreLocationController extends Controller
         ]);
         if(!empty($data['item'])){
             $data['tags'] = $data['item'];
-            if(!empty($data['item_map_url'])) $data['item_map_url'] = $data['item_map_url'];
         }
         if((empty($data['lat']) || empty($data['lng'])) && !empty($data['map_url'])){
             try{

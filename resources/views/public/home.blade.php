@@ -46,25 +46,23 @@
         .yt-thumb:hover {
             opacity: 0.92;
         }
-        /* Memorandum link: plain bright red text (no outline) */
+        /* Memorandum link: styled as pill; hover matches theme red background */
         .memo-link {
-            color: var(--danger);
-            font-weight: 600;
+            color: #5b1b1b;
+            font-weight: 700;
             display: inline-block;
             padding: 4px 6px;
-            border-radius: 4px;
-            background-color: transparent;
-            border: none;
-            -webkit-text-stroke: 0;
-            text-shadow: none;
-        }
-        .memo-link:hover, .memo-link:focus {
-            color: #ffffff;
-            text-decoration: none;
-            background-color: var(--danger);
-            padding: 4px 8px;
             border-radius: 6px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            background-color: transparent;
+            transition: background .12s ease, color .12s ease, box-shadow .12s ease;
+        }
+        /* When the surrounding item is hovered, make the link sit on a red pill with white text */
+        .memo-item:hover .memo-link,
+        .memo-link:focus {
+            background: #ef4444;
+            color: #ffffff !important;
+            box-shadow: 0 6px 18px rgba(239,68,68,0.12);
+            text-decoration: none;
         }
         .memo-item { padding: 6px 0; }
             /* Memorandum circulars: theme-aligned list */
@@ -83,7 +81,8 @@
                 white-space: normal;
                 text-overflow: ellipsis;
             }
-            .memo-link:hover, .memo-link:focus { color:#7f1d1d; text-decoration:underline; }
+            /* keep underline off; color changes handled by pill hover */
+            .memo-link:hover { text-decoration:none; }
             /* Hover hint shown when codename is hovered */
             .memo-link::after{
                 content: "click to open";
@@ -105,6 +104,7 @@
             .memo-meta { font-size:.825rem; color: #6b6b6b; margin-top:.25rem }
             .memo-actions { display:flex; align-items:center; gap:.4rem }
             .memo-badge { background: rgba(185,28,28,0.08); color:#b91c1c; padding:.18rem .45rem; border-radius:6px; font-weight:700; font-size:.75rem }
+            .memo-item:hover .memo-badge { background:#ef4444; color:#fff; }
         /* Dropdown filter tweaks */
         .memo-filter .dropdown-toggle {
             display: inline-flex;
@@ -262,13 +262,13 @@
                                                     if($article && $article->image){
                                                         $storagePath = public_path('storage/'.$article->image);
                                                         $directPath = public_path($article->image);
-                                                        $publicNewsPath = public_path('news_images/'.basename($article->image));
+                                                        $publicNewsPath = public_path('assets/images/news/'.basename($article->image));
                                                         if(file_exists($storagePath)){
                                                             $imgUrl = asset('storage/'.$article->image);
                                                         } elseif(file_exists($directPath)){
                                                             $imgUrl = asset($article->image);
                                                         } elseif(file_exists($publicNewsPath)){
-                                                            $imgUrl = asset('news_images/'.basename($article->image));
+                                                            $imgUrl = asset('assets/images/news/'.basename($article->image));
                                                         }
                                                     }
                                                 @endphp
@@ -319,7 +319,7 @@
                     </div>
                 </div>
 
-                <!-- Right sidebar: Memorandum Circulars -->
+                <!-- Right sidebar: Memorandum Circulars and Accomplishment Reports -->
                 <aside class="col-12 col-lg-4">
                     <div class="card mb-3">
                         <div class="card-body">
@@ -369,7 +369,7 @@
                                                 </div>
 
                                                 <div class="flex-grow-1">
-                                                    <a href="{{ url('/memorandums/'.$memo->id) }}" class="memo-link" title="click to open" aria-label="{{ $memo->title ?? 'Memorandum' }}">
+                                                    <a href="{{ url('/memorandums/'.$memo->id) }}" class="memo-link" target="_self" title="click to open" aria-label="{{ $memo->title ?? 'Memorandum' }}">
                                                         {{ $memo->code ?? $memo->title ?? 'Memorandum' }}
                                                     </a>
                                                     @if(isset($memo->published_at) || isset($memo->created_at))
@@ -388,12 +388,64 @@
 
                         </div>
                     </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Accomplishment Reports</h5>
+
+                            @if(isset($accomplishmentReports) && $accomplishmentReports->count())
+                                    <ul class="list-unstyled small mb-0 memo-list">
+                                    @foreach($accomplishmentReports as $report)
+                                            <li class="memo-item">
+                                                <div class="memo-icon flex-shrink-0" aria-hidden="true">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 7h6v6H7z" stroke="#059669" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 15V7a2 2 0 0 0-2-2H9" stroke="#059669" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                                </div>
+
+                                                <div class="flex-grow-1">
+                                                    <a href="#" class="memo-link accomplishment-link" data-id="{{ $report->id }}" data-title="{{ $report->title ?? $report->code }}" data-content="{{ $report->content }}" data-file="{{ $report->file_path }}" data-published="{{ optional($report->published_at)->toFormattedDateString() }}" title="click to open" aria-label="{{ $report->title ?? 'Accomplishment Report' }}">
+                                                        {{ $report->code ?? $report->title ?? 'Report' }}
+                                                    </a>
+                                                    @if(isset($report->published_at) || isset($report->created_at))
+                                                        <div class="memo-meta">Published: {{ optional($report->published_at ?? $report->created_at)->toFormattedDateString() }}</div>
+                                                    @endif
+                                                </div>
+                                                <div class="flex-shrink-0 text-end" style="min-width:56px;">
+                                                    <div class="memo-badge">{{ optional($report->published_at ?? $report->created_at)->format('Y') ?? '' }}</div>
+                                                </div>
+                                            </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <div class="small text-muted">No accomplishment reports available.</div>
+                            @endif
+
+                        </div>
+                    </div>
                 </aside>
             </div>
         </div>
     </section>
 
     {{-- More News list removed per request; homepage now shows only card highlights and video section. --}}
+
+    <!-- Accomplishment Report Modal -->
+    <div class="modal fade" id="accomplishmentReportModal" tabindex="-1" aria-labelledby="accomplishmentReportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="accomplishmentReportModalLabel">Accomplishment Report</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="accomplishmentReportModalBody">
+                    <!-- Content will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="#" id="accomplishmentFileLink" class="btn btn-primary" target="_blank" style="display:none;">Download Document</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
     (function() {
@@ -448,6 +500,68 @@
             container.innerHTML = '';
             container.appendChild(iframe);
         }
+
+        // Handle accomplishment report links
+        document.addEventListener('click', function(e) {
+            const accomplishmentLink = e.target.closest('.accomplishment-link');
+            if (accomplishmentLink) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const id = accomplishmentLink.dataset.id;
+                const title = accomplishmentLink.dataset.title;
+                const content = accomplishmentLink.dataset.content;
+                const filePath = accomplishmentLink.dataset.file;
+                const published = accomplishmentLink.dataset.published;
+                
+                // Update modal content
+                const modalTitle = document.getElementById('accomplishmentReportModalLabel');
+                const modalBody = document.getElementById('accomplishmentReportModalBody');
+                const fileLink = document.getElementById('accomplishmentFileLink');
+                
+                modalTitle.textContent = title;
+                
+                let bodyHTML = '';
+                
+                // Add PDF preview if file exists
+                if (filePath) {
+                    const ext = filePath.split('.').pop().toLowerCase();
+                    if (ext === 'pdf') {
+                        const assetUrl = '{{ asset('storage/') }}' + '/' + filePath;
+                        bodyHTML += '<div style="height:400px; margin-bottom:15px;">';
+                        bodyHTML += '<iframe src="' + assetUrl + '" style="width:100%; height:100%; border:0;" loading="lazy"></iframe>';
+                        bodyHTML += '</div>';
+                    }
+                }
+                
+                // Add content section
+                bodyHTML += '<div class="mb-3">';
+                if (published) {
+                    bodyHTML += '<p class="small text-muted mb-2"><strong>Published:</strong> ' + published + '</p>';
+                }
+                if (content) {
+                    bodyHTML += '<div class="content-section">' + content + '</div>';
+                } else {
+                    bodyHTML += '<p class="text-muted">No content available.</p>';
+                }
+                bodyHTML += '</div>';
+                
+                modalBody.innerHTML = bodyHTML;
+                
+                if (filePath) {
+                    fileLink.href = '{{ asset('storage/') }}' + '/' + filePath;
+                    fileLink.style.display = 'block';
+                } else {
+                    fileLink.style.display = 'none';
+                }
+                
+                // Show the modal
+                const modal = new bootstrap.Modal(document.getElementById('accomplishmentReportModal'));
+                modal.show();
+                
+                return false;
+            }
+        }, false);
 
         // Capture phase - highest priority
         document.addEventListener('click', function(e) {

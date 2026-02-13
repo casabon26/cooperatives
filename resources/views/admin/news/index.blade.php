@@ -50,7 +50,7 @@
                                     } elseif(file_exists($directPath)){
                                         $imgUrl = asset($n->image);
                                     } elseif(file_exists($publicNewsPath)){
-                                        $imgUrl = asset('news_images/'.basename($n->image));
+                                        $imgUrl = asset('assets/images/news/'.basename($n->image));
                                     }
                                 }
                             @endphp

@@ -64,7 +64,12 @@
                 @endif
 
                 <div class="mt-3">
-                    <a href="{{ url('/') }}" class="btn btn-link">Back to Landing Page</a>
+                    <a href="{{ url('/') }}" class="btn btn-outline-danger d-inline-flex align-items-center" role="button" aria-label="Back to landing page" title="Back to landing page" target="_self">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.4" style="margin-right:8px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        Back to Landing Page
+                    </a>
                 </div>
             </div>
         </div>

@@ -5,7 +5,7 @@
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4>Memorandums</h4>
-            <a href="{{ route('admin.memorandums.create') }}" class="btn btn-primary">Create Memorandum</a>
+            <a href="{{ route('admin.memorandums.create') }}" class="btn btn-primary" target="_self">Create Memorandum</a>
         </div>
 
         {{-- success flash is shown via the global dynamic popup in the layout; remove inline duplicate --}}

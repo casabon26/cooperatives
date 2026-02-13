@@ -17,13 +17,13 @@
                 if($item->image){
                   $storagePath = public_path('storage/'.$item->image);
                   $directPath = public_path($item->image);
-                  $publicNewsPath = public_path('news_images/'.basename($item->image));
+                  $publicNewsPath = public_path('assets/images/news/'.basename($item->image));
                   if(file_exists($storagePath)){
                     $imgUrl = asset('storage/'.$item->image);
                   } elseif(file_exists($directPath)){
                     $imgUrl = asset($item->image);
                   } elseif(file_exists($publicNewsPath)){
-                    $imgUrl = asset('news_images/'.basename($item->image));
+                    $imgUrl = asset('assets/images/news/'.basename($item->image));
                   }
                 }
               @endphp

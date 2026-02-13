@@ -33,6 +33,14 @@
                             <label class="form-label">Video URL (YouTube/Vimeo or direct link)</label>
                             <input name="url" class="form-control" placeholder="https://..." value="{{ old('url') }}">
                         </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="highlight_landing" id="highlight_landing" value="1" class="form-check-input" {{ old('highlight_landing') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="highlight_landing">Highlight on landing page</label>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="highlight_enterprise" id="highlight_enterprise" value="1" class="form-check-input" {{ old('highlight_enterprise') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="highlight_enterprise">Highlight on Enterprise Portal</label>
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">Or Upload Video (mp4, webm)</label>
                             <input type="file" name="file" accept="video/*" class="form-control">
@@ -45,6 +53,67 @@
                             <span id="video-submit-spinner" class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true" style="display:none"></span>
                         </button>
                     </form>
+                </div>
+            </div>
+
+            <!-- Highlights sections -->
+            <div class="row mb-3">
+                <div class="col-12 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Landing Page Highlights</h6>
+                            @php $landing = \App\Models\Video::where('highlight_landing', true)->orderByDesc('created_at')->get(); @endphp
+                            @if($landing->count())
+                                <div class="list-group list-group-flush">
+                                    @foreach($landing as $lv)
+                                        <div class="list-group-item d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div style="width:80px">@if($lv->file_path)<video src="{{ asset('storage/'.$lv->file_path) }}" style="max-width:80px;max-height:60px"></video>@elseif($lv->url)<div style="width:80px;height:60px;background:#f8f9fa;border:1px solid #e9ecef;display:flex;align-items:center;justify-content:center">Link</div>@else<div style="width:80px;height:60px;background:#f1f5f9;border:1px solid #e9ecef"></div>@endif</div>
+                                                <div>
+                                                    <div class="fw-semibold">{{ $lv->title }}</div>
+                                                    <div class="small text-muted">{{ $lv->created_at->toDateString() }}</div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <a href="/admin/manage-videos/{{ $lv->id }}/edit" class="btn btn-sm btn-outline-primary">Edit</a>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="small text-muted">No landing highlights configured.</div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 mt-3 mt-md-0">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Enterprise Highlights</h6>
+                            @php $enterprise = \App\Models\Video::where('highlight_enterprise', true)->orderByDesc('created_at')->get(); @endphp
+                            @if($enterprise->count())
+                                <div class="list-group list-group-flush">
+                                    @foreach($enterprise as $ev)
+                                        <div class="list-group-item d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div style="width:80px">@if($ev->file_path)<video src="{{ asset('storage/'.$ev->file_path) }}" style="max-width:80px;max-height:60px"></video>@elseif($ev->url)<div style="width:80px;height:60px;background:#f8f9fa;border:1px solid #e9ecef;display:flex;align-items:center;justify-content:center">Link</div>@else<div style="width:80px;height:60px;background:#f1f5f9;border:1px solid #e9ecef"></div>@endif</div>
+                                                <div>
+                                                    <div class="fw-semibold">{{ $ev->title }}</div>
+                                                    <div class="small text-muted">{{ $ev->created_at->toDateString() }}</div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <a href="/admin/manage-videos/{{ $ev->id }}/edit" class="btn btn-sm btn-outline-primary">Edit</a>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="small text-muted">No enterprise highlights configured.</div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -69,7 +138,14 @@
                             @endif
                         </div>
                         <div class="flex-fill">
-                            <h6 class="mb-1">{{ $v->title }}</h6>
+                            <h6 class="mb-1">{{ $v->title }}
+                                @if($v->highlight_landing)
+                                    <span class="badge bg-success ms-2">Landing</span>
+                                @endif
+                                @if($v->highlight_enterprise)
+                                    <span class="badge bg-info ms-1">Enterprise</span>
+                                @endif
+                            </h6>
                             <div class="small text-muted">{{ $v->created_at->toDateString() }}</div>
                             <p class="mb-1 small">{{ \Illuminate\Support\Str::limit(strip_tags($v->description), 160) }}</p>
                             <div class="mt-2">

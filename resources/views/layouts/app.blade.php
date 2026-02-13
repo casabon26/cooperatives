@@ -46,6 +46,71 @@
         box-shadow: 0 10px 30px rgba(15,23,42,0.06);
         padding: .35rem 0;
         background: linear-gradient(180deg,#fff,#fff); /* subtle base */
+        opacity: 0;
+        transform: scaleY(0);
+        transform-origin: top center;
+        transition: none;
+        pointer-events: none;
+        animation: none;
+        margin-top: 24px !important;
+      }
+      .dropdown-menu.show {
+        animation: dropdownExpand .36s cubic-bezier(.34,.73,.29,.97) forwards;
+        pointer-events: auto;
+      }
+      @keyframes dropdownExpand {
+        0% {
+          opacity: 0;
+          transform: scaleY(0);
+        }
+        100% {
+          opacity: 1;
+          transform: scaleY(1);
+        }
+      }
+      .dropdown-menu.show .dropdown-item {
+        opacity: 0;
+        animation: fragmentSlideIn .5s cubic-bezier(.34,.73,.29,.97) forwards;
+      }
+      .dropdown-menu.show .dropdown-item:nth-child(1) { animation-delay: 0.08s; }
+      .dropdown-menu.show .dropdown-item:nth-child(2) { animation-delay: 0.14s; }
+      .dropdown-menu.show .dropdown-item:nth-child(3) { animation-delay: 0.20s; }
+      .dropdown-menu.show .dropdown-item:nth-child(4) { animation-delay: 0.26s; }
+      .dropdown-menu.show .dropdown-item:nth-child(5) { animation-delay: 0.32s; }
+      .dropdown-menu.show .dropdown-item:nth-child(6) { animation-delay: 0.38s; }
+      .dropdown-menu.show .dropdown-item:nth-child(7) { animation-delay: 0.44s; }
+      .dropdown-menu.show .dropdown-header {
+        opacity: 0;
+        animation: fragmentSlideIn .5s cubic-bezier(.34,.73,.29,.97) forwards;
+      }
+      .dropdown-menu.show .dropdown-header:nth-of-type(1) { animation-delay: 0.06s; }
+      .dropdown-menu.show .dropdown-header:nth-of-type(2) { animation-delay: 0.28s; }
+      .dropdown-menu.show hr {
+        opacity: 0;
+        animation: fragmentSlideIn .5s cubic-bezier(.34,.73,.29,.97) forwards;
+        animation-delay: 0.24s;
+      }
+      @keyframes fragmentSlideIn {
+        0% {
+          opacity: 0;
+          transform: translateY(-20px) translateX(var(--tx, 0)) rotateZ(var(--rz, 0deg)) scale(0.8);
+        }
+        65% {
+          opacity: 1;
+          transform: translateY(2px) translateX(0) rotateZ(0deg) scale(1.02);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) translateX(0) rotateZ(0deg) scale(1);
+        }
+      }
+      .dropdown-menu.show .dropdown-item:nth-child(odd) {
+        --tx: -8px;
+        --rz: 6deg;
+      }
+      .dropdown-menu.show .dropdown-item:nth-child(even) {
+        --tx: 8px;
+        --rz: -6deg;
       }
       .dropdown-item{
         color:#3b1a1a;
@@ -60,6 +125,12 @@
         background: rgba(239,68,68,0.08);
         color: #b91c1c;
         font-weight:700;
+      }
+      .dropdown-header {
+        color: #7f1d1d;
+        font-weight: 700;
+        padding: .45rem .9rem;
+        font-size: .9rem;
       }
       .search-box input{display:none}
       .search-btn{display:none}
@@ -83,14 +154,44 @@
         body{padding-top:120px}
       }
     </style>
+    <style>
+      /* Themed aside/card styling for public site (avoid admin area) */
+      body:not(.admin-area) aside > .card,
+      body:not(.admin-area) .sidebar-card {
+        border-left: 4px solid rgba(185,28,28,0.10);
+        background: linear-gradient(180deg, rgba(255,250,250,0.6), rgba(255,255,255,0.95));
+        border-radius: .5rem;
+        padding: 0; /* card-body will provide padding */
+        box-shadow: 0 6px 22px rgba(15,23,42,0.04);
+      }
+      body:not(.admin-area) aside > .card .card-body,
+      body:not(.admin-area) .sidebar-card .card-body {
+        padding: 1rem;
+      }
+      body:not(.admin-area) aside > .card .card-title,
+      body:not(.admin-area) .sidebar-card .card-title { color: #7f1d1d; font-weight:700; }
+
+      /* Generic aside list items */
+      .aside-list { list-style:none;padding:0;margin:0; }
+      .aside-list .aside-item { display:flex;gap:.6rem;align-items:center;padding:.45rem .5rem;border-bottom:1px solid rgba(0,0,0,0.03);border-radius:.375rem;transition:background .12s ease,transform .08s ease; }
+      .aside-list .aside-item:last-child{ border-bottom:0 }
+      .aside-list .aside-item:hover{ background: rgba(185,28,28,0.04); transform: translateY(-2px); }
+      .aside-list .aside-icon{ width:36px;height:36px;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(0,0,0,0.02);} 
+      .aside-list .aside-item:hover .aside-icon{ background: rgba(239,68,68,0.08); }
+      .aside-list .aside-link{ font-weight:600;color:#b91c1c;text-decoration:none;display:inline-block;padding:.15rem .35rem;border-radius:.35rem;transition:background .12s ease,color .12s ease }
+      .aside-list .aside-item:hover .aside-link{ background:#ef4444;color:#fff !important; box-shadow:0 2px 6px rgba(239,68,68,0.12) }
+      .aside-list .aside-meta{ color:#6b7280;font-size:.85rem }
+      .aside-list .aside-badge{ background: rgba(0,0,0,0.03); color:#374151; padding:.25rem .5rem; border-radius:.4rem; font-weight:600 }
+      .aside-list .aside-item:hover .aside-badge{ background:#ef4444;color:#fff; }
+    </style>
     @php
-      $appCssVer = file_exists(public_path('css/app.css')) ? filemtime(public_path('css/app.css')) : time();
-      $extraCssVer = file_exists(public_path('css/extra.css')) ? filemtime(public_path('css/extra.css')) : time();
-      $themeCssVer = file_exists(public_path('css/theme.css')) ? filemtime(public_path('css/theme.css')) : time();
+      $appCssVer = file_exists(public_path('assets/css/app.css')) ? filemtime(public_path('assets/css/app.css')) : time();
+      $extraCssVer = file_exists(public_path('assets/css/extra.css')) ? filemtime(public_path('assets/css/extra.css')) : time();
+      $themeCssVer = file_exists(public_path('assets/css/theme.css')) ? filemtime(public_path('assets/css/theme.css')) : time();
     @endphp
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ $appCssVer }}">
-    <link rel="stylesheet" href="{{ asset('css/extra.css') }}?v={{ $extraCssVer }}">
-    <link rel="stylesheet" href="{{ asset('css/theme.css') }}?v={{ $themeCssVer }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}?v={{ $appCssVer }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/extra.css') }}?v={{ $extraCssVer }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}?v={{ $themeCssVer }}">
   <style>
     /* Disable hover effects in admin area */
     .admin-area .card:hover,
@@ -153,10 +254,10 @@
   <div class="yahoo-container">
     <div style="flex:0 0 auto;display:flex;align-items:center;gap:12px">
       <a href="/" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit">
-        @if(file_exists(public_path('Logo/CCLDO.png')))
-          <img src="{{ asset('Logo/CCLDO.png') }}" alt="CCLDO logo" style="height:36px;object-fit:contain">
+        @if(file_exists(public_path('assets/images/logo/CCLDO.png')))
+          <img src="{{ asset('assets/images/logo/CCLDO.png') }}" alt="CCLDO logo" style="height:36px;object-fit:contain">
         @endif
-        <div class="yahoo-logo"><span class="yahoo-logo-text">Cooperative</span></div>
+        <div class="yahoo-logo"><span class="yahoo-logo-text">CCLDO - CABUYAO</span></div>
       </a>
     </div>
 
@@ -172,7 +273,11 @@
       
 
       <a href="/cooperatives?per_page=34" class="nav-item" title="Cooperatives Portal">
-        <span class="nav-text">Cooperatives Portal</span>
+        <span class="nav-text">Cooperative Portal</span>
+      </a>
+
+      <a href="/enterprise-portal" class="nav-item ms-2" title="Enterprise Portal" aria-label="Enterprise Portal">
+        <span class="nav-text">Enterprise Portal</span>
       </a>
 
       <div class="dropdown ms-2">
@@ -180,10 +285,13 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="#b91c1c" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreDropdown">
+          <li><h6 class="dropdown-header">Resources</h6></li>
           <li><a class="dropdown-item" href="/faqs">FAQs</a></li>
           <li><a class="dropdown-item" href="/videos">Videos</a></li>
           <li><a class="dropdown-item" href="/news">News</a></li>
-          <li><a class="dropdown-item" href="/store-locations">Store Locations</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><h6 class="dropdown-header">Portals</h6></li>
+          <li><a class="dropdown-item" href="/store-locations">Enterprise Map</a></li>
         </ul>
       </div>
     </nav>
@@ -238,7 +346,7 @@
   @yield('content')
 </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('js/theme.js') }}"></script>
+<script src="{{ asset('assets/js/theme.js') }}"></script>
 
 <!-- App dialog modal (used to replace native alert/confirm with styled dialog) -->
 <div class="modal fade" id="appDialog" tabindex="-1" aria-hidden="true">
@@ -366,7 +474,7 @@
       const cols = items.map(coop=>{
         const desc = coop.description ? (coop.description.length>120 ? coop.description.substr(0,120)+'...' : coop.description) : '';
         const href = coop.link ? coop.link : ('/cooperatives/'+coop.id);
-        return `<div class="col"><article class="card h-100"><div class="card-body"><h3 class="h6"><a href="${href}">${escapeHtml(coop.name)}</a></h3><p class="small text-muted">${escapeHtml(coop.sector||'')} · ${escapeHtml(coop.region||'')}</p><p class="mb-0">${escapeHtml(desc)}</p></div></article></div>`;
+        return `<div class="col"><article class="card h-100 coop-card"><div class="card-body"><h3 class="h6 mb-2"><a class="coop-name-link" href="${href}">${escapeHtml(coop.name)}</a></h3><p class="small coop-meta mb-2">${escapeHtml(coop.sector||'')} · ${escapeHtml(coop.region||'')}</p><p class="mb-0 coop-description">${escapeHtml(desc)}</p></div></article></div>`;
       }).join('');
       resultsContainer.innerHTML = cols;
     };

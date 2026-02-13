@@ -11,14 +11,6 @@
   @endif
   <form method="POST" action="{{ route('admin.store_locations.store') }}" target="_self">
     @csrf
-    <div class="mb-3">
-      <label class="form-label">Name</label>
-      <input name="name" class="form-control" required>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Address</label>
-      <input name="address" class="form-control">
-    </div>
     @php $storeCats = @json_decode(@file_get_contents(resource_path('data/store_categories.json')), true) ?: []; @endphp
     <div class="mb-3">
       <label class="form-label">Category</label>
@@ -31,23 +23,22 @@
     </div>
     <div class="mb-3">
       <label class="form-label">Item (choose from category)</label>
-      <div class="d-flex gap-2">
-        <select name="item" id="itemSelect" class="form-select">
-          <option value="">-- Select item --</option>
-        </select>
-        <input name="item_map_url" id="itemMapUrl" class="form-control" placeholder="Optional item Google Maps URL">
-      </div>
+      <select name="item" id="itemSelect" class="form-select">
+        <option value="">-- Select item --</option>
+      </select>
       <div class="small text-muted">Choose the item this location corresponds to so it appears when the item is clicked on the public map.</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Name</label>
+      <input name="name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Address</label>
+      <input name="address" class="form-control">
     </div>
     <input type="hidden" name="lat">
     <input type="hidden" name="lng">
-    <div class="mb-3">
-      <label class="form-label">Plus Code (optional)</label>
-      <div class="input-group">
-        <input id="plus_code" name="plus_code" class="form-control" placeholder="e.g. 74GF+XH Cabuyao City, Laguna">
-        <button id="decodePlusBtn" type="button" class="btn btn-outline-secondary">Decode</button>
-      </div>
-    </div>
     <div class="mb-3">
       <label class="form-label">Google Maps Link (optional)</label>
       <input name="map_url" class="form-control" placeholder="https://www.google.com/maps/...">
@@ -64,17 +55,15 @@
   </div>
 
   @section('scripts')
-  <script src="https://cdn.jsdelivr.net/npm/open-location-code@1.0.4/open-location-code.min.js"></script>
   <script>
     (function(){
       const storeCats = {!! json_encode($storeCats ?? [], JSON_UNESCAPED_UNICODE) !!};
-      const plusEl = document.getElementById('plus_code');
-      const decodeBtn = document.getElementById('decodePlusBtn');
       const latEl = document.querySelector('input[name="lat"]');
       const lngEl = document.querySelector('input[name="lng"]');
       const catSel = document.getElementById('categorySelect');
       const itemSel = document.getElementById('itemSelect');
-      const itemMapUrl = document.getElementById('itemMapUrl');
+      const nameInput = document.querySelector('input[name="name"]');
+      const preSelectedItem = {!! json_encode(request()->get('item') ?: old('item', ''), JSON_UNESCAPED_UNICODE) !!};
 
       function populateItemsFor(cat){
         itemSel.innerHTML = '<option value="">-- Select item --</option>';
@@ -82,9 +71,11 @@
         items.forEach(it =>{
           const label = (typeof it === 'string') ? it : (it.label || '');
           const opt = document.createElement('option'); opt.value = label; opt.textContent = label;
-          opt.dataset.mapurl = (typeof it === 'object' && it.map_url) ? it.map_url : '';
           itemSel.appendChild(opt);
         });
+        if(preSelectedItem){
+          for(const o of itemSel.options){ if(o.value === preSelectedItem){ o.selected = true; nameInput.value = o.value; break; } }
+        }
       }
       if(catSel) catSel.addEventListener('change', function(){ populateItemsFor(this.value); });
       // Preselect from query string if provided
@@ -92,29 +83,8 @@
         const pre = (new URLSearchParams(window.location.search)).get('category');
         catSel.value = pre; populateItemsFor(pre);
       }
-      if(!itemSel.value && (new URLSearchParams(window.location.search)).get('item')){
-        const preItem = (new URLSearchParams(window.location.search)).get('item');
-        // wait for items to be populated
-        setTimeout(()=>{ for(const o of itemSel.options){ if(o.value === preItem){ o.selected = true; itemMapUrl.value = o.dataset.mapurl || ''; break; } } }, 100);
-      }
-      if(itemSel) itemSel.addEventListener('change', function(){ const o = this.selectedOptions[0]; if(o && o.dataset){ itemMapUrl.value = o.dataset.mapurl || ''; } });
-      function decodePlus(){
-        if(!plusEl) return;
-        const v = (plusEl.value||'').trim();
-        try{
-          if(!v || v.indexOf('+')===-1) return alert('Enter a valid plus code first.');
-          const c = OpenLocationCode.decode(v);
-          if(c){
-            if(latEl) latEl.value = c.latitudeCenter.toFixed(6);
-            if(lngEl) lngEl.value = c.longitudeCenter.toFixed(6);
-            plusEl.dispatchEvent(new Event('change'));
-            alert('Plus code decoded — lat/lng populated.');
-          }
-        }catch(e){ console.warn(e); alert('Could not decode plus code.'); }
-      }
-      if(decodeBtn) decodeBtn.addEventListener('click', decodePlus);
-      // decode on blur as helpful convenience
-      if(plusEl) plusEl.addEventListener('blur', function(){ if(this.value && this.value.indexOf('+')!==-1) decodePlus(); });
+      // if item chosen, fill name
+      if(itemSel) itemSel.addEventListener('change', function(){ const o = this.selectedOptions[0]; if(o){ nameInput.value = o.value; } });
     })();
   </script>
   @endsection

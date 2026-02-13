@@ -43,8 +43,8 @@ class SimpleAdminNewsController extends Controller
             $file->move($dest, $filename);
             $data['image'] = 'news/'.$filename;
             // Also copy to public/news so images are served even if storage symlink is missing
-            // Use `news_images` directory to avoid colliding with the /news route
-            $publicDir = public_path('news_images');
+            // Use `assets/images/news` directory to avoid colliding with the /news route
+            $publicDir = public_path('assets/images/news');
             if (!is_dir($publicDir)) { @mkdir($publicDir, 0755, true); }
             try { copy($dest.DIRECTORY_SEPARATOR.$filename, $publicDir.DIRECTORY_SEPARATOR.$filename); } catch (\Throwable $e) { /* non-fatal */ }
 
@@ -185,7 +185,7 @@ class SimpleAdminNewsController extends Controller
                 // also attempt to delete any public copy
                 try {
                     $oldBase = basename($news->image);
-                    $publicCopy = public_path('news_images/'. $oldBase);
+                    $publicCopy = public_path('assets/images/news/'. $oldBase);
                     if (file_exists($publicCopy)) { @unlink($publicCopy); }
                 } catch (\Throwable $e) { /* ignore */ }
                 // also clear DB image fields
