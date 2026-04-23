@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('back-button')
+    @include('partials.back-button', ['url' => '/admin/news', 'label' => 'Back'])
+@endsection
+
 @section('content')
 <div class="container py-5">
     <div class="row justify-content-center">
@@ -48,7 +52,6 @@
                             <div class="form-text">Assign a numeric slot to show this article as a homepage card. Leave empty for none.</div>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <a href="/admin/news" class="btn btn-outline-secondary">Back</a>
                             <button class="btn btn-danger">Save changes</button>
                         </div>
                     </form>
@@ -79,13 +82,14 @@
         form.addEventListener('submit', function(e){
             const v = slotInput && slotInput.value ? slotInput.value.trim() : '';
             if(!v) return;
-            if(occupied[v]){
-                if(!confirm('Card '+v+' is currently assigned to "'+occupied[v]+'". Overwrite?')){
+                if(occupied[v]){
                     e.preventDefault();
-                    return;
+                    window.appConfirm('Card '+v+' is currently assigned to "'+occupied[v]+'". Overwrite?').then(function(ok){
+                        if(!ok) return;
+                        if(confirmInput) confirmInput.value = '1';
+                        form.submit();
+                    });
                 }
-                if(confirmInput) confirmInput.value = '1';
-            }
         }, false);
     })();
 </script>

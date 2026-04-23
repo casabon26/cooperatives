@@ -19,25 +19,25 @@
                   <div class="d-flex align-items-center justify-content-center p-3">No preview</div>
                 @endif
               </div>
-              <div class="card-body">
+              <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ $video->title }}</h5>
                 <div class="small text-muted mb-2">{{ optional($video->created_at)->toDayDateTimeString() }}</div>
-                <p class="card-text text-muted">{{ Str::limit($video->description, 100) }}</p>
-                <div class="btn-group">
-                  <a href="{{ route('videos.show', $video) }}" class="btn btn-sm btn-primary">Details</a>
+                <p class="card-text text-muted flex-grow-1">{{ Str::limit($video->description, 100) }}</p>
+                <div class="btn-group" style="width: fit-content;">
+                  <a href="{{ route('videos.show', $video) }}" class="btn btn-sm btn-primary" target="_self">Details</a>
                   <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="visually-hidden">Toggle</span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end">
                     @if($video->youtubeId())
                       <li><a class="dropdown-item" href="https://www.youtube.com/watch?v={{ $video->youtubeId() }}" target="_blank" rel="noopener noreferrer">Open in YouTube</a></li>
-                      <li><a class="dropdown-item" href="{{ route('videos.show', $video) }}">Open in site</a></li>
+                      <li><a class="dropdown-item" href="{{ route('videos.show', $video) }}" target="_self">Open in site</a></li>
                     @elseif($video->file_path)
                       @php
                         $fileUrl = asset('storage/'.$video->file_path);
                       @endphp
                       <li><a class="dropdown-item" href="{{ $fileUrl }}" target="_blank" rel="noopener noreferrer">Open file</a></li>
-                      <li><a class="dropdown-item" href="{{ route('videos.show', $video) }}">Details</a></li>
+                      <li><a class="dropdown-item" href="{{ route('videos.show', $video) }}" target="_self">Details</a></li>
                     @else
                       <li><a class="dropdown-item" href="{{ route('videos.show', $video) }}">Open</a></li>
                     @endif

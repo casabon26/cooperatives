@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('back-button')
+    @include('partials.back-button', ['url' => route('admin.cooperatives.index'), 'label' => 'Back', 'class' => 'btn-sm'])
+@endsection
+
 @section('content')
 <div class="container py-4">
     <div class="row justify-content-center">
@@ -10,7 +14,7 @@
                         <h5 class="card-title mb-0">Cooperatives (View)</h5>
                         <div>
                             <a href="{{ route('admin.cooperatives.index') }}" class="btn btn-sm btn-primary me-2" target="_self">Manage Cooperatives</a>
-                            <a href="#" class="btn btn-sm btn-primary" onclick="history.back(); return false;">Back</a>
+                            
                         </div>
                     </div>
 

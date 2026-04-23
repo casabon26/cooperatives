@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+  
 @section('content')
 <div class="container py-4">
   <h3>Add Category</h3>
@@ -17,7 +17,8 @@
       <input name="category" class="form-control" required placeholder="e.g. Food & Beverages">
     </div>
     <button class="btn btn-primary">Create Category</button>
-    <a href="{{ route('admin.store_locations.index') }}" class="btn btn-link" target="_self">Cancel</a>
+    @include('partials.back-button', ['url' => route('admin.store_locations.index'), 'label' => 'Cancel', 'class' => 'btn-link'])
   </form>
 </div>
 @endsection
+

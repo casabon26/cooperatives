@@ -42,7 +42,7 @@
               <td>{{ $loc->lat }} / {{ $loc->lng }}</td>
               <td class="text-end">
                 <a href="{{ route('admin.store_locations.edit', $loc) }}" class="btn btn-sm btn-outline-secondary" target="_self">Edit</a>
-                <form method="POST" action="{{ route('admin.store_locations.destroy', $loc) }}" style="display:inline-block" onsubmit="return confirm('Delete location?')">
+                <form method="POST" action="{{ route('admin.store_locations.destroy', $loc) }}" style="display:inline-block" data-confirm="Delete location?">
                   @csrf
                   @method('DELETE')
                   <button class="btn btn-sm btn-danger">Delete</button>
@@ -87,13 +87,13 @@
               <div class="mb-2 d-flex justify-content-between align-items-center">
                 <div class="fw-bold">{{ $cat }}</div>
                 <div class="d-flex gap-2">
-                  <form method="POST" action="{{ route('admin.store_categories.update') }}" class="d-flex" onsubmit="return confirm('Rename category?')">
+                  <form method="POST" action="{{ route('admin.store_categories.update') }}" class="d-flex" data-confirm="Rename category?">
                     @csrf
                     <input type="hidden" name="old_category" value="{{ $cat }}">
                     <input name="new_category" class="form-control form-control-sm" placeholder="Rename" style="max-width:220px">
                     <button class="btn btn-sm btn-outline-primary" type="submit">Rename</button>
                   </form>
-                  <form method="POST" action="{{ route('admin.store_categories.delete') }}" onsubmit="return confirm('Delete entire category & its items?')">
+                  <form method="POST" action="{{ route('admin.store_categories.delete') }}" data-confirm="Delete entire category & its items?">
                     @csrf
                     <input type="hidden" name="category" value="{{ $cat }}">
                     <button class="btn btn-sm btn-outline-danger">Delete Category</button>

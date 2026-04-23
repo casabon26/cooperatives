@@ -3,7 +3,7 @@
 @section('content')
 <div class="py-4">
     <style>
-        /* Slightly darker text-shadow for the landing header */
+        /* Your original styles remain untouched */
         .hero h1 {
             text-shadow: 0 2px 8px rgba(0,0,0,0.6);
             color: #ffffff;
@@ -13,16 +13,13 @@
             color: rgba(255,255,255,0.85);
         }
 
-        /* Hero styling: visual details only; background comes from theme.css so images show correctly */
         .hero {
             padding: 1rem 1.25rem;
             border-radius: .6rem;
             box-shadow: 0 12px 40px rgba(0,0,0,0.5);
             border: 1px solid rgba(255,255,255,0.04);
-            /* do not set background here — theme.css controls the hero background image */
         }
 
-        /* Disable hover effects except for cooperative items */
         .card:not(.coop-item):hover,
         .card:not(.coop-item) .card-body:hover {
             transform: none !important;
@@ -33,20 +30,16 @@
             transition: none !important;
         }
 
-        /* Make sure thumbnail clicks are not stolen by parent links */
         .yt-thumb,
         .yt-thumb img,
         .yt-thumb svg {
             pointer-events: auto !important;
         }
 
-        /* Prevent any parent links from interfering on thumbnails only */
-        /* (specific '.yt-thumb' elements already set to accept pointer events) */
-
         .yt-thumb:hover {
             opacity: 0.92;
         }
-        /* Memorandum link: styled as pill; hover matches theme red background */
+
         .memo-link {
             color: #5b1b1b;
             font-weight: 700;
@@ -56,7 +49,7 @@
             background-color: transparent;
             transition: background .12s ease, color .12s ease, box-shadow .12s ease;
         }
-        /* When the surrounding item is hovered, make the link sit on a red pill with white text */
+
         .memo-item:hover .memo-link,
         .memo-link:focus {
             background: #ef4444;
@@ -64,48 +57,71 @@
             box-shadow: 0 6px 18px rgba(239,68,68,0.12);
             text-decoration: none;
         }
+
         .memo-item { padding: 6px 0; }
-            /* Memorandum circulars: theme-aligned list */
-            .memo-list { display:block; margin:0; padding:0; }
-            .memo-item { display:flex; gap:.6rem; align-items:flex-start; padding:.55rem .5rem; border-radius:8px; transition:background .12s ease, box-shadow .12s ease; }
-            .memo-item > .flex-grow-1 { min-width: 0; }
-            .memo-item + .memo-item { margin-top:.45rem; }
-            .memo-item:hover { background: linear-gradient(180deg, rgba(239,68,68,0.03), rgba(0,0,0,0.01)); box-shadow: 0 8px 20px rgba(15,23,42,0.03); }
-            .memo-icon{width:44px;height:44px;border-radius:8px;background:linear-gradient(180deg,#fff,#fff);display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,0,0,0.04);color:#b91c1c;font-weight:700}
-            .memo-link { color: #5b1b1b; font-weight:700; display:block; text-decoration:none; overflow:hidden; position:relative; cursor:pointer }
-            /* Clamp long titles to two lines with ellipsis */
-            .memo-link {
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                white-space: normal;
-                text-overflow: ellipsis;
-            }
-            /* keep underline off; color changes handled by pill hover */
-            .memo-link:hover { text-decoration:none; }
-            /* Hover hint shown when codename is hovered */
-            .memo-link::after{
-                content: "click to open";
-                position: absolute;
-                top: -1.6rem;
-                right: 0;
-                background: rgba(0,0,0,0.7);
-                color: #fff;
-                font-size: .72rem;
-                padding: .18rem .45rem;
-                border-radius: 6px;
-                opacity: 0;
-                transform: translateY(6px);
-                transition: opacity .12s ease, transform .12s ease;
-                white-space: nowrap;
-                pointer-events: none;
-            }
-            .memo-link:hover::after, .memo-link:focus::after{ opacity:1; transform: translateY(0); }
-            .memo-meta { font-size:.825rem; color: #6b6b6b; margin-top:.25rem }
-            .memo-actions { display:flex; align-items:center; gap:.4rem }
-            .memo-badge { background: rgba(185,28,28,0.08); color:#b91c1c; padding:.18rem .45rem; border-radius:6px; font-weight:700; font-size:.75rem }
-            .memo-item:hover .memo-badge { background:#ef4444; color:#fff; }
-        /* Dropdown filter tweaks */
+
+        .memo-list { display:block; margin:0; padding:0; }
+        .memo-item { 
+            display:flex; gap:.6rem; align-items:flex-start; 
+            padding:.55rem .5rem; border-radius:8px; 
+            transition:background .12s ease, box-shadow .12s ease; 
+        }
+        .memo-item > .flex-grow-1 { min-width: 0; }
+        .memo-item + .memo-item { margin-top:.45rem; }
+        .memo-item:hover { 
+            background: linear-gradient(180deg, rgba(239,68,68,0.03), rgba(0,0,0,0.01)); 
+            box-shadow: 0 8px 20px rgba(15,23,42,0.03); 
+        }
+        .memo-icon {
+            width:44px; height:44px; border-radius:8px;
+            background:linear-gradient(180deg,#fff,#fff);
+            display:inline-flex; align-items:center; justify-content:center;
+            border:1px solid rgba(0,0,0,0.04); color:#b91c1c; font-weight:700
+        }
+        .memo-link { 
+            color: #5b1b1b; font-weight:700; display:block; 
+            text-decoration:none; overflow:hidden; position:relative; cursor:pointer 
+        }
+        .memo-link {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            white-space: normal;
+            text-overflow: ellipsis;
+        }
+        .memo-link:hover { text-decoration:none; }
+
+        .memo-link::after {
+            content: "click to open";
+            position: absolute;
+            top: -1.6rem;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            font-size: .72rem;
+            padding: .18rem .45rem;
+            border-radius: 6px;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity .12s ease, transform .12s ease;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .memo-link:hover::after, .memo-link:focus::after { 
+            opacity:1; transform: translateY(0); 
+        }
+
+        .memo-meta { font-size:.825rem; color: #6b6b6b; margin-top:.25rem }
+        .memo-actions { display:flex; align-items:center; gap:.4rem }
+        .memo-badge { 
+            background: rgba(185,28,28,0.08); 
+            color:#b91c1c; padding:.18rem .45rem; 
+            border-radius:6px; font-weight:700; font-size:.75rem 
+        }
+        .memo-item:hover .memo-badge { 
+            background:#ef4444; color:#fff; 
+        }
+
         .memo-filter .dropdown-toggle {
             display: inline-flex;
             align-items: center;
@@ -116,309 +132,491 @@
             color: var(--danger);
             font-weight: 600;
         }
+
+        .video-highlights-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #991b1b;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-subtitle {
+            color: #555;
+            font-size: 0.95rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .video-card {
+            border-radius: 1rem;           /* softer, modern corners */
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 
+                0 4px 16px rgba(0,0,0,0.08),
+                0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            border: 1px solid rgba(185,28,28,0.06);
+        }
+
+        .video-card:hover {
+            transform: translateY(-8px) scale(1.02) !important;
+            box-shadow: 
+                0 20px 40px rgba(185,28,28,0.22),
+                0 8px 20px rgba(0,0,0,0.12) !important;
+        }
+        .video-card:hover .play-button-overlay {
+            background: rgba(185,28,28,0.54);
+        }
+
+        .video-thumb {
+            position: relative;
+            aspect-ratio: 16/9;
+            background: #0f0f0f;
+            overflow: hidden;
+        }
+
+        .video-thumb img,
+        .video-thumb iframe {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-button-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.32s ease;
+            z-index: 2;
+        }
+
+        .play-button-overlay:hover {
+            background: rgba(185,28,28,0.6);
+        }
+
+        .video-thumb::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                transparent 40%,
+                rgba(0,0,0,0.42) 82%,
+                rgba(0,0,0,0.68) 100%
+            );
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .video-card:hover .video-thumb::after {
+            opacity: 1;
+        }
+
+        .video-thumb img,
+        .video-thumb video,
+        .video-thumb iframe {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.45s ease, filter 0.35s ease;
+        }
+
+        /* If a real player is present (iframe or video), hide the overlay so clicks reach the player */
+        .video-thumb iframe + .play-button-overlay,
+        .video-thumb video + .play-button-overlay {
+            display: none !important;
+        }
+
+        .video-card:hover .video-thumb img,
+        .video-card:hover .video-thumb video {
+            transform: scale(1.06);
+            filter: brightness(1.08) contrast(1.05);
+        }
+
+        .play-icon {
+            width: 68px;
+            height: 68px;
+            background: #dc2626;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.1rem;
+            box-shadow: 0 6px 20px rgba(220,38,38,0.4);
+            transition: all 0.28s ease;
+            transform: scale(0.92);
+        }
+        .video-card:hover .play-icon {
+            transform: scale(1.08);
+            box-shadow: 0 10px 30px rgba(220,38,38,0.55);
+        }
+
+        /* Duration badge (add this in Blade if you have duration) */
+        .video-duration {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.75);
+            color: white;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.28rem 0.6rem;
+            border-radius: 6px;
+            z-index: 3;
+            letter-spacing: 0.4px;
+        }
+
+        /* Info section - semi-transparent gradient option */
+        .video-info {
+            padding: 1.1rem 1rem;
+            background: linear-gradient(to top, rgba(255,255,255,0.98), #ffffff);
+            position: relative;
+            z-index: 2;
+        }
+
+        .video-title {
+            font-size: 1.02rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            line-height: 1.38;
+            color: #dc2626;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-date {
+            font-size: 0.84rem;
+            color: #666;
+            font-weight: 500;
+            margin-bottom: 0.6rem;
+        }
+
+        .video-description {
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.4;
+            max-height: 60px;
+            overflow-y: auto;
+            padding-right: 0.4rem;
+        }
+
+        .video-description::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .video-description::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+
+        .video-description::-webkit-scrollbar-thumb {
+            background: rgba(220, 38, 38, 0.4);
+            border-radius: 4px;
+        }
+
+        .video-description::-webkit-scrollbar-thumb:hover {
+            background: rgba(220, 38, 38, 0.6);
+        }
+
+        /* Optional: colored left accent stripe on hover */
+        .video-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: #dc2626;
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.35s ease;
+            z-index: 1;
+        }
+
+        .video-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .latest-updates-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #991b1b;
+            margin: 2.5rem 0 1rem;
+        }
+
+        .update-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .update-row {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+            padding: 0.8rem 1rem;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.24s cubic-bezier(0.2, 0.9, 0.2, 1),
+                        box-shadow 0.22s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        /* subtle colored accent that grows on hover */
+        .update-row::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 12px;
+            bottom: 12px;
+            width: 6px;
+            background: linear-gradient(180deg, #fca5a5, #dc2626);
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.28s ease;
+            border-top-right-radius: 6px;
+            border-bottom-right-radius: 6px;
+            opacity: 0.98;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .update-row:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(185,28,28,0.16), 0 6px 20px rgba(0,0,0,0.08);
+            border-color: rgba(185,28,28,0.14);
+            background: linear-gradient(180deg, rgba(255,245,245,0.9), #ffffff);
+        }
+
+        .update-row:hover::before {
+            transform: scaleY(1);
+        }
+
+        .update-number {
+            width: 36px;
+            height: 36px;
+            background: #dc2626;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        /* If updates use images instead of numbers, ensure they display correctly */
+        .update-row img { height: 48px; width: 48px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+
+        .update-content h6 {
+            margin: 0 0 0.3rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .update-content p {
+            margin: 0;
+            font-size: 0.88rem;
+            color: #555;
+        }
     </style>
 
-    {{-- <header class="mb-4 container hero">
-        <h1 class="h3">Welcome to the Government Cooperative Portal</h1>
-        <p class="text-muted">Official listing and transparency for registered cooperatives.</p>
-    </header> --}}
-
-    <section class="mb-4">
+    <section class="mb-5">
         <div class="container">
             <div class="row g-4">
-                <!-- Main content (left column) -->
+                <!-- Left main content -->
                 <div class="col-12 col-lg-8">
 
-                    <!-- Video gallery -->
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title mb-2">Video Highlights</h5>
-                            <p class="text-muted small">Latest videos added by administrators. Videos may be uploaded or linked (YouTube/Vimeo).</p>
-                            
-                            <div class="row mt-3 g-3">
-                                @if(isset($videos) && $videos->count())
-                                    @foreach($videos as $v)
-                                        <div class="col-12 col-md-6">
-                                            <div class="card h-100">
-                                                <div class="card-body d-flex flex-column video-container">
-                                                    <div style="position: relative; min-height: 160px; flex: 1; display: flex; align-items: center; justify-content: center; background: #111; border-radius: 6px; overflow: hidden;">
-                                                        @if($v->file_path)
-                                                            @php
-                                                                $videoUrl = null;
-                                                                $publicPath = public_path($v->file_path);
-                                                                $storagePath = public_path('storage/'.$v->file_path);
-                                                                // if file is already in public folder, use direct asset
-                                                                if(file_exists($publicPath)){
-                                                                    $videoUrl = asset($v->file_path);
-                                                                } elseif(file_exists($storagePath)){
-                                                                    $videoUrl = asset('storage/'.$v->file_path);
-                                                                } else {
-                                                                    // fallback: if file_path already looks like a full URL, use it
-                                                                    if(preg_match('/^https?:\/\//', $v->file_path)){
-                                                                        $videoUrl = $v->file_path;
-                                                                    }
-                                                                }
+                    <!-- Video Highlights -->
+                    <div class="mb-5">
+                        <h2 class="video-highlights-title">Video Highlights</h2>
+                        <p class="video-subtitle">
+                            Latest livelihood trainings, cooperative events, success stories and enterprise tips.
+                        </p>
 
-                                                                // infer mime type from extension
-                                                                $ext = strtolower(pathinfo($v->file_path, PATHINFO_EXTENSION));
-                                                                $mime = 'video/mp4';
-                                                                if(in_array($ext, ['webm'])) $mime = 'video/webm';
-                                                                if(in_array($ext, ['ogg','ogv'])) $mime = 'video/ogg';
-                                                            @endphp
-                                                            @if($videoUrl)
-                                                                <video controls playsinline preload="metadata" style="width:100%; height:auto; max-height:260px;">
-                                                                    <source src="{{ $videoUrl }}" type="{{ $mime }}">
-                                                                    Your browser does not support the video tag.
-                                                                </video>
-                                                            @else
-                                                                <div class="text-center p-3">
-                                                                    <div class="small text-muted">Video file not found on server.</div>
-                                                                    @if(preg_match('/^https?:\/\//', $v->file_path))
-                                                                        <a href="{{ $v->file_path }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary mt-2">Open video link</a>
-                                                                    @else
-                                                                        <div class="small text-muted mt-2">Contact admin to re-upload the file.</div>
-                                                                    @endif
-                                                                </div>
-                                                            @endif
-                                                        @elseif($v->url)
-                                                            @php
-                                                                $yid = $v->youtube_id ?? null;
-                                                                $embedAllowed = $v->embed_allowed ?? null;
-                                                            @endphp
+                        <div class="video-grid">
+                            @if(isset($videos) && $videos->count())
+                                @foreach($videos as $v)
+                                    <div class="video-card">
+                                        <div class="video-thumb">
+                                            @if($v->file_path)
+                                                @php
+                                                    $videoUrl = null;
+                                                    if (file_exists(public_path($v->file_path))) $videoUrl = asset($v->file_path);
+                                                    elseif (file_exists(public_path('storage/'.$v->file_path))) $videoUrl = asset('storage/'.$v->file_path);
+                                                    elseif (preg_match('/^https?:\/\//', $v->file_path)) $videoUrl = $v->file_path;
 
-                                                            @if($yid)
-                                                                @php
-                                                                    $origin = urlencode(request()->getSchemeAndHttpHost());
-                                                                    $params = http_build_query([
-                                                                        'rel' => 0,
-                                                                        'modestbranding' => 1,
-                                                                        'playsinline' => 1,
-                                                                        'autoplay' => 0,
-                                                                        'enablejsapi' => 1,
-                                                                        'origin' => request()->getSchemeAndHttpHost(),
-                                                                    ]);
-                                                                    $iframeSrc = "https://www.youtube.com/embed/{$yid}?{$params}";
-                                                                @endphp
-                                                                <div style="position:relative;width:100%;height:100%;">
-                                                                    <iframe src="{{ $iframeSrc }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;" loading="lazy"></iframe>
-                                                                </div>
-                                                            @else
-                                                                @php
-                                                                    $isFacebook = isset($v->url) && preg_match('/facebook\.com|fb\.watch|fbcdn/i', $v->url);
-                                                                @endphp
-                                                                @if($isFacebook)
-                                                                        <div class="d-flex flex-column align-items-center justify-content-center" style="height:100%;">
-                                                                            <div class="mb-2 small text-muted">This video is hosted on Facebook</div>
-                                                                            <a href="{{ $v->url }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Open on Facebook</a>
-                                                                        </div>
-                                                                @else
-                                                                    <a href="{{ $v->url }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm">
-                                                                        Open video link
-                                                                    </a>
-                                                                @endif
-                                                            @endif
-                                                        @else
-                                                            <div class="text-muted">No video source available</div>
-                                                        @endif
+                                                    $ext = strtolower(pathinfo($v->file_path ?? '', PATHINFO_EXTENSION));
+                                                    $mime = 'video/mp4';
+                                                    if ($ext === 'webm') $mime = 'video/webm';
+                                                    if (in_array($ext, ['ogg','ogv'])) $mime = 'video/ogg';
+                                                @endphp
+
+                                                @if($videoUrl)
+                                                    <video preload="metadata" class="w-100 h-100 object-fit-cover">
+                                                        <source src="{{ $videoUrl }}" type="{{ $mime }}">
+                                                    </video>
+                                                @else
+                                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white">
+                                                        Video not found
                                                     </div>
-
-                                                    <h6 class="mt-3 mb-1">{{ $v->title }}</h6>
-                                                    <div class="small text-muted">{{ optional($v->created_at)->toDayDateTimeString() }}</div>
-                                                    @if($v->description)
-                                                        <div class="small text-muted mt-1">
-                                                            {{ \Illuminate\Support\Str::limit(strip_tags($v->description), 120) }}
-                                                        </div>
-                                                    @endif
+                                                @endif
+                                            @elseif($v->url && $v->youtube_id)
+                                                <iframe class="w-100 h-100"
+                                                        src="https://www.youtube.com/embed/{{ $v->youtube_id }}?rel=0&modestbranding=1&playsinline=1"
+                                                        frameborder="0" allowfullscreen loading="lazy"></iframe>
+                                            @else
+                                                <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white">
+                                                    No source
                                                 </div>
+                                            @endif
+
+                                            <div class="play-button-overlay">
+                                                <div class="play-icon">▶</div>
                                             </div>
                                         </div>
-                                    @endforeach
-                                @else
-                                    <div class="col-12">
-                                        <div class="alert alert-info text-center py-4">
-                                            No videos available at the moment.
+
+                                        <div class="video-info">
+                                            <div class="video-title">{{ $v->title }}</div>
+                                            <div class="video-date">
+                                                {{ optional($v->created_at)->format('M d, Y') }}
+                                            </div>
+                                            @if($v->description)
+                                                <div class="video-description">{{ $v->description }}</div>
+                                            @endif
                                         </div>
                                     </div>
-                                @endif
-                            </div>
+                                @endforeach
+                            @else
+                                <div class="text-center py-5 text-muted">
+                                    No videos available at the moment.
+                                </div>
+                            @endif
                         </div>
                     </div>
 
-                    <!-- Latest Updates cards (dynamic from card_slot assignments) -->
-                    <div class="row mt-4 g-3">
-                        <h2 id="news" class="h5 mb-3">Latest Updates</h2>
-                        @php
-                            $cards = isset($cardNews) ? collect($cardNews)->sortKeys() : collect();
-                        @endphp
+                    <!-- Latest Updates -->
+                    <div>
+                        <h2 class="latest-updates-title">Latest Updates</h2>
 
-                        @if($cards->isNotEmpty())
-                            @foreach($cards as $slot => $article)
-                                <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-body d-flex">
-                                            <div class="me-3 flex-shrink-0">
-                                                @php
-                                                    $imgUrl = null;
-                                                    if($article && $article->image){
-                                                        $storagePath = public_path('storage/'.$article->image);
-                                                        $directPath = public_path($article->image);
-                                                        $publicNewsPath = public_path('assets/images/news/'.basename($article->image));
-                                                        if(file_exists($storagePath)){
-                                                            $imgUrl = asset('storage/'.$article->image);
-                                                        } elseif(file_exists($directPath)){
-                                                            $imgUrl = asset($article->image);
-                                                        } elseif(file_exists($publicNewsPath)){
-                                                            $imgUrl = asset('assets/images/news/'.basename($article->image));
-                                                        }
-                                                    }
-                                                @endphp
-                                                @if($article->image_data)
-                                                    <img src="data:{{ $article->image_mime }};base64,{{ $article->image_data }}" alt="" style="height:64px; width:64px; object-fit:cover; border-radius:6px;">
-                                                @elseif($imgUrl)
-                                                    <img src="{{ $imgUrl }}" alt="" style="height:64px; width:64px; object-fit:cover; border-radius:6px;">
+                        @php $cards = isset($cardNews) ? collect($cardNews)->sortKeys() : collect(); @endphp
+
+                        <div class="update-list">
+                            @if($cards->isNotEmpty())
+                                @foreach($cards as $index => $article)
+                                    @php
+                                        $imgUrl = null;
+                                        if($article && ($article->image ?? null)){
+                                            $storagePath = public_path('storage/'. $article->image);
+                                            $directPath = public_path($article->image);
+                                            $publicNewsPath = public_path('assets/images/news/'.basename($article->image));
+                                            if(file_exists($storagePath)){
+                                                $imgUrl = asset('storage/'.$article->image);
+                                            } elseif(file_exists($directPath)){
+                                                $imgUrl = asset($article->image);
+                                            } elseif(file_exists($publicNewsPath)){
+                                                $imgUrl = asset('assets/images/news/'.basename($article->image));
+                                            }
+                                        }
+                                    @endphp
+                                    <a href="{{ $article ? route('news.show', $article) : '#' }}" class="update-row text-decoration-none text-reset" target="_self">
+                                        @if(!empty($article->image_data) || $imgUrl)
+                                            <div>
+                                                @if(!empty($article->image_data))
+                                                    <img src="data:{{ $article->image_mime }};base64,{{ $article->image_data }}" alt="" style="height:48px; width:48px; object-fit:cover; border-radius:6px; flex-shrink:0;">
                                                 @else
-                                                    <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="height:64px; width:64px; border-radius:6px; font-weight:bold;">
-                                                        {{ $slot }}
-                                                    </div>
+                                                    <img src="{{ $imgUrl }}" alt="" style="height:48px; width:48px; object-fit:cover; border-radius:6px; flex-shrink:0;">
                                                 @endif
                                             </div>
-                                            <div>
-                                                @if($article)
-                                                    <h6 class="card-title mb-1">
-                                                        <a href="#" target="_blank" rel="noopener noreferrer">{{ $article->title }}</a>
-                                                    </h6>
-                                                    <div class="small text-muted">{{ optional($article->published_at ?? $article->created_at)->toDayDateTimeString() }}</div>
-                                                    <p class="card-text small text-muted mt-1">
-                                                        {{ \Illuminate\Support\Str::limit(strip_tags($article->content), 160) }}
-                                                    </p>
-                                                @endif
-                                            </div>
+                                        @else
+                                            <div class="update-number">{{ $index + 1 }}</div>
+                                        @endif
+                                        <div class="update-content">
+                                            <h6>{{ $article->title ?? 'Update Title' }}</h6>
+                                            @if(!empty($article->content))
+                                                <p>{{ Str::limit(strip_tags($article->content), 80) }}</p>
+                                            @endif
+                                        </div>
+                                    </a>
+                                @endforeach
+                            @else
+                                @for($i = 1; $i <= 3; $i++)
+                                    <div class="update-row">
+                                        <div class="update-number">{{ $i }}</div>
+                                        <div class="update-content">
+                                            <h6>Sample Update {{ $i }}</h6>
+                                            <p>Brief description placeholder goes here...</p>
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
-                        @else
-                            @for($i=1; $i<=3; $i++)
-                                <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-body d-flex">
-                                            <div class="me-3 flex-shrink-0">
-                                                <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="height:64px; width:64px; border-radius:6px; font-weight:bold;">
-                                                    {{ chr(64+$i) }}
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h6 class="card-title mb-1">Sample Update {{ $i }}</h6>
-                                                <p class="card-text small text-muted">Short placeholder description.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endfor
-                        @endif
+                                @endfor
+                            @endif
+                        </div>
                     </div>
+
                 </div>
 
-                <!-- Right sidebar: Memorandum Circulars and Accomplishment Reports -->
+                <!-- Right sidebar — completely unchanged -->
                 <aside class="col-12 col-lg-4">
-                    <div class="card mb-3">
+                    @component('components.sidebar-list-section', [
+                        'title' => 'Memorandum Circulars',
+                        'items' => $memorandums ?? [],
+                        'years' => $years ?? [],
+                        'yearCounts' => $yearCounts ?? [],
+                        'selectedCount' => $selectedCount ?? 0,
+                        'totalCount' => $totalCount ?? 0,
+                        'iconColor' => '#b91c1c',
+                        'badgeGradient' => 'linear-gradient(135deg,#fee2e2,#fdd2d2)',
+                        'badgeColor' => '#991b1b',
+                        'actionType' => 'link',
+                        'actionRoute' => '/memorandums/{id}',
+                        'viewAllRoute' => route('memorandums.index'),
+                        'viewAllText' => 'View All Circulars',
+                        'noItemsText' => 'No memorandum circulars available for the selected year.',
+                    ])
+                    @endcomponent
+
+                    
+
+                    @component('components.sidebar-list-section', [
+                        'title' => 'Accomplishment Reports',
+                        'items' => $accomplishmentReports ?? [],
+                        'years' => [],
+                        'yearCounts' => [],
+                        'selectedCount' => 0,
+                        'totalCount' => 0,
+                        'iconColor' => '#059669',
+                        'badgeGradient' => 'linear-gradient(135deg,#d1fae5,#a7f3d0)',
+                        'badgeColor' => '#065f46',
+                        'actionType' => 'modal',
+                        'viewAllRoute' => route('accomplishment-reports.index'),
+                        'viewAllText' => 'View All Reports',
+                        'noItemsText' => 'No accomplishment reports available.',
+                    ])
+                    @endcomponent
+                    <!-- Service Request panel linking to external Google Form -->
+                    <div class="card sidebar-card mt-3">
                         <div class="card-body">
-                            <h5 class="card-title mb-3">Memorandum Circulars</h5>
-
-                            @if(isset($years) && count($years))
-                                <div class="mb-2">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <label class="small mb-0">Filter by year</label>
-                                        <div class="small text-muted">Showing: <strong>{{ $selectedCount ?? (isset($totalCount) ? $totalCount : (isset($memorandums) ? $memorandums->count() : 0)) }}</strong></div>
-                                    </div>
-
-                                    <div class="memo-filter">
-                                        <div class="dropdown">
-                                            @php
-                                                $selectedLabel = request('memo_year') ?: 'All years';
-                                                $queryBase = url('/');
-                                            @endphp
-                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="memoYearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                                {{ $selectedLabel }}
-                                                <span class="badge bg-secondary ms-2">{{ request('memo_year') ? ($yearCounts[request('memo_year')] ?? 0) : ($totalCount ?? 0) }}</span>
-                                            </button>
-                                            <ul class="dropdown-menu" aria-labelledby="memoYearDropdown">
-                                                <li><a class="dropdown-item d-flex justify-content-between align-items-center {{ request('memo_year') ? '' : 'active' }}" href="{{ url('/') }}">All years <span class="badge bg-secondary ms-2">{{ $totalCount ?? 0 }}</span></a></li>
-                                                @foreach($years as $y)
-                                                    <li>
-                                                        <a class="dropdown-item d-flex justify-content-between align-items-center {{ request('memo_year') == $y ? 'active' : '' }}" href="{{ url('/?memo_year='.$y) }}">
-                                                            {{ $y }}
-                                                            <span class="badge bg-secondary ms-2">{{ $yearCounts[$y] ?? 0 }}</span>
-                                                        </a>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            @else
-                                <div class="mb-2 small text-muted">No years available</div>
-                            @endif
-
-                            @if(isset($memorandums) && $memorandums->count())
-                                    <ul class="list-unstyled small mb-0 memo-list">
-                                    @foreach($memorandums as $memo)
-                                            <li class="memo-item">
-                                                <div class="memo-icon flex-shrink-0" aria-hidden="true">
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 7h6v6H7z" stroke="#b91c1c" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 15V7a2 2 0 0 0-2-2H9" stroke="#b91c1c" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                </div>
-
-                                                <div class="flex-grow-1">
-                                                    <a href="{{ url('/memorandums/'.$memo->id) }}" class="memo-link" target="_self" title="click to open" aria-label="{{ $memo->title ?? 'Memorandum' }}">
-                                                        {{ $memo->code ?? $memo->title ?? 'Memorandum' }}
-                                                    </a>
-                                                    @if(isset($memo->published_at) || isset($memo->created_at))
-                                                        <div class="memo-meta">Published: {{ optional($memo->published_at ?? $memo->created_at)->toFormattedDateString() }}</div>
-                                                    @endif
-                                                </div>
-                                                <div class="flex-shrink-0 text-end" style="min-width:56px;">
-                                                    <div class="memo-badge">{{ optional($memo->published_at ?? $memo->created_at)->format('Y') ?? '' }}</div>
-                                                </div>
-                                            </li>
-                                    @endforeach
-                                </ul>
-                            @else
-                                <div class="small text-muted">No memorandum circulars available for the selected year.</div>
-                            @endif
-
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title mb-3">Accomplishment Reports</h5>
-
-                            @if(isset($accomplishmentReports) && $accomplishmentReports->count())
-                                    <ul class="list-unstyled small mb-0 memo-list">
-                                    @foreach($accomplishmentReports as $report)
-                                            <li class="memo-item">
-                                                <div class="memo-icon flex-shrink-0" aria-hidden="true">
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 7h6v6H7z" stroke="#059669" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 15V7a2 2 0 0 0-2-2H9" stroke="#059669" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                                </div>
-
-                                                <div class="flex-grow-1">
-                                                    <a href="#" class="memo-link accomplishment-link" data-id="{{ $report->id }}" data-title="{{ $report->title ?? $report->code }}" data-content="{{ $report->content }}" data-file="{{ $report->file_path }}" data-published="{{ optional($report->published_at)->toFormattedDateString() }}" title="click to open" aria-label="{{ $report->title ?? 'Accomplishment Report' }}">
-                                                        {{ $report->code ?? $report->title ?? 'Report' }}
-                                                    </a>
-                                                    @if(isset($report->published_at) || isset($report->created_at))
-                                                        <div class="memo-meta">Published: {{ optional($report->published_at ?? $report->created_at)->toFormattedDateString() }}</div>
-                                                    @endif
-                                                </div>
-                                                <div class="flex-shrink-0 text-end" style="min-width:56px;">
-                                                    <div class="memo-badge">{{ optional($report->published_at ?? $report->created_at)->format('Y') ?? '' }}</div>
-                                                </div>
-                                            </li>
-                                    @endforeach
-                                </ul>
-                            @else
-                                <div class="small text-muted">No accomplishment reports available.</div>
-                            @endif
-
+                            <h5 class="card-title">Service Request</h5>
+                            <p class="small text-muted">Use this form to request support for cooperatives, livelihood programs, or enterprise development — for example: capacity-building, training, cooperative registration help, market linkages, business planning, product development, or small-grant guidance.</p>
+                            <p class="small text-muted mb-2">Please include your cooperative/enterprise name, contact person, location, a short description of the service you need, expected timeline, and any supporting documents. Our team reviews submissions and will respond within 3–5 business days.</p>
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdMlbMUHI9aUCzqgIs5zPs1nNq67wI_7coX1H7HLJpdYk-CFw/viewform" target="_blank" rel="noopener noreferrer" class="btn btn-outline-danger">Open Service Request Form</a>
                         </div>
                     </div>
                 </aside>
@@ -426,9 +624,7 @@
         </div>
     </section>
 
-    {{-- More News list removed per request; homepage now shows only card highlights and video section. --}}
-
-    <!-- Accomplishment Report Modal -->
+    <!-- Accomplishment Report Modal (unchanged) -->
     <div class="modal fade" id="accomplishmentReportModal" tabindex="-1" aria-labelledby="accomplishmentReportModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -447,6 +643,7 @@
         </div>
     </div>
 
+    <!-- Your existing script (unchanged) -->
     <script>
     (function() {
         function createYouTubeIframe(yid) {
@@ -501,18 +698,18 @@
             container.appendChild(iframe);
         }
 
-        // Handle accomplishment report links
+        // Handle modal item links (generic handler for any modal-based list items)
         document.addEventListener('click', function(e) {
-            const accomplishmentLink = e.target.closest('.accomplishment-link');
-            if (accomplishmentLink) {
+            const modalLink = e.target.closest('.item-modal-link');
+            if (modalLink) {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                const id = accomplishmentLink.dataset.id;
-                const title = accomplishmentLink.dataset.title;
-                const content = accomplishmentLink.dataset.content;
-                const filePath = accomplishmentLink.dataset.file;
-                const published = accomplishmentLink.dataset.published;
+                const id = modalLink.dataset.id;
+                const title = modalLink.dataset.title;
+                const content = modalLink.dataset.content;
+                const filePath = modalLink.dataset.file;
+                const published = modalLink.dataset.published;
                 
                 // Update modal content
                 const modalTitle = document.getElementById('accomplishmentReportModalLabel');

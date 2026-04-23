@@ -13,7 +13,7 @@
                     @include('admin.accomplishment_reports._form')
                     <div class="mt-4">
                         <button type="submit" class="btn btn-primary">Update</button>
-                        <a href="{{ route('admin.accomplishment-reports.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                        @include('partials.back-button', ['url' => route('admin.accomplishment-reports.index'), 'label' => 'Cancel', 'class' => 'btn-outline-secondary'])
                     </div>
                 </form>
             </div>

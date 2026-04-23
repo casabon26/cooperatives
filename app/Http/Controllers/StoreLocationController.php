@@ -20,7 +20,16 @@ class StoreLocationController extends Controller
 
     public function create()
     {
-        return view('admin.store_locations.create');
+        // Load cabstop place options from select_list_items if available
+        $cabstops = [];
+        try{
+            if (\Schema::hasTable('select_list_items')) {
+                $cabstops = \App\Models\SelectListItem::where('group','cabstop')->where('active', true)->orderBy('sort_order')->get();
+            }
+        }catch(\Throwable $e){
+            $cabstops = [];
+        }
+        return view('admin.store_locations.create', compact('cabstops'));
     }
 
     public function store(Request $request)
@@ -31,6 +40,8 @@ class StoreLocationController extends Controller
             'category' => 'nullable|string|max:120',
             'tags' => 'nullable|string|max:1000',
             'item' => 'nullable|string|max:255',
+            'place' => 'nullable|string|max:191',
+            'store_type' => 'nullable|string|max:50',
             'lat' => 'nullable|numeric',
             'lng' => 'nullable|numeric',
             'map_url' => 'nullable|url',
@@ -63,7 +74,15 @@ class StoreLocationController extends Controller
 
     public function edit(StoreLocation $store_location)
     {
-        return view('admin.store_locations.edit', ['location' => $store_location]);
+        $cabstops = [];
+        try{
+            if (\Schema::hasTable('select_list_items')) {
+                $cabstops = \App\Models\SelectListItem::where('group','cabstop')->where('active', true)->orderBy('sort_order')->get();
+            }
+        }catch(\Throwable $e){
+            $cabstops = [];
+        }
+        return view('admin.store_locations.edit', ['location' => $store_location, 'cabstops' => $cabstops]);
     }
 
     public function update(Request $request, StoreLocation $store_location)
@@ -74,6 +93,8 @@ class StoreLocationController extends Controller
             'category' => 'nullable|string|max:120',
             'tags' => 'nullable|string|max:1000',
             'item' => 'nullable|string|max:255',
+            'place' => 'nullable|string|max:191',
+            'store_type' => 'nullable|string|max:50',
             'lat' => 'nullable|numeric',
             'lng' => 'nullable|numeric',
             'map_url' => 'nullable|url',
@@ -121,6 +142,10 @@ class StoreLocationController extends Controller
         if(!empty($q['tag'])){
             $tag = $q['tag'];
             $builder->where('tags', 'like', "%{$tag}%");
+        }
+        // allow filtering by place (cabstop)
+        if(!empty($q['place'])){
+            $builder->where('place', $q['place']);
         }
         return response()->json($builder->get());
     }

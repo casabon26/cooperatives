@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Pagination\Paginator;
 use App\Models\Cooperative;
 use App\Policies\CooperativePolicy;
 
@@ -30,5 +31,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Register model policy
         Gate::policy(Cooperative::class, CooperativePolicy::class);
+
+        // Use Bootstrap 5 pagination view
+        Paginator::useBootstrapFive();
     }
 }

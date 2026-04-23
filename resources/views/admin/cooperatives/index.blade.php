@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('back-button')
+    @include('partials.back-button', ['label' => 'Back', 'class' => 'btn-sm'])
+@endsection
+
 @section('content')
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -7,7 +11,6 @@
         <div>
             <a href="{{ route('admin.cooperatives.view') }}" class="btn btn-sm btn-primary me-2" target="_self">View Cooperatives</a>
             <a href="{{ route('admin.cooperatives.create') }}" class="btn btn-sm btn-primary me-2" target="_self">Create Cooperative</a>
-            <a href="#" class="btn btn-sm btn-primary" onclick="history.back(); return false;">Back</a>
         </div>
     </div>
 
@@ -22,7 +25,7 @@
                             <p class="mb-1 small">{{ \Illuminate\Support\Str::limit(strip_tags($c->description), 160) }}</p>
                             <div class="mt-2">
                                 <a href="/admin/cooperatives/{{ $c->id }}/edit" class="btn btn-sm btn-outline-primary">Edit</a>
-                                <form method="POST" action="/admin/cooperatives/{{ $c->id }}" style="display:inline" onsubmit="return confirm('Delete this cooperative?')">
+                                <form method="POST" action="/admin/cooperatives/{{ $c->id }}" style="display:inline" data-confirm="Delete this cooperative?">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-sm btn-outline-danger">Delete</button>

@@ -1,12 +1,13 @@
 @extends('layouts.app')
 
+@section('back-button')
+    @include('partials.back-button', ['url' => route('admin.enterprises.index'), 'label' => 'Back', 'class' => 'btn-sm'])
+@endsection
+
 @section('content')
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="mb-0">Edit Enterprise</h4>
-        <div>
-            <a href="{{ route('admin.enterprises.index') }}" class="btn btn-sm btn-secondary">Back</a>
-        </div>
     </div>
 
     <div class="card">
@@ -15,24 +16,26 @@
                 @csrf
                 @method('PUT')
                 <div class="mb-3">
-                    <label class="form-label">Name</label>
+                    <label class="form-label">BUSINESS NAME</label>
                     <input type="text" name="name" class="form-control" value="{{ old('name', $enterprise->name) }}" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Category</label>
+                    <label class="form-label">BUSINESS ADDRESS</label>
+                    <input type="text" name="address" class="form-control" value="{{ old('address', $enterprise->address) }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Industry/Line</label>
+                    <input type="text" name="industry" class="form-control" value="{{ old('industry', $enterprise->industry) }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">SIZE</label>
                     <select name="category" class="form-select" required>
                         <option value="Micro" {{ old('category', $enterprise->category) == 'Micro' ? 'selected' : '' }}>Micro</option>
                         <option value="Small" {{ old('category', $enterprise->category) == 'Small' ? 'selected' : '' }}>Small</option>
                         <option value="Medium" {{ old('category', $enterprise->category) == 'Medium' ? 'selected' : '' }}>Medium</option>
+                        <option value="Large" {{ old('category', $enterprise->category) == 'Large' ? 'selected' : '' }}>Large</option>
+                        <option value="Unknown" {{ old('category', $enterprise->category) == 'Unknown' ? 'selected' : '' }}>Unknown</option>
                     </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Summary</label>
-                    <input type="text" name="summary" class="form-control" value="{{ old('summary', $enterprise->summary) }}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Description</label>
-                    <textarea name="description" class="form-control" rows="4">{{ old('description', $enterprise->description) }}</textarea>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Image (optional)</label>

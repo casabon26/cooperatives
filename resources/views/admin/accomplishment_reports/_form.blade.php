@@ -1,6 +1,6 @@
 <div class="mb-3">
     <label class="form-label">Code</label>
-    <input type="text" name="code" class="form-control" value="{{ old('code', $accomplishmentReport->code ?? '') }}">
+    <input type="text" name="code" class="form-control" value="{{ old('code', $accomplishmentReport->code ?? $code ?? '') }}" @if(isset($code)) readonly @endif>
 </div>
 
 <div class="mb-3">

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cooperative;
+use App\Models\Slpa;
+use App\Models\SelectListItem;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\CooperativeResource;
 use App\Models\News;
 use App\Models\Video;
@@ -60,7 +63,7 @@ class PublicController extends Controller
         if ($request->filled('memo_year')) {
             $memoQuery->whereYear('published_at', $request->input('memo_year'));
         }
-        $memorandums = $memoQuery->orderByDesc('published_at')->limit(10)->get();
+        $memorandums = $memoQuery->orderByDesc('published_at')->limit(5)->get();
 
         $totalCount = Memorandum::count();
         $selectedCount = $request->filled('memo_year') ? ($yearCounts[$request->input('memo_year')] ?? 0) : $totalCount;
@@ -128,7 +131,10 @@ class PublicController extends Controller
 
     public function profile(Cooperative $cooperative)
     {
-        $cooperative->load('profile','documents');
+        if (\Schema::hasTable('cooperative_profiles')) {
+            $cooperative->load('profile');
+        }
+        $cooperative->load('documents');
         return view('public.profile', compact('cooperative'));
     }
 
@@ -137,7 +143,10 @@ class PublicController extends Controller
      */
     public function profileModal(Cooperative $cooperative)
     {
-        $cooperative->load('profile','documents');
+        if (\Schema::hasTable('cooperative_profiles')) {
+            $cooperative->load('profile');
+        }
+        $cooperative->load('documents');
         return view('public.partials.cooperative_modal', compact('cooperative'));
     }
 
@@ -174,7 +183,7 @@ class PublicController extends Controller
             abort(404);
         }
 
-        // External URL -> redirect
+        // External URL in file_path -> redirect
         if (preg_match('/^https?:\/\//', $path)) {
             return redirect()->away($path);
         }
@@ -204,34 +213,43 @@ class PublicController extends Controller
     {
         // Determine where the file is and build view/download URLs similar to MemorandumController
         $path = $resource->file_path;
-        if (empty($path)) {
-            abort(404);
+        $assetUrl = null;
+        $gdriveLink = $resource->gdrive_link ?? null;
+
+        // Prefer local or direct file_path for preview (storage/app/public, public, or http in file_path).
+        if (!empty($path)) {
+            $storageAppPath = storage_path('app/public/' . ltrim($path, '/'));
+            if (file_exists($storageAppPath)) {
+                $assetUrl = asset('storage/' . ltrim($path, '/'));
+            } else {
+                $publicPath = public_path($path);
+                $publicStoragePath = public_path('storage/' . $path);
+                if (file_exists($publicPath)) {
+                    $assetUrl = asset($path);
+                } elseif (file_exists($publicStoragePath)) {
+                    $assetUrl = asset('storage/'.$path);
+                } elseif (preg_match('/^https?:\/\//', $path)) {
+                    $assetUrl = $path;
+                }
+            }
         }
 
-        $assetUrl = null;
-        // Check storage/app/public first
-        $storageAppPath = storage_path('app/public/' . ltrim($path, '/'));
-        if (file_exists($storageAppPath)) {
-            // Use the public storage asset URL so we can detect the file extension,
-            // but still stream the file through our route when viewing.
-            $assetUrl = asset('storage/' . ltrim($path, '/'));
-        } else {
-            $publicPath = public_path($path);
-            $publicStoragePath = public_path('storage/' . $path);
-            if (file_exists($publicPath)) {
-                $assetUrl = asset($path);
-            } elseif (file_exists($publicStoragePath)) {
-                $assetUrl = asset('storage/'.$path);
-            } elseif (preg_match('/^https?:\/\//', $path)) {
-                $assetUrl = $path;
-            }
+        // If no usable assetUrl from file_path, fall back to gdrive link if present
+        if (empty($assetUrl) && !empty($gdriveLink)) {
+            $assetUrl = $gdriveLink;
         }
 
         if (!$assetUrl) {
             return view('public.cooperative_resources.show', compact('resource'))->with('missing', true);
         }
 
-        $isExternal = preg_match('/^https?:\/\//', $path);
+        // Determine externalness based on the original file path when possible (match Memorandum logic).
+        if (!empty($path)) {
+            $isExternal = preg_match('/^https?:\/\//', $path);
+        } else {
+            // If no file_path and we fell back to a gdrive link, it's external.
+            $isExternal = !empty($gdriveLink) && ($assetUrl === $gdriveLink);
+        }
         $viewUrl = $isExternal ? $assetUrl : route('cooperative-resources.file', $resource);
         $downloadUrl = $isExternal ? $assetUrl : (route('cooperative-resources.file', $resource) . '?dl=1');
         $ext = strtolower(pathinfo($assetUrl, PATHINFO_EXTENSION));
@@ -255,7 +273,167 @@ class PublicController extends Controller
         $totalCount = Memorandum::count();
         $selectedCount = request()->filled('memo_year') ? ($yearCounts[request()->input('memo_year')] ?? 0) : $totalCount;
 
-        return view('public.cooperative_resources.show', compact('resource','viewUrl','downloadUrl','ext','isExternal','years','yearCounts','memorandums','totalCount','selectedCount'));
+        return view('public.cooperative_resources.show', compact('resource','viewUrl','downloadUrl','ext','isExternal','gdriveLink','years','yearCounts','memorandums','totalCount','selectedCount'));
+    }
+
+    /**
+     * Public Livelihood page showing SLPA entries.
+     */
+    public function livelihood(Request $request)
+    {
+        // Only query the table if it exists to avoid migration ordering issues
+        $slpas = [];
+        if (\Schema::hasTable('slpas')) {
+            $slpas = Slpa::orderBy('name')->get();
+        }
+
+        $programs = [];
+        $services = [];
+        $cabstops = [];
+        if (\Schema::hasTable('select_list_items')) {
+            $programs = SelectListItem::where('group','programs')->where('active', true)->orderBy('sort_order')->get();
+            $services = SelectListItem::where('group','services')->where('active', true)->orderBy('sort_order')->get();
+            $cabstops = SelectListItem::where('group','cabstop')->where('active', true)->orderBy('sort_order')->get();
+        }
+
+        return view('pages.livelihood', compact('slpas','programs','services','cabstops'));
+    }
+
+    /**
+     * Return a small HTML fragment for SLPA details used in an AJAX modal.
+     */
+    public function slpaModal(Slpa $slpa)
+    {
+        return view('public.partials.slpa_modal', compact('slpa'));
+    }
+
+    /**
+     * Show a full SLPA profile page.
+     */
+    public function slpaShow(Slpa $slpa)
+    {
+        $raw = data_get($slpa, 'products');
+        // If model cast returned null (legacy string stored), try raw attribute
+        if ((is_null($raw) || $raw === '') && is_array($slpa->getAttributes()) && array_key_exists('products', $slpa->getAttributes())) {
+            $rawAttr = $slpa->getAttributes()['products'];
+            if (is_string($rawAttr) && trim($rawAttr) !== '') {
+                $raw = $rawAttr;
+            }
+        }
+        $products = [];
+        if (is_array($raw)) {
+            foreach ($raw as $p) {
+                if (is_string($p)) {
+                    $name = trim($p);
+                    $desc = '';
+                } elseif (is_array($p) || is_object($p)) {
+                    $name = trim(data_get($p, 'name', ''));
+                    $desc = trim(data_get($p, 'description', ''));
+                } else {
+                    continue;
+                }
+                if ($name !== '') $products[] = ['name' => $name, 'description' => $desc];
+            }
+        } elseif (is_string($raw) && trim($raw) !== '') {
+            $parts = preg_split('/\r?\n|,/', $raw);
+            foreach ($parts as $p) {
+                $p = trim($p);
+                if ($p !== '') $products[] = ['name' => $p, 'description' => ''];
+            }
+        }
+
+        $perPage = 10;
+        $page = max(1, (int) request()->input('prod_page', 1));
+        $total = count($products);
+        $offset = ($page - 1) * $perPage;
+        $items = array_slice($products, $offset, $perPage);
+
+        $paginator = new LengthAwarePaginator($items, $total, $perPage, $page, [
+            'path' => route('slpas.show', $slpa),
+            'pageName' => 'prod_page',
+        ]);
+
+        return view('public.slpas.show', compact('slpa', 'paginator'));
+    }
+
+    /**
+     * Public listing for accomplishment reports
+     */
+    public function accomplishmentReports(Request $request)
+    {
+        $reports = AccomplishmentReport::whereNotNull('published_at')->orderByDesc('published_at')->paginate(12);
+        return view('public.accomplishment_reports.index', compact('reports'));
+    }
+
+    /**
+     * Public listing for cooperative resources
+     */
+    public function cooperativeResources(Request $request)
+    {
+        $query = CooperativeResource::query();
+        if ($request->filled('year')) {
+            $query->whereYear('created_at', $request->input('year'));
+        }
+        $resources = $query->orderByDesc('created_at')->paginate(12)->withQueryString();
+        return view('public.cooperative_resources.index', compact('resources'));
+    }
+
+    /** Stream an accomplishment report file (download or inline) */
+    public function accomplishmentReportFile(\App\Models\AccomplishmentReport $report)
+    {
+        $path = $report->file_path ?? '';
+        if (empty($path)) abort(404);
+
+        if (preg_match('/^https?:\/\//', $path)) {
+            return redirect()->away($path);
+        }
+
+        $storagePath = storage_path('app/public/' . ltrim($path, '/'));
+        if (file_exists($storagePath)) {
+            return $this->streamFileResponse($storagePath, request()->query('dl'));
+        }
+        $publicPath = public_path(ltrim($path, '/'));
+        if (file_exists($publicPath)) {
+            return $this->streamFileResponse($publicPath, request()->query('dl'));
+        }
+        $publicStoragePath = public_path('storage/' . ltrim($path, '/'));
+        if (file_exists($publicStoragePath)) {
+            return $this->streamFileResponse($publicStoragePath, request()->query('dl'));
+        }
+
+        abort(404);
+    }
+
+    /** Show an accomplishment report page with preview when possible */
+    public function accomplishmentReportShow(\App\Models\AccomplishmentReport $report)
+    {
+        $path = $report->file_path ?? '';
+        if (empty($path)) abort(404);
+
+        $assetUrl = null;
+        $storageAppPath = storage_path('app/public/' . ltrim($path, '/'));
+        if (file_exists($storageAppPath)) {
+            $assetUrl = asset('storage/' . ltrim($path, '/'));
+        } else {
+            $publicPath = public_path($path);
+            $publicStoragePath = public_path('storage/' . $path);
+            if (file_exists($publicPath)) {
+                $assetUrl = asset($path);
+            } elseif (file_exists($publicStoragePath)) {
+                $assetUrl = asset('storage/'.$path);
+            } elseif (preg_match('/^https?:\/\//', $path)) {
+                $assetUrl = $path;
+            }
+        }
+
+        if (!$assetUrl) return view('public.accomplishment_reports.show', compact('report'))->with('missing', true);
+
+        $isExternal = preg_match('/^https?:\/\//', $path);
+        $viewUrl = $isExternal ? $assetUrl : route('accomplishment-reports.file', $report);
+        $downloadUrl = $isExternal ? $assetUrl : (route('accomplishment-reports.file', $report) . '?dl=1');
+        $ext = strtolower(pathinfo($assetUrl, PATHINFO_EXTENSION));
+
+        return view('public.accomplishment_reports.show', compact('report','viewUrl','downloadUrl','ext','isExternal'));
     }
 
     /**

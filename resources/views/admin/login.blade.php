@@ -16,18 +16,18 @@
                         @csrf
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email','admin@portal.local') }}" required>
+                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="Enter your admin email" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" value="{{ old('password') }}" required>
+                            <input type="password" name="password" class="form-control" value="{{ old('password') }}" placeholder="Enter your password" required>
                         </div>
                         <div class="d-flex justify-content-center align-items-center">
                             <button class="btn btn-danger">Login</button>
                         </div>
                     </form>
 
-                    <div class="mt-3 small text-muted">Note: this login uses a hardcoded admin account.</div>
+                    <div class="mt-3 small text-muted">Use your admin credentials to access the admin panel.</div>
                 </div>
             </div>
         </div>

@@ -19,6 +19,87 @@
                 </div>
             </div>
 
+                <!-- Livelihood Management Section -->
+                <div class="mb-5">
+                    <h5 class="text-uppercase fw-bold text-muted mb-3">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px; vertical-align: -2px;">
+                            <path d="M8 0a4 4 0 0 0-4 4v1H2v2h2v6h2v-6h4v6h2v-6h2V5h-2V4a4 4 0 0 0-4-4z"/>
+                        </svg>
+                        Livelihood Management
+                    </h5>
+                    <div class="admin-actions" role="group" aria-label="Livelihood management actions">
+                        <div class="row g-3">
+
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <a href="{{ route('admin.livelihood.index') }}" 
+                                   class="btn btn-outline-primary w-100 admin-action" 
+                                   role="button" 
+                                   aria-label="Manage SLPA" 
+                                   target="_self">
+                                    <div class="action-content">
+                                        <div class="action-icon">
+                                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M2 2h4v4H2V2zm0 6h4v6H2V8zm6-6h6v6H8V2zm0 8h6v4H8v-4z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="action-title">Manage SLPA</div>
+                                        <div class="action-sub">SLPA entries for livelihood page</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <a href="{{ route('admin.select_lists.index', ['group' => 'cabstop']) }}" 
+                                   class="btn btn-outline-primary w-100 admin-action" 
+                                   role="button" 
+                                   aria-label="Manage CabStop" 
+                                   target="_self">
+                                    <div class="action-content">
+                                        <div class="action-icon">
+                                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a4 4 0 0 0-4 4v1H2v2h2v6h2v-6h4v6h2v-6h2V5h-2V4a4 4 0 0 0-4-4z"/></svg>
+                                        </div>
+                                        <div class="action-title">Manage CabStop</div>
+                                        <div class="action-sub">Manage CabStop dropdown options</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <a href="{{ route('admin.select_lists.index', ['group' => 'programs']) }}" 
+                                   class="btn btn-outline-primary w-100 admin-action" 
+                                   role="button" 
+                                   aria-label="Manage Programs" 
+                                   target="_self">
+                                    <div class="action-content">
+                                        <div class="action-icon">
+                                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M3 2h10v2H3V2zm0 4h10v2H3V6zm0 4h10v2H3v-2z"/></svg>
+                                        </div>
+                                        <div class="action-title">Manage Programs</div>
+                                        <div class="action-sub">Manage program dropdown options</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <a href="{{ route('admin.select_lists.index', ['group' => 'services']) }}" 
+                                   class="btn btn-outline-primary w-100 admin-action" 
+                                   role="button" 
+                                   aria-label="Manage Services" 
+                                   target="_self">
+                                    <div class="action-content">
+                                        <div class="action-icon">
+                                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M2 2h12v2H2V2zm0 4h12v2H2V6zm0 4h8v2H2v-2z"/></svg>
+                                        </div>
+                                        <div class="action-title">Manage Services</div>
+                                        <div class="action-sub">Manage service dropdown options</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
             <!-- Content Management Section -->
             <div class="mb-5">
                 <h5 class="text-uppercase fw-bold text-muted mb-3">
@@ -68,6 +149,25 @@
                         </div>
 
                         <div class="col-12 col-sm-6 col-md-4">
+                            <a href="{{ url('/admin/manage-training') }}" 
+                               class="btn btn-outline-primary w-100 admin-action" 
+                               role="button" 
+                               aria-label="Manage training videos" 
+                               target="_self">
+                                <div class="action-content">
+                                    <div class="action-icon">
+                                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 3.293l6 6V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-3.707l6-6zM8 2L2 8v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8L8 2z"/>
+                                            <path d="M7.5 5a.5.5 0 0 1 .5.5v3.793l2.146 2.147a.5.5 0 0 1-.708.708L7.5 10.207V5.5a.5.5 0 0 1 .5-.5z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="action-title">Manage Training</div>
+                                    <div class="action-sub">Training video CRUD & certificates</div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
                             <a href="{{ route('admin.memorandums.index') }}" 
                                class="btn btn-outline-primary w-100 admin-action" 
                                role="button" 
@@ -85,6 +185,8 @@
                                 </div>
                             </a>
                         </div>
+
+                        {{-- SLPA moved to dedicated Livelihood Management section below --}}
 
                         <!-- New separate card for Accomplishment Reports -->
                         <div class="col-12 col-sm-6 col-md-4">
@@ -147,6 +249,21 @@
                                     </div>
                                     <div class="action-title">Manage Enterprises</div>
                                     <div class="action-sub">Create, edit and delete</div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <a href="{{ route('admin.users.index') }}" class="btn btn-outline-primary w-100 admin-action" role="button" aria-label="Manage users" target="_self">
+                                <div class="action-content">
+                                    <div class="action-icon">
+                                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3z"/>
+                                            <path fill-rule="evenodd" d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="action-title">User Management</div>
+                                    <div class="action-sub">Create, edit and assign roles</div>
                                 </div>
                             </a>
                         </div>

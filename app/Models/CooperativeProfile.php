@@ -10,7 +10,12 @@ class CooperativeProfile extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['cooperative_id','objectives','services','contact_info'];
+    protected $fillable = ['cooperative_id','objectives','services','contact_info','mission','vision','achievements','years','members_count','address','gallery'];
+
+    protected $casts = [
+        'gallery' => 'array',
+        'members_count' => 'integer',
+    ];
 
     public function cooperative()
     {

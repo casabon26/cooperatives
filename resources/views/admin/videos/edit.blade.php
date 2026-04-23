@@ -1,10 +1,16 @@
 @extends('layouts.app')
 
+@section('back-button')
+    @include('partials.back-button', ['url' => '/admin/manage-videos', 'label' => 'Back', 'class' => 'btn-sm'])
+@endsection
+
 @section('content')
 <div class="container py-5">
     <div class="row">
         <div class="col-12">
-            <h4>Edit Video</h4>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">Edit Video</h4>
+            </div>
             <div class="card mb-4">
                 <div class="card-body">
                     <form method="POST" action="/admin/manage-videos/{{ $video->id }}" enctype="multipart/form-data">

@@ -17,7 +17,20 @@ class AccomplishmentReportController extends Controller
 
     public function create()
     {
-        return view('admin.accomplishment_reports.create');
+        // compute next incremental code (numeric, zero-padded to 3 digits)
+        $max = AccomplishmentReport::whereNotNull('code')
+            ->get()
+            ->pluck('code')
+            ->map(function($c){
+                if(is_null($c)) return 0;
+                // extract digits and convert to int
+                $num = preg_replace('/[^0-9]/', '', $c);
+                return (int) ($num === '' ? 0 : $num);
+            })->max() ?? 0;
+        $next = $max + 1;
+        $code = str_pad($next, 3, '0', STR_PAD_LEFT);
+
+        return view('admin.accomplishment_reports.create', compact('code'));
     }
 
     public function store(Request $request)
@@ -27,33 +40,50 @@ class AccomplishmentReportController extends Controller
             'title' => 'nullable|string|max:191',
             'content' => 'nullable|string',
             'published_at' => 'nullable|date',
-            'file' => 'nullable|file|max:10240',
+            // max is in kilobytes — 200MB = 200 * 1024 = 204800 KB
+            'file' => 'nullable|file|max:204800',
         ]);
-
+        $uploadWarning = false;
         if($request->hasFile('file')){
+            $file = $request->file('file');
+            $size = $file->getSize(); // bytes
+            $maxBytes = 200 * 1024 * 1024; // 200MB
+            if($size !== null && $size > $maxBytes){
+                return redirect()->back()->with('error', 'File exceeds maximum allowed size of 200MB.')->withInput();
+            }
+
             try {
-                $path = $request->file('file')->store('accomplishment_reports', 'public');
-            } catch (\Throwable $e) {
-                // Fallback: store manually without relying on mime guessers
-                $file = $request->file('file');
-                $name = time().'_'.preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientOriginalName());
-                $destination = public_path('storage/accomplishment_reports');
-                if (!file_exists($destination)) {
-                    @mkdir($destination, 0755, true);
+                try {
+                    $path = $file->store('accomplishment_reports', 'public');
+                } catch (\Throwable $e) {
+                    // Fallback: store manually without relying on mime guessers
+                    $name = time().'_'.preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientOriginalName());
+                    $destination = public_path('storage/accomplishment_reports');
+                    if (!file_exists($destination)) {
+                        @mkdir($destination, 0755, true);
+                    }
+                    $moved = $file->move($destination, $name);
+                    if ($moved) {
+                        $path = 'accomplishment_reports/'. $name;
+                    } else {
+                        throw $e; // rethrow if move also fails
+                    }
                 }
-                $moved = $file->move($destination, $name);
-                if ($moved) {
-                    $path = 'accomplishment_reports/'. $name;
+                $data['file_path'] = $path;
+            } catch (\Throwable $e) {
+                // If file is not over the 200MB limit, allow creating the report without the file
+                if(isset($size) && $size <= $maxBytes){
+                    $uploadWarning = true;
                 } else {
-                    throw $e; // rethrow if move also fails
+                    return redirect()->back()->with('error', 'Failed to upload file. Please try again.')->withInput();
                 }
             }
-            $data['file_path'] = $path;
         }
 
         AccomplishmentReport::create($data);
 
-        return redirect()->route('admin.accomplishment-reports.index')->with('success', 'Accomplishment Report created.');
+        $msg = 'Accomplishment Report created.' . ($uploadWarning ? ' (File upload failed — record created without file.)' : '');
+        return redirect()->route('admin.accomplishment-reports.index')->with('success', $msg);
     }
 
     public function edit(AccomplishmentReport $accomplishmentReport)
@@ -68,36 +98,53 @@ class AccomplishmentReportController extends Controller
             'title' => 'nullable|string|max:191',
             'content' => 'nullable|string',
             'published_at' => 'nullable|date',
-            'file' => 'nullable|file|max:10240',
+            'file' => 'nullable|file|max:204800',
         ]);
 
+        $uploadWarning = false;
         if($request->hasFile('file')){
             // delete old file if exists
             if($accomplishmentReport->file_path && Storage::disk('public')->exists($accomplishmentReport->file_path)){
                 Storage::disk('public')->delete($accomplishmentReport->file_path);
             }
+
+            $file = $request->file('file');
+            $size = $file->getSize(); // bytes
+            $maxBytes = 200 * 1024 * 1024; // 200MB
+            if($size !== null && $size > $maxBytes){
+                return redirect()->back()->with('error', 'File exceeds maximum allowed size of 200MB.')->withInput();
+            }
+
             try {
-                $path = $request->file('file')->store('accomplishment_reports', 'public');
-            } catch (\Throwable $e) {
-                $file = $request->file('file');
-                $name = time().'_'.preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientOriginalName());
-                $destination = public_path('storage/accomplishment_reports');
-                if (!file_exists($destination)) {
-                    @mkdir($destination, 0755, true);
+                try {
+                    $path = $file->store('accomplishment_reports', 'public');
+                } catch (\Throwable $e) {
+                    $name = time().'_'.preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientOriginalName());
+                    $destination = public_path('storage/accomplishment_reports');
+                    if (!file_exists($destination)) {
+                        @mkdir($destination, 0755, true);
+                    }
+                    $moved = $file->move($destination, $name);
+                    if ($moved) {
+                        $path = 'accomplishment_reports/'. $name;
+                    } else {
+                        throw $e;
+                    }
                 }
-                $moved = $file->move($destination, $name);
-                if ($moved) {
-                    $path = 'accomplishment_reports/'. $name;
+                $data['file_path'] = $path;
+            } catch (\Throwable $e) {
+                if(isset($size) && $size <= $maxBytes){
+                    $uploadWarning = true;
                 } else {
-                    throw $e;
+                    return redirect()->back()->with('error', 'Failed to upload file. Please try again.')->withInput();
                 }
             }
-            $data['file_path'] = $path;
         }
 
         $accomplishmentReport->update($data);
 
-        return redirect()->route('admin.accomplishment-reports.index')->with('success', 'Accomplishment Report updated.');
+        $msg = 'Accomplishment Report updated.' . ($uploadWarning ? ' (File upload failed — record updated without new file.)' : '');
+        return redirect()->route('admin.accomplishment-reports.index')->with('success', $msg);
     }
 
     public function destroy(AccomplishmentReport $accomplishmentReport)

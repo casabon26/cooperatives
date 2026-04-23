@@ -3,7 +3,12 @@
 @section('content')
   <div class="py-4">
     <div class="mb-3">
-      <a href="{{ route('news.index') }}" class="btn btn-sm btn-primary">&larr; Back to news</a>
+      <a href="{{ route('news.index') }}" class="btn btn-outline-danger d-inline-flex align-items-center" role="button" aria-label="Back to news" title="Back to news" target="_self">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.4" style="margin-right:8px;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to news
+      </a>
     </div>
     <h1 class="mt-0">{{ $news->title }}</h1>
     <p class="text-muted">{{ optional($news->published_at)->toDayDateTimeString() }}</p>
@@ -22,15 +27,21 @@
           $imgUrl = asset('assets/images/news/'.basename($news->image));
         }
       }
-    @endphp
-    @if($news->image_data)
-      <img src="data:{{ $news->image_mime }};base64,{{ $news->image_data }}" alt="" class="img-fluid rounded mb-3">
-    @elseif($imgUrl)
-      <img src="{{ $imgUrl }}" alt="" class="img-fluid rounded mb-3">
-    @endif
 
-    <div class="card">
+      // Prefer embedded image data if available (use as data URI)
+      if(!empty($news->image_data)){
+        $imgUrl = 'data:'.($news->image_mime ?? 'image/jpeg').';base64,'.trim($news->image_data);
+      }
+    @endphp
+
+    <div class="card news-card">
+      @if($imgUrl)
+        <img src="{{ $imgUrl }}" alt="" class="card-img-top">
+      @endif
+
       <div class="card-body">
+        <h1 class="mt-0">{{ $news->title }}</h1>
+        <p class="text-muted mb-3">{{ optional($news->published_at)->toDayDateTimeString() }}</p>
         {!! nl2br(e($news->body)) !!}
       </div>
     </div>

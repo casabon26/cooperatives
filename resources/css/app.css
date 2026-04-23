@@ -29,7 +29,7 @@ html,body{background:var(--bg);color:#172033}
     font-weight:600;
 }
 .feature-box{transition:transform .12s ease,box-shadow .12s ease}
-.feature-box:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(15,23,42,0.08)}
+.feature-box:hover{transform:none;box-shadow:0 6px 18px rgba(15,23,42,0.08)}
 
 /* Card and sidebar helpers */
 .card{border:1px solid #edf2f7}

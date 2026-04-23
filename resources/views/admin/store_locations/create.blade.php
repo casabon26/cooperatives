@@ -22,6 +22,27 @@
       </select>
     </div>
     <div class="mb-3">
+      <label class="form-label">Place (CabStop)</label>
+      <select name="place" class="form-select">
+        <option value="">-- Select place (optional) --</option>
+        @if(!empty($cabstops) && count($cabstops))
+            @foreach($cabstops as $c)
+                <option value="{{ $c->key ?? $c->label }}" {{ (request()->get('place') == ($c->key ?? $c->label)) ? 'selected' : '' }}>{{ $c->label }}</option>
+            @endforeach
+        @endif
+      </select>
+      <div class="small text-muted">Associate this store with a CabStop place to show it when the place is selected.</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Store Type</label>
+      <select name="store_type" class="form-select">
+        <option value="">-- Select type --</option>
+        <option value="food">Food</option>
+        <option value="non_food">Non-food</option>
+      </select>
+    </div>
+    <div class="mb-3">
       <label class="form-label">Item (choose from category)</label>
       <select name="item" id="itemSelect" class="form-select">
         <option value="">-- Select item --</option>
@@ -50,7 +71,7 @@
       <textarea name="description" class="form-control" rows="3"></textarea>
     </div>
     <button type="submit" class="btn btn-primary">Save</button>
-    <a href="{{ route('admin.store_locations.index') }}" class="btn btn-link" target="_self">Cancel</a>
+    @include('partials.back-button', ['url' => route('admin.store_locations.index'), 'label' => 'Cancel', 'class' => 'btn-link'])
   </form>
   </div>
 

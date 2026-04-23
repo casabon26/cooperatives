@@ -4,57 +4,61 @@
 <div class="py-4">
     <style>
         /* Match cooperative name styling to header nav link and center inside card */
-        .coop-name-link {
-            font-weight: 600;
-            text-decoration: none;
-            transition: color .12s ease;
-        }
-        /* Centered, navbar-red title when shown inside cards */
-        .card .coop-name-link {
-            color: #b91c1c;
-            display: block;
-            text-align: center;
-        }
-        .coop-name-link:hover, .coop-name-link:focus {
-            color: #8f1515;
-            text-decoration: none;
-        }
-        .coop-meta { color: #6b7280; }
-        /* Ensure cooperative cards keep consistent height and layout */
-        .coop-card .card-body { display: flex; flex-direction: column; }
-        .coop-card .coop-description { flex: 1 1 auto; }
+        .coop-name-link { font-weight:600; text-decoration:none; transition: color .12s ease; }
+        .card .coop-name-link { color: #b91c1c; display:block; text-align:center; }
+        .coop-name-link:hover, .coop-name-link:focus { color:#8f1515; text-decoration:none; }
+        .coop-meta { color:#6b7280; }
+        .coop-card .card-body { display:flex; flex-direction:column; }
+        .coop-card .coop-description { flex:1 1 auto; }
 
-        /* The More About Cooperative aside card: styled to match theme */
-        .no-hover-card {
-            border-left: 4px solid rgba(185,28,28,0.12);
-            background: linear-gradient(180deg, rgba(249,250,251,0.6), rgba(255,255,255,0.85));
+        /* Sidebar memo list styles (matching home memo look) */
+        .memo-list { display:block; margin:0; padding:0; }
+        .memo-item { display:flex; gap:.6rem; align-items:flex-start; padding:.55rem .5rem; border-radius:8px; transition:background .12s ease, box-shadow .12s ease; }
+        .memo-item + .memo-item { margin-top:.45rem; }
+        .memo-item:hover { background: linear-gradient(180deg, rgba(239,68,68,0.03), rgba(0,0,0,0.01)); box-shadow: 0 8px 20px rgba(15,23,42,0.03); }
+        .memo-icon { width:44px; height:44px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; color:#b91c1c; }
+        .memo-link { color:#5b1b1b; font-weight:700; display:block; text-decoration:none; overflow:hidden; }
+        .memo-link { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; white-space:normal; text-overflow:ellipsis; }
+        .memo-link::after { content: "click to open"; position:absolute; top:-1.6rem; right:0; background:rgba(0,0,0,0.7); color:#fff; font-size:.72rem; padding:.18rem .45rem; border-radius:6px; opacity:0; transform:translateY(6px); transition:opacity .12s ease, transform .12s ease; pointer-events:none; }
+        .memo-link:hover::after, .memo-link:focus::after { opacity:1; transform:translateY(0); }
+        .memo-meta { font-size:.825rem; color:#6b6b6b; margin-top:.25rem }
+        .memo-badge { background: rgba(185,28,28,0.08); color:#b91c1c; padding:.18rem .45rem; border-radius:6px; font-weight:700; font-size:.75rem }
+        .memo-item:hover .memo-badge { background:#ef4444; color:#fff; }
+
+        /* Prevent year badge highlight on hover for PDF items */
+        .no-year-hover:hover .memo-badge { background: rgba(0,0,0,0.03); color:#374151; box-shadow:none; }
+
+        /* Make the "More About Cooperative" sidebar match memorandum circulars */
+        aside > .card {
+            background: linear-gradient(180deg, #fff5f6, #fff0f2);
+            border: 1px solid rgba(239,68,68,0.07);
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgba(185,28,28,0.06);
         }
-        .no-hover-card .card-title { color: #7f1d1d; font-weight:700; }
-        .memo-item { display:flex; gap:.6rem; align-items:flex-start; }
-        .memo-icon { width:28px; height:28px; display:flex; align-items:center; justify-content:center; }
-        .memo-link { color: #b91c1c; font-weight:600; text-decoration:none; display:inline-block; padding:.15rem .35rem; border-radius:.35rem; transition: background .12s ease, color .12s ease; }
-        .memo-link:hover { text-decoration:none; }
-        .memo-item { transition: background .12s ease, transform .08s ease; display:flex; gap:.6rem; align-items:center; }
-        .memo-item { padding:.5rem .5rem; }
-        .memo-item:hover { background: rgba(185,28,28,0.04); transform: translateY(-2px); border-radius: .375rem; }
-        /* On hover, make the link text sit on a red background to match theme */
-        .memo-item:hover .memo-link { background: #ef4444; color: #fff !important; box-shadow: 0 2px 6px rgba(239,68,68,0.12); }
-
-        /* Icon container (left) */
-        .memo-icon { width:36px; height:36px; border-radius:8px; background: #fff; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 0 1px rgba(0,0,0,0.02); }
-        .memo-item:hover .memo-icon { background: rgba(239,68,68,0.08); }
-
-        /* Year / code pill on the right */
-        .memo-badge { background: rgba(0,0,0,0.03); color: #374151; padding: .25rem .5rem; border-radius: .4rem; font-weight:600; }
-        .memo-item:hover .memo-badge { background: #ef4444; color: #ffffff; box-shadow: 0 2px 6px rgba(239,68,68,0.12); }
-
-        /* If resource title contains a short code, visually emphasize it as pill (optional) */
-        .memo-link .code-pill { display:inline-block; background:#fecaca; color:#7f1d1d; padding:.18rem .5rem; border-radius:.5rem; font-weight:700; margin-right:.5rem; }
-        .memo-item:hover .memo-link .code-pill { background:#ef4444; color:#fff; }
+        aside > .card .card-body { padding: 1rem; }
+        aside > .card .card-title { color:#7f1d1d; font-weight:700; margin-bottom:.6rem; }
+        aside .memo-item { padding:.6rem; border-radius:10px; }
+        /* Use the same hover and link colors as Memorandum circulars on the home page */
+        aside .memo-item:hover { background: linear-gradient(180deg, rgba(239,68,68,0.03), rgba(0,0,0,0.01)); box-shadow:none; transform:none; }
+        aside .memo-link { color:#5b1b1b; font-weight:700; }
+        aside .memo-link:hover, aside .memo-link:focus { background: #ef4444; color: #ffffff !important; box-shadow: 0 6px 18px rgba(239,68,68,0.12); text-decoration: none; }
+        aside .memo-badge { background: rgba(185,28,28,0.08); color:#b91c1c; padding:.18rem .45rem; border-radius:6px; font-weight:700; }
+        aside .memo-item:hover .memo-badge { background:#ef4444; color:#fff; }
     </style>
+
     <h1 class="h4">Cooperatives Directory</h1>
     <form class="row g-2 my-3" method="get" role="search" aria-label="Search cooperatives">
-        <div class="col-12 col-md-8"><input name="q" value="{{ request('q') }}" class="form-control" placeholder="Search by name"></div>
+        <div class="col-12 col-md-6"><input name="q" value="{{ request('q') }}" class="form-control" placeholder="Search by name"></div>
+        <div class="col-6 col-md-2">
+            <select name="per_page" class="form-select" onchange="this.form.submit()" aria-label="Results per page">
+                @foreach([12,24,34,48] as $n)
+                    <option value="{{ $n }}" {{ request('per_page',12) == $n ? 'selected' : '' }}>{{ $n }} per page</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-6 col-md-4 text-end">
+            <button type="submit" class="btn btn-outline-secondary">Apply</button>
+        </div>
     </form>
 
     <div class="row">
@@ -63,9 +67,51 @@
                 @foreach($cooperatives as $coop)
                     <div class="col">
                         <article class="card h-100 coop-card">
-                            <div class="card-body">
-                                <h3 class="h6 mb-2"><a class="coop-name-link" href="{{ route('cooperatives.profile',$coop) }}">{{ $coop->name }}</a></h3>
-                                <p class="small coop-meta mb-2">{{ $coop->sector }} · {{ $coop->region }}</p>
+                            @php
+                                $imgUrl = null;
+                                if (!empty($coop->image ?? null)) {
+                                    $storagePath = public_path('storage/'.$coop->image);
+                                    $directPath = public_path($coop->image);
+                                    $publicCopy = public_path('cooperative_images/'.basename($coop->image));
+                                    if (file_exists($storagePath)) {
+                                        $imgUrl = asset('storage/'.$coop->image);
+                                    } elseif (file_exists($directPath)) {
+                                        $imgUrl = asset($coop->image);
+                                    } elseif (file_exists($publicCopy)) {
+                                        $imgUrl = asset('cooperative_images/'.basename($coop->image));
+                                    }
+                                }
+                                if (!$imgUrl && !empty($coop->profile->image ?? null)) {
+                                    $p = $coop->profile->image;
+                                    $storagePath = public_path('storage/'.$p);
+                                    $directPath = public_path($p);
+                                    $publicCopy = public_path('cooperative_images/'.basename($p));
+                                    if (file_exists($storagePath)) {
+                                        $imgUrl = asset('storage/'.$p);
+                                    } elseif (file_exists($directPath)) {
+                                        $imgUrl = asset($p);
+                                    } elseif (file_exists($publicCopy)) {
+                                        $imgUrl = asset('cooperative_images/'.basename($p));
+                                    }
+                                }
+                            @endphp
+
+                            @if($imgUrl)
+                                <div class="card-img-top" style="height:120px;background-image:url('{{ $imgUrl }}');background-size:cover;background-position:center;border-top-left-radius:.375rem;border-top-right-radius:.375rem"></div>
+                            @else
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height:120px;border-top-left-radius:.375rem;border-top-right-radius:.375rem">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"></path><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg>
+                                </div>
+                            @endif
+
+                            <div class="card-body text-center">
+                                @php
+                                    $displayName = $coop->name ?? '';
+                                    $displaySector = $coop->sector ?? '';
+                                    $displayRegion = $coop->region ?? '';
+                                @endphp
+                                <h3 class="h6 mb-2"><a class="coop-name-link" href="{{ route('cooperatives.profile',$coop) }}">{{ $displayName }}</a></h3>
+                                <p class="small coop-meta mb-2">{{ trim(trim($displaySector) . ( ($displaySector && $displayRegion) ? ' · ' : '') . $displayRegion) }}</p>
                                 <p class="mb-0 coop-description">{{ Str::limit($coop->description,120) }}</p>
                             </div>
                         </article>
@@ -78,72 +124,23 @@
 
         <aside class="col-lg-4 mt-3 mt-lg-0">
             @if(request()->input('per_page') == 34)
-                <div class="card no-hover-card">
-                    <div class="card-body">
-                        <h5 class="card-title">More About Cooperative</h5>
-
-                        @if(isset($resourceYears) && count($resourceYears))
-                            <div class="mb-2">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label class="small mb-0">Filter by year</label>
-                                    <div class="small text-muted">Showing: <strong>{{ $resourceSelectedCount ?? ($resourceTotalCount ?? ($coopResources->count() ?? 0)) }}</strong></div>
-                                </div>
-
-                                <div class="memo-filter">
-                                    <div class="dropdown">
-                                        @php
-                                            $selectedLabel = request('resource_year') ?: 'All years';
-                                        @endphp
-                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="resourceYearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            {{ $selectedLabel }}
-                                            <span class="badge bg-secondary ms-2">{{ request('resource_year') ? ($resourceYearCounts[request('resource_year')] ?? 0) : ($resourceTotalCount ?? 0) }}</span>
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="resourceYearDropdown">
-                                            <li><a class="dropdown-item d-flex justify-content-between align-items-center {{ request('resource_year') ? '' : 'active' }}" href="{{ url('/cooperatives?per_page=34') }}">All years <span class="badge bg-secondary ms-2">{{ $resourceTotalCount ?? 0 }}</span></a></li>
-                                            @foreach($resourceYears as $y)
-                                                <li>
-                                                    <a class="dropdown-item d-flex justify-content-between align-items-center {{ request('resource_year') == $y ? 'active' : '' }}" href="{{ url('/cooperatives?per_page=34&resource_year='.$y) }}">
-                                                        {{ $y }}
-                                                        <span class="badge bg-secondary ms-2">{{ $resourceYearCounts[$y] ?? 0 }}</span>
-                                                    </a>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        @else
-                            <div class="mb-2 small text-muted">No years available</div>
-                        @endif
-
-                        @if(isset($coopResources) && $coopResources->count())
-                            <ul class="list-unstyled small mb-0 memo-list">
-                                @foreach($coopResources as $res)
-                                    <li class="memo-item py-2 border-bottom">
-                                        <div class="memo-icon flex-shrink-0" aria-hidden="true">
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 7h6v6H7z" stroke="#b91c1c" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 15V7a2 2 0 0 0-2-2H9" stroke="#b91c1c" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        </div>
-
-                                        <div class="flex-grow-1">
-                                            <a href="{{ route('cooperative-resources.show', $res) }}" class="memo-link d-block" target="_self" title="click to open" aria-label="{{ $res->title ?? 'Resource' }}">
-                                                {{ $res->title ?? 'Resource' }}
-                                            </a>
-                                            @if(isset($res->created_at))
-                                                <div class="memo-meta">Published: {{ optional($res->created_at)->toFormattedDateString() }}</div>
-                                            @endif
-                                        </div>
-                                        <div class="flex-shrink-0 text-end" style="min-width:56px;">
-                                            <div class="memo-badge">{{ optional($res->created_at)->format('Y') ?? '' }}</div>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <div class="small text-muted">No resources available for the selected year.</div>
-                        @endif
-
-                    </div>
-                </div>
+                @component('components.sidebar-list-section', [
+                    'title' => 'More About Cooperative',
+                    'items' => $coopResources ?? [],
+                    'years' => $resourceYears ?? [],
+                    'yearCounts' => $resourceYearCounts ?? [],
+                    'selectedCount' => $resourceSelectedCount ?? ($resourceTotalCount ?? 0),
+                    'totalCount' => $resourceTotalCount ?? 0,
+                    'iconColor' => '#b91c1c',
+                    'badgeGradient' => 'linear-gradient(135deg,#fee2e2,#fdd2d2)',
+                    'badgeColor' => '#991b1b',
+                    'actionType' => 'link',
+                    'actionRoute' => '/cooperative-resources/{id}',
+                    'viewAllRoute' => route('cooperative-resources.index'),
+                    'viewAllText' => 'View All About Cooperative',
+                    'noItemsText' => 'No resources available for the selected year.',
+                ])
+                @endcomponent
             @endif
         </aside>
     </div>

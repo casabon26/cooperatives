@@ -1,43 +1,46 @@
 @extends('layouts.app')
 
+@section('back-button')
+    @include('partials.back-button', ['url' => route('admin.enterprises.index'), 'label' => 'Back', 'class' => 'btn-sm'])
+@endsection
+
 @section('content')
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="mb-0">Create Enterprise</h4>
-        <div>
-            <a href="{{ route('admin.enterprises.index') }}" class="btn btn-sm btn-secondary">Back</a>
-        </div>
     </div>
 
     <div class="card">
         <div class="card-body">
-            <form id="enterprise-form" method="POST" action="{{ route('admin.enterprises.store') }}" enctype="multipart/form-data">
+            <form id="enterprise-form" method="POST" action="{{ route('admin.enterprises.store') }}" enctype="multipart/form-data" target="_self">
                 @csrf
                 <div class="mb-3">
-                    <label class="form-label">Name</label>
+                    <label class="form-label">BUSINESS NAME</label>
                     <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Category</label>
+                    <label class="form-label">BUSINESS ADDRESS</label>
+                    <input type="text" name="address" class="form-control" value="{{ old('address') }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Industry/Line</label>
+                    <input type="text" name="industry" class="form-control" value="{{ old('industry') }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">SIZE</label>
                     <select name="category" class="form-select" required>
                         <option value="Micro">Micro</option>
                         <option value="Small">Small</option>
                         <option value="Medium">Medium</option>
+                        <option value="Large">Large</option>
+                        <option value="Unknown">Unknown</option>
                     </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Summary</label>
-                    <input type="text" name="summary" class="form-control" value="{{ old('summary') }}">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Description</label>
-                    <textarea name="description" class="form-control" rows="4">{{ old('description') }}</textarea>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Image (optional)</label>
                     <input type="file" name="image" class="form-control" accept="image/*">
                 </div>
-                <button class="btn btn-primary">Create</button>
+                <button type="submit" class="btn btn-accent">Create</button>
             </form>
         </div>
     </div>

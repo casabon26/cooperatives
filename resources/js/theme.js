@@ -28,9 +28,20 @@
       });
     });
 
-    // Make external links open in new tab when not already set
+    // Make external links open in new tab when not already set (but skip links pointing to the
+    // same host).  The previous selector was too broad and treated absolute URLs for our own
+    // routes as "external" when the browser resolves them to e.g.
+    // http://localhost/admin/… – causing size filter buttons to open in a new tab.
     document.querySelectorAll('a[href^="http"]:not([target])').forEach(function(link){
-      try{ link.setAttribute('target','_blank'); link.setAttribute('rel','noopener noreferrer'); }catch(e){}
+      try {
+        var url;
+        try { url = new URL(link.href); } catch(_) { return; }
+        // only mark as external if the host is different from the current page
+        if (url.host !== window.location.host) {
+          link.setAttribute('target','_blank');
+          link.setAttribute('rel','noopener noreferrer');
+        }
+      } catch(e) { /* ignore */ }
     });
 
   });

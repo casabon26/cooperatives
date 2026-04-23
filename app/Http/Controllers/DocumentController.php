@@ -58,4 +58,42 @@ class DocumentController extends Controller
 
         return Storage::disk('public')->download($document->file_path);
     }
+
+    /**
+     * Delete a single document (file + DB record).
+     */
+    public function destroy(Request $request, Document $document)
+    {
+        $user = $request->user();
+        if (!$user) abort(403);
+
+        // Only gov_admin or cooperative_admin members may delete
+        if (!in_array($user->role, ['gov_admin','cooperative_admin'])) {
+            abort(403);
+        }
+        if ($user->role === 'cooperative_admin') {
+            if (!$user->cooperatives()->where('cooperative_id', $document->cooperative_id)->exists()) {
+                abort(403);
+            }
+        }
+
+        try {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($document->file_path);
+        } catch (\Throwable $e) {}
+
+        try {
+            $document->delete();
+        } catch (\Throwable $e) { }
+
+        try {
+            AuditLog::create([
+                'user_id' => $user->id,
+                'action' => 'delete_document',
+                'ip_address' => $request->ip(),
+                'meta' => ['document_id' => $document->id, 'cooperative_id' => $document->cooperative_id],
+            ]);
+        } catch (\Throwable $e) {}
+
+        return back()->with('success','Document deleted');
+    }
 }

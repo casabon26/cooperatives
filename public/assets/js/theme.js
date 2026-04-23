@@ -26,8 +26,18 @@
       });
     });
 
+    // Make external links open in new tab when not already set (skip links that point to the
+    // same host).  This mirrors the check in resources/js/theme.js so the fallback copy behaves
+    // the same.
     document.querySelectorAll('a[href^="http"]:not([target])').forEach(function(link){
-      try{ link.setAttribute('target','_blank'); link.setAttribute('rel','noopener noreferrer'); }catch(e){}
+      try {
+        var url;
+        try { url = new URL(link.href); } catch(_) { return; }
+        if (url.host !== window.location.host) {
+          link.setAttribute('target','_blank');
+          link.setAttribute('rel','noopener noreferrer');
+        }
+      } catch(e) { /* ignore */ }
     });
 
   });

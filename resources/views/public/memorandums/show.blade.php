@@ -1,14 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    /* Disable card hover effects on document preview pages */
+    .card:hover {
+        transform: none !important;
+        box-shadow: 0 12px 32px rgba(185,28,28,0.06) !important;
+    }
+    .card {
+        transition: none !important;
+    }
+</style>
 <div class="py-4">
     <div class="container">
+        <div class="mb-3">
+            <a href="{{ url('/') }}" class="btn btn-outline-danger d-inline-flex align-items-center" role="button" aria-label="Back to home" title="Back to home" target="_self">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.4" style="margin-right:8px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Home
+            </a>
+        </div>
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">{{ $memorandum->code ?? $memorandum->title }}</h4>
-                @if($memorandum->title && ($memorandum->code ?? null))
-                    <div class="small text-muted mb-3">{{ $memorandum->title }}</div>
-                @endif
+                <h4 class="card-title">{{ $memorandum->title }}</h4>
 
                 @if(!empty($memorandum->file_path))
                     @php
@@ -43,12 +58,10 @@
                                     <iframe src="{{ $viewUrl }}" style="width:100%; height:100%; border:0;" loading="lazy"></iframe>
                                 </div>
                                 <div class="mb-3 mt-2">
-                                    <a href="{{ $viewUrl }}" class="btn btn-primary">Open Document</a>
                                     <a href="{{ $downloadUrl }}" class="btn btn-outline-secondary" download>Download</a>
                                 </div>
                             @else
                                 <div class="mb-3">
-                                    <a href="{{ $viewUrl }}" class="btn btn-primary">Open Document</a>
                                     <a href="{{ $downloadUrl }}" class="btn btn-outline-secondary" download>Download</a>
                                 </div>
                             @endif
@@ -59,18 +72,7 @@
                     <div class="small text-muted">No document attached for this memorandum.</div>
                 @endif
 
-                @if($memorandum->content)
-                    <div class="mt-3">{!! nl2br(e($memorandum->content)) !!}</div>
-                @endif
-
-                <div class="mt-3">
-                    <a href="{{ url('/') }}" class="btn btn-outline-danger d-inline-flex align-items-center" role="button" aria-label="Back to landing page" title="Back to landing page" target="_self">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.4" style="margin-right:8px;">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                        </svg>
-                        Back to Landing Page
-                    </a>
-                </div>
+                {{-- Content field removed from memorandums; show file preview only --}}
             </div>
         </div>
     </div>

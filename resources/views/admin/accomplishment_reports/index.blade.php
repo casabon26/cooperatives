@@ -30,7 +30,7 @@
                                     <td>{{ optional($r->published_at)->toDayDateTimeString() }}</td>
                                     <td class="text-end">
                                         <a href="{{ route('admin.accomplishment-reports.edit', $r) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                        <form action="{{ route('admin.accomplishment-reports.destroy', $r) }}" method="post" style="display:inline-block" onsubmit="return confirm('Delete this report?');">
+                                        <form action="{{ route('admin.accomplishment-reports.destroy', $r) }}" method="post" style="display:inline-block" data-confirm="Delete this report?">
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-sm btn-outline-danger">Delete</button>

@@ -9,5 +9,10 @@ class CooperativeResource extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title','file_path','description'];
+    protected $fillable = ['title','file_path','description','gdrive_link','cooperative_id'];
+
+    public function cooperative()
+    {
+        return $this->belongsTo(Cooperative::class);
+    }
 }

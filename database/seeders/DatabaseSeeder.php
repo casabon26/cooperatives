@@ -5,10 +5,9 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Cooperative;
 use App\Models\CooperativeProfile;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,9 +18,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin users
-        User::factory()->create([ 'name'=>'Gov Admin', 'email'=>'admin@gov.test', 'role'=>'gov_admin', 'password' => bcrypt('password')]);
-        User::factory()->create([ 'name'=>'Coop Admin', 'email'=>'coopadmin@gov.test', 'role'=>'cooperative_admin', 'password' => bcrypt('password')]);
+        // Create admin users (use DB-stored credentials)
+        User::factory()->create([ 
+            'name'=>'Gov Admin', 
+            'email'=>'admin@gov.test', 
+            'role'=>'gov_admin', 
+            'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16))
+        ]);
+        User::factory()->create([ 
+            'name'=>'Coop Admin', 
+            'email'=>'coopadmin@gov.test', 
+            'role'=>'cooperative_admin', 
+            'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16))
+        ]);
 
         // Seed 34 sample cooperatives
         for ($i=1;$i<=34;$i++) {
@@ -48,6 +57,11 @@ class DatabaseSeeder extends Seeder
             foreach ($all as $cid) {
                 $coopAdmin->cooperatives()->attach($cid, ['role' => 'admin']);
             }
+        }
+
+        // SLPA sample data
+        if (class_exists(\Database\Seeders\SlpaSeeder::class)) {
+            $this->call(\Database\Seeders\SlpaSeeder::class);
         }
     }
 }

@@ -32,6 +32,12 @@ class SimpleAdminVideosController extends Controller
         return view('admin.videos.index', compact('videos'));
     }
 
+    public function create()
+    {
+        $this->ensureAdmin();
+        return view('admin.videos.create');
+    }
+
     public function store(Request $request)
     {
         $this->ensureAdmin();

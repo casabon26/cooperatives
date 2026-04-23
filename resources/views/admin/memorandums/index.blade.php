@@ -16,7 +16,6 @@
                     <table class="table mb-0">
                         <thead>
                             <tr>
-                                <th>Code</th>
                                 <th>Title</th>
                                 <th>Published</th>
                                 <th></th>
@@ -25,14 +24,13 @@
                         <tbody>
                             @foreach($memorandums as $m)
                                 <tr>
-                                    <td>{{ $m->code }}</td>
-                                        <td>
-                                        <a href="{{ url('/memorandums/'.$m->id) }}" onclick="window.location.href=this.href; return false;">{{ $m->title ?? $m->code }}</a>
+                                    <td>
+                                        <a href="{{ url('/memorandums/'.$m->id) }}" onclick="window.location.href=this.href; return false;">{{ $m->title }}</a>
                                     </td>
-                                    <td>{{ optional($m->published_at)->toDayDateTimeString() }}</td>
+                                    <td>{{ optional($m->published_at)->format('Y') }}</td>
                                     <td class="text-end">
                                         <a href="{{ route('admin.memorandums.edit', $m) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                        <form action="{{ route('admin.memorandums.destroy', $m) }}" method="post" style="display:inline-block" onsubmit="return confirm('Delete this memorandum?');">
+                                        <form action="{{ route('admin.memorandums.destroy', $m) }}" method="post" style="display:inline-block" data-confirm="Delete this memorandum?">
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-sm btn-outline-danger">Delete</button>

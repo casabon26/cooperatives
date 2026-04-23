@@ -5,15 +5,7 @@
     <div class="container">
         <h4>Create Memorandum</h4>
 
-        @if($errors->any())
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    @foreach($errors->all() as $e)
-                        <li>{{ $e }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        {{-- Validation errors are shown next to each field; general errors are displayed via the global flash popup in the layout --}}
 
         <form action="{{ route('admin.memorandums.store') }}" method="post" enctype="multipart/form-data">
             @csrf
