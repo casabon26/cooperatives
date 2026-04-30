@@ -15,12 +15,12 @@
             filter: none !important;
         }
 
-        /* Modern, minimal portal styles scoped to this page */
+        /* Modern, minimal portal styles scoped to this page - theme integrated */
         .enterprise-portal .card {
-            border: 1px solid rgba(16,24,40,0.04);
-            border-radius: 12px;
-            background: linear-gradient(180deg, #ffffff, #ffffff);
-            box-shadow: 0 8px 24px rgba(15,23,42,0.03);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            background: linear-gradient(180deg, rgba(var(--primary-r), 0.08) 0%, rgba(255,245,245,0.95) 100%);
+            box-shadow: 0 12px 32px rgba(var(--primary-r), 0.06);
         }
 
         .enterprise-portal .card-body h3 {
@@ -97,14 +97,14 @@
             height:32px;
             border-radius:8px;
             background: linear-gradient(180deg,#fff5f5,#fff8f8);
-            color: #b91c1c;
+            color: var(--primary);
             font-weight:700;
             margin-right:0;
-            box-shadow: 0 6px 18px rgba(185,28,28,0.06);
+            box-shadow: 0 6px 18px rgba(var(--primary-r), 0.06);
             flex:0 0 32px;
             text-align:center;
             font-size:0.88rem;
-            border: 1px solid rgba(185,28,28,0.06);
+            border: 1px solid rgba(var(--primary-r), 0.06);
             order: 2; /* render at end of flex row */
             margin-left: auto; /* push to the right */
         }
@@ -119,10 +119,10 @@
             padding:0 12px;
             border-radius:0 10px 10px 0; /* rounded only on the right side */
             background: linear-gradient(180deg,#fff9f9,#fffdfd);
-            color: #b91c1c;
+            color: var(--primary);
             font-weight:700;
-            box-shadow: 0 8px 20px rgba(185,28,28,0.04);
-            border: 1px solid rgba(185,28,28,0.06);
+            box-shadow: 0 8px 20px rgba(var(--primary-r), 0.04);
+            border: 1px solid rgba(var(--primary-r), 0.06);
             font-size:0.86rem;
             position: absolute;
             right: 56px; /* sit left of the caret (swapped) */
@@ -175,7 +175,26 @@
         /* MSME helper styles: search box and items container which becomes scrollable
            when the number of items exceeds the visible limit (8 items). */
         .msme-search { width:100%; box-sizing:border-box; }
-        .msme-items { transition: max-height .15s ease-in-out; }
+        .msme-items { 
+            max-height: 400px;
+            overflow-y: auto;
+            transition: max-height .15s ease-in-out;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(15,23,42,0.3) transparent;
+        }
+        .msme-items::-webkit-scrollbar {
+            width: 6px;
+        }
+        .msme-items::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .msme-items::-webkit-scrollbar-thumb {
+            background: rgba(15,23,42,0.3);
+            border-radius: 3px;
+        }
+        .msme-items::-webkit-scrollbar-thumb:hover {
+            background: rgba(15,23,42,0.5);
+        }
 
         /* Sidebar card tweaks */
         .enterprise-portal aside .card {
@@ -231,6 +250,108 @@
         .enterprise-portal .check-card li { display:flex; gap:0.8rem; align-items:flex-start; padding:0.45rem 0; }
         .enterprise-portal .check-card li .dot { width:10px;height:10px;border-radius:50%;background:linear-gradient(180deg,#10b981,#059669);margin-top:6px;flex:0 0 10px }
         .enterprise-portal .check-card li .text { color:#334155 }
+        
+        /* See More button styles */
+        .see-more-btn {
+            background: transparent;
+            border: 0;
+            color: #f97316;
+            text-decoration: none;
+            padding: 0;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            transition: color .12s ease, opacity .12s ease;
+        }
+        .see-more-btn:hover, .see-more-btn:focus {
+            color: #f59e0b;
+            text-decoration: none;
+            opacity: 0.95;
+            outline: none;
+        }
+        .see-more-caret svg {
+            width: 14px;
+            height: 14px;
+            transition: transform .18s ease;
+            transform-origin: center;
+            display: block;
+        }
+        .see-more-caret.expanded svg {
+            transform: rotate(180deg);
+        }
+        
+        /* Tabbed MSME interface */
+        .msme-tabs {
+            border: 1px solid rgba(15,23,42,0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 6px 20px rgba(15,23,42,0.02);
+        }
+        .msme-tabs-nav {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid rgba(15,23,42,0.06);
+            background: linear-gradient(180deg, #fafbfc, #f8fafc);
+        }
+        .msme-tabs-nav button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: transparent;
+            color: #475569;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s ease;
+            position: relative;
+            font-size: 0.95rem;
+        }
+        .msme-tabs-nav button:hover {
+            background: rgba(15,23,42,0.03);
+            color: #0f172a;
+        }
+        .msme-tabs-nav button.active {
+            color: #0f172a;
+            background: #fff;
+        }
+        .msme-tabs-nav button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+        }
+        .msme-tabs-content {
+            padding: 0;
+        }
+        .msme-tab-pane {
+            display: none;
+            padding: 1.5rem;
+        }
+        .msme-tab-pane.active {
+            display: block;
+        }
+        .msme-tab-pane .msme-search {
+            margin-bottom: 1rem;
+        }
+        .msme-tab-pane .msme-items {
+            display: grid;
+            gap: 0.5rem;
+        }
+        .msme-tab-pane .list-group-item {
+            border: 1px solid rgba(15,23,42,0.04);
+            border-radius: 6px;
+            padding: 1rem;
+            transition: all .2s ease;
+        }
+        .msme-tab-pane .list-group-item:hover {
+            background: rgba(15,23,42,0.02);
+            border-color: rgba(15,23,42,0.08);
+        }
     </style>
     @php
         // Prefer videos explicitly highlighted for the Enterprise Portal; fall back to recent videos
@@ -275,71 +396,60 @@
                 <div class="card-body">
                     <div class="portal-hero">
                         <h3 class="mb-1">Enterprise Portal — MSME Sector</h3>
-                        <p class="portal-lead">Welcome to the Enterprise Portal. This section focuses on Micro, Small and Medium Enterprises (MSME) initiatives, resources, and support provided through the portal.</p>
-                        <div class="check-card">
-                            <div class="section-title">About the MSME Sector</div>
-                            <p class="lead-muted">MSMEs play a vital role in local economic development. This portal provides information on available programs, training, funding opportunities, and a directory of enterprise support services. Use the links below to access tools and submit enterprise data.</p>
-                            <ul>
-                                <li><span class="dot"></span><span class="text">Business registration and advisory services</span></li>
-                                <li><span class="dot"></span><span class="text">Training and capacity building</span></li>
-                                <li><span class="dot"></span><span class="text">Access to markets and procurement</span></li>
-                                <li><span class="dot"></span><span class="text">Financial inclusion and micro-loans</span></li>
-                            </ul>
+                        <p class="portal-lead">MSML Enterprises operates within the Micro, Small, and Medium Enterprise (MSME) sector and continues to demonstrate steady growth alongside a strong commitment to delivering quality products and services. During the reporting period, the enterprise focused on strengthening its operations, enhancing customer satisfaction, and expanding its market reach. Efficient production processes and the availability of essential resources enabled the business to respond to customer demands in a timely and reliable manner.</p>
+                        
+                        <div id="msmeFull" style="display:none;">
+                            <p class="portal-lead">The enterprise also implemented measures to improve overall performance, including enhanced inventory management, better coordination among staff, and more streamlined daily operations. These improvements contributed to smoother workflows and increased productivity. At the same time, the business remained responsive to market trends and evolving customer needs, allowing it to sustain its competitiveness within the sector.</p>
+                            <p class="portal-lead">MSML Enterprises continues to place importance on maintaining strong relationships with its customers and partners through consistent communication and dependable service. This approach has supported the development of trust and a positive reputation within the community. Challenges encountered during the period were addressed through practical solutions and continuous improvement efforts, ensuring stable and efficient operations.</p>
+                            <p class="portal-lead">The enterprise reflects resilience in managing its activities and remains focused on strengthening its operations and exploring opportunities for growth and long-term sustainability.</p>
                         </div>
+                        
+                        <button id="msmeMoreBtn" class="see-more-btn" aria-expanded="false" type="button" style="margin-top:0.5rem;">
+                            <span class="see-more-label">See More</span>
+                            <span class="see-more-caret" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span>
+                        </button>
+                        
+                        <script>
+                            (function(){
+                                const btn = document.getElementById('msmeMoreBtn');
+                                const full = document.getElementById('msmeFull');
+                                const label = btn.querySelector('.see-more-label');
+                                const caret = btn.querySelector('.see-more-caret');
+                                let expanded = false;
+                                
+                                btn.addEventListener('click', function(){
+                                    expanded = !expanded;
+                                    if(expanded){
+                                        full.style.display = 'block';
+                                        btn.setAttribute('aria-expanded', 'true');
+                                        label.textContent = 'See Less';
+                                        caret.classList.add('expanded');
+                                    } else {
+                                        full.style.display = 'none';
+                                        btn.setAttribute('aria-expanded', 'false');
+                                        label.textContent = 'See More';
+                                        caret.classList.remove('expanded');
+                                    }
+                                });
+                            })();
+                        </script>
                     </div>
 
                             <div class="mt-3">
-                                <div class="accordion" id="msmeAccordion">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="headingMicro">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMicro" aria-expanded="false" aria-controls="collapseMicro">
-                                                Micro <span class="badge bg-light ms-2 msme-total-badge" data-cat="Micro">{{ $msmeTotals['Micro'] ?? 0 }}</span>
-                                            </button>
-                                        </h2>
-                                        <div id="collapseMicro" class="accordion-collapse collapse" aria-labelledby="headingMicro" data-bs-parent="#msmeAccordion">
-                                            <div class="accordion-body p-0">
-                                                <div class="list-group msme-list" data-cat="Micro"></div>
-                                            </div>
-                                        </div>
+                                <div class="msme-tabs">
+                                    <div class="msme-tabs-nav">
+                                        <button class="msme-tab-btn active" data-tab="micro">Micro <span class="msme-count" data-cat="Micro">({{ $msmeTotals['Micro'] ?? 0 }})</span></button>
+                                        <button class="msme-tab-btn" data-tab="small">Small <span class="msme-count" data-cat="Small">({{ $msmeTotals['Small'] ?? 0 }})</span></button>
+                                        <button class="msme-tab-btn" data-tab="medium">Medium <span class="msme-count" data-cat="Medium">({{ $msmeTotals['Medium'] ?? 0 }})</span></button>
+                                        <button class="msme-tab-btn" data-tab="large">Large <span class="msme-count" data-cat="Large">({{ $msmeTotals['Large'] ?? 0 }})</span></button>
                                     </div>
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="headingSmall">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSmall" aria-expanded="false" aria-controls="collapseSmall">
-                                                Small <span class="badge bg-light ms-2 msme-total-badge" data-cat="Small">{{ $msmeTotals['Small'] ?? 0 }}</span>
-                                            </button>
-                                        </h2>
-                                        <div id="collapseSmall" class="accordion-collapse collapse" aria-labelledby="headingSmall" data-bs-parent="#msmeAccordion">
-                                            <div class="accordion-body p-0">
-                                                <div class="list-group msme-list" data-cat="Small"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="headingMedium">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMedium" aria-expanded="false" aria-controls="collapseMedium">
-                                                Medium <span class="badge bg-light ms-2 msme-total-badge" data-cat="Medium">{{ $msmeTotals['Medium'] ?? 0 }}</span>
-                                            </button>
-                                        </h2>
-                                        <div id="collapseMedium" class="accordion-collapse collapse" aria-labelledby="headingMedium" data-bs-parent="#msmeAccordion">
-                                            <div class="accordion-body p-0">
-                                                <div class="list-group msme-list" data-cat="Medium"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="headingLarge">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLarge" aria-expanded="false" aria-controls="collapseLarge">
-                                                Large <span class="badge bg-light ms-2 msme-total-badge" data-cat="Large">{{ $msmeTotals['Large'] ?? 0 }}</span>
-                                            </button>
-                                        </h2>
-                                        <div id="collapseLarge" class="accordion-collapse collapse" aria-labelledby="headingLarge" data-bs-parent="#msmeAccordion">
-                                            <div class="accordion-body p-0">
-                                                <div class="list-group msme-list" data-cat="Large"></div>
-                                            </div>
-                                        </div>
+                                    <div class="msme-tabs-content">
+                                        <div class="msme-tab-pane active" data-tab-pane="micro" data-cat="Micro"></div>
+                                        <div class="msme-tab-pane" data-tab-pane="small" data-cat="Small"></div>
+                                        <div class="msme-tab-pane" data-tab-pane="medium" data-cat="Medium"></div>
+                                        <div class="msme-tab-pane" data-tab-pane="large" data-cat="Large"></div>
                                     </div>
                                 </div>
-
                             </div>
                     </section>
                 </div>
@@ -409,210 +519,113 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-    const panels = document.querySelectorAll('.accordion-collapse');
-    if(!panels || !panels.length) return;
+    const tabBtns = document.querySelectorAll('.msme-tab-btn');
+    const tabPanes = document.querySelectorAll('.msme-tab-pane');
+    const loadedTabs = {};
 
-    panels.forEach(panel => {
-        panel.addEventListener('show.bs.collapse', function(e){
-            const list = panel.querySelector('.msme-list');
-            if(!list) return;
-            // if already loaded, don't re-fetch
-            if(list.dataset.loaded === '1') return;
-            const cat = list.dataset.cat || '';
-            list.innerHTML = '<div class="list-group-item small text-muted">Loading...</div>';
-            fetch('/enterprise-portal/enterprises?category=' + encodeURIComponent(cat), {headers:{'X-Requested-With':'XMLHttpRequest'}})
-                .then(r => r.ok ? r.json() : Promise.reject(r))
-                .then(json => {
-                    const data = json.data || [];
-                    // build structure: search box + scrollable items container
-                    list.innerHTML = '';
-                    const search = document.createElement('input');
-                    search.type = 'search';
-                    search.placeholder = 'Search enterprises...';
-                    search.className = 'form-control form-control-sm msme-search mb-2';
-                    const itemsWrap = document.createElement('div');
-                    itemsWrap.className = 'msme-items list-group';
-                    list.appendChild(search);
-                    list.appendChild(itemsWrap);
-
-                    // update badge in header with total (if provided)
-                    try{
-                        var headerBtn = panel.parentElement.querySelector('.accordion-header .accordion-button');
-                        if(headerBtn){
-                            var badge = headerBtn.querySelector('.msme-total-badge');
-                            if(badge) badge.textContent = (json.total !== undefined ? json.total : data.length);
-                        }
-                    }catch(e){}
-
-                    if(data.length === 0){
-                        itemsWrap.innerHTML = '';
-                        const placeholder = document.createElement('div');
-                        placeholder.className = 'list-group-item small text-muted msme-no-results';
-                        placeholder.textContent = 'No enterprises found.';
-                        itemsWrap.appendChild(placeholder);
-                    } else {
-                        data.forEach((ent, index) => {
-                            const a = document.createElement('a');
-                            a.className = 'list-group-item list-group-item-action d-flex gap-2 align-items-start';
-                            a.href = ent.url || ('/enterprises/' + ent.id);
-                            // prefer server-computed image_url; fall back to normalizing local paths
-                            let imgSrc = ent.image_url || null;
-                            if (!imgSrc && ent.image) {
-                                const normalized = ent.image.replace(/\\+/g, '/');
-                                imgSrc = (normalized.startsWith('http') ? normalized : '/storage/' + normalized.replace(/^\//, ''));
-                            }
-                            const secondary = (ent.nature_of_business ? (ent.nature_of_business + ' · ') : '') + (ent.address || '') + (ent.account_no ? (' · ' + ent.account_no) : '');
-                            const num = (index || 0) + 1;
-                            a.innerHTML = '<div class="msme-index-badge">' + num + '</div>' + (imgSrc ? '<img src="' + imgSrc + '" style="width:84px;height:56px;object-fit:cover;border-radius:6px">' : '') + '<div><div class="fw-semibold">' + (ent.name||'') + '</div><div class="small text-muted">' + (ent.summary||'') + '</div><div class="small text-muted">' + secondary + '</div></div>';
-                            // searchable text for faster client filtering
-                            a.dataset.search = ((ent.name||'') + ' ' + (ent.summary||'') + ' ' + (ent.nature_of_business||'') + ' ' + (ent.address||'') + ' ' + (ent.account_no||'')).toLowerCase();
-                            itemsWrap.appendChild(a);
-                        });
-                        // ensure a hidden placeholder exists for "no results"
-                        let placeholder = itemsWrap.querySelector('.msme-no-results');
-                        if(!placeholder){
-                            placeholder = document.createElement('div');
-                            placeholder.className = 'list-group-item small text-muted msme-no-results';
-                            placeholder.textContent = 'No enterprises found.';
-                            placeholder.style.display = 'none';
-                            itemsWrap.appendChild(placeholder);
-                        } else {
-                            placeholder.style.display = 'none';
-                        }
+    function loadTabData(cat, tabPane) {
+        if(loadedTabs[cat]) return; // already loaded
+        
+        tabPane.innerHTML = '<div style="padding: 1rem; text-align: center; color: #999;">Loading...</div>';
+        fetch('/enterprise-portal/enterprises?category=' + encodeURIComponent(cat), {headers:{'X-Requested-With':'XMLHttpRequest'}})
+            .then(r => r.ok ? r.json() : Promise.reject(r))
+            .then(json => {
+                const allData = json.data || [];
+                const limited = allData; // Show all items, scrollable
+                
+                // Create search box
+                const searchBox = document.createElement('input');
+                searchBox.type = 'search';
+                searchBox.placeholder = 'Search enterprises...';
+                searchBox.className = 'form-control form-control-sm msme-search';
+                
+                // Create items container
+                const itemsWrap = document.createElement('div');
+                itemsWrap.className = 'msme-items';
+                
+                tabPane.innerHTML = '';
+                tabPane.appendChild(searchBox);
+                tabPane.appendChild(itemsWrap);
+                
+                // Render items
+                const renderItems = (items) => {
+                    itemsWrap.innerHTML = '';
+                    if(!items || items.length === 0) {
+                        itemsWrap.innerHTML = '<div style="padding: 1rem; color: #999; text-align: center;">No enterprises found.</div>';
+                        return;
                     }
-
-                    // helper: update max-height and scrolling based on visible items
-                    const updateScroll = () => {
-                        const visible = Array.from(itemsWrap.querySelectorAll('a.list-group-item')).filter(ch => ch.offsetParent !== null && ch.style.display !== 'none');
-                        const ph = itemsWrap.querySelector('.msme-no-results');
-                        if(visible.length === 0){
-                            if(ph) ph.style.display = '';
-                            itemsWrap.style.maxHeight = '';
-                            itemsWrap.style.overflowY = '';
-                            return;
+                    items.forEach((ent, index) => {
+                        const a = document.createElement('a');
+                        a.className = 'list-group-item list-group-item-action d-flex gap-2 align-items-start';
+                        a.href = ent.url || ('/enterprises/' + ent.id);
+                        let imgSrc = ent.image_url || null;
+                        if (!imgSrc && ent.image) {
+                            const normalized = ent.image.replace(/\\+/g, '/');
+                            imgSrc = (normalized.startsWith('http') ? normalized : '/storage/' + normalized.replace(/^\//, ''));
                         }
-                        if(ph) ph.style.display = 'none';
-                        if(visible.length > 8){
-                            const itemH = (visible[0].offsetHeight || 72);
-                            itemsWrap.style.maxHeight = (itemH * 8) + 'px';
-                            itemsWrap.style.overflowY = 'auto';
-                        } else {
-                            itemsWrap.style.maxHeight = '';
-                            itemsWrap.style.overflowY = '';
-                        }
-                    };
-
-                    // helper to render items into itemsWrap
-                    let initialData = data.slice();
-                    // preserve initial total (server-provided `json.total` when available)
-                    let initialTotal = (json.total !== undefined ? json.total : initialData.length);
-                    const renderItems = (rows) => {
-                        itemsWrap.innerHTML = '';
-                        if(!rows || rows.length === 0){
-                            const placeholder = document.createElement('div');
-                            placeholder.className = 'list-group-item small text-muted msme-no-results';
-                            placeholder.textContent = 'No enterprises found.';
-                            itemsWrap.appendChild(placeholder);
-                            updateScroll();
-                            return;
-                        }
-                        rows.forEach((ent, index) => {
-                            const a = document.createElement('a');
-                            a.className = 'list-group-item list-group-item-action d-flex gap-2 align-items-start';
-                            a.href = ent.url || ('/enterprises/' + ent.id);
-                            let imgSrc = ent.image_url || null;
-                            if (!imgSrc && ent.image) {
-                                const normalized = ent.image.replace(/\\+/g, '/');
-                                imgSrc = (normalized.startsWith('http') ? normalized : '/storage/' + normalized.replace(/^\//, ''));
-                            }
-                            const secondary2 = (ent.nature_of_business ? (ent.nature_of_business + ' · ') : '') + (ent.address || '') + (ent.account_no ? (' · ' + ent.account_no) : '');
-                            const num = (index || 0) + 1;
-                            a.innerHTML = '<div class="msme-index-badge">' + num + '</div>' + (imgSrc ? '<img src="' + imgSrc + '" style="width:84px;height:56px;object-fit:cover;border-radius:6px">' : '') + '<div><div class="fw-semibold">' + (ent.name||'') + '</div><div class="small text-muted">' + (ent.summary||'') + '</div><div class="small text-muted">' + secondary2 + '</div></div>';
-                            a.dataset.search = ((ent.name||'') + ' ' + (ent.summary||'') + ' ' + (ent.nature_of_business||'') + ' ' + (ent.address||'') + ' ' + (ent.account_no||'')).toLowerCase();
-                            itemsWrap.appendChild(a);
-                        });
-                        // ensure placeholder exists but hidden
-                        let placeholder = itemsWrap.querySelector('.msme-no-results');
-                        if(!placeholder){
-                            placeholder = document.createElement('div');
-                            placeholder.className = 'list-group-item small text-muted msme-no-results';
-                            placeholder.textContent = 'No enterprises found.';
-                            placeholder.style.display = 'none';
-                            itemsWrap.appendChild(placeholder);
-                        }
-                        updateScroll();
-                    };
-
-                    // initial render
-                    renderItems(initialData);
-                    // update badge for initial render
-                    try{
-                        var headerBtn2 = panel.parentElement.querySelector('.accordion-header .accordion-button');
-                        if(headerBtn2){
-                            var badge2 = headerBtn2.querySelector('.msme-total-badge');
-                            if(badge2) badge2.textContent = (json.total !== undefined ? json.total : initialData.length);
-                        }
-                    }catch(e){}
-
-                    // debounce helper
-                    const debounce = (fn, wait) => {
-                        let t;
-                        return function(...args){
-                            clearTimeout(t);
-                            t = setTimeout(() => fn.apply(this, args), wait);
-                        };
-                    };
-
-                    // perform AJAX search and render results
-                    const doSearch = (q) => {
-                        const catParam = encodeURIComponent(cat);
-                        const url = '/enterprise-portal/enterprises?category=' + catParam + (q ? ('&q=' + encodeURIComponent(q)) : '');
-                        // show loading indicator
-                        itemsWrap.innerHTML = '<div class="list-group-item small text-muted">Searching...</div>';
-                        fetch(url, {headers:{'X-Requested-With':'XMLHttpRequest'}})
-                            .then(r => r.ok ? r.json() : Promise.reject(r))
-                            .then(json => {
-                                const rows = json.data || [];
-                                renderItems(rows);
-                                // update badge with filtered total
-                                try{
-                                    var headerBtn3 = panel.parentElement.querySelector('.accordion-header .accordion-button');
-                                    if(headerBtn3){
-                                        var badge3 = headerBtn3.querySelector('.msme-total-badge');
-                                        if(badge3) badge3.textContent = (json.total !== undefined ? json.total : rows.length);
-                                    }
-                                }catch(e){}
-                            }).catch(()=>{
-                                itemsWrap.innerHTML = '<div class="list-group-item small text-danger">Error searching</div>';
-                            });
-                    };
-
-                    const debouncedSearch = debounce((val) => {
-                        const q = (val||'').trim();
-                        if(q === ''){
-                            renderItems(initialData);
-                            // restore header badge to initial total when search is cleared
-                            try{
-                                var headerBtnClear = panel.parentElement.querySelector('.accordion-header .accordion-button');
-                                if(headerBtnClear){
-                                    var badgeClear = headerBtnClear.querySelector('.msme-total-badge');
-                                    if(badgeClear) badgeClear.textContent = initialTotal;
-                                }
-                            }catch(e){}
-                        } else {
-                            doSearch(q);
-                        }
-                    }, 300);
-
-                    // wire up search input to AJAX search
-                    search.addEventListener('input', function(){
-                        debouncedSearch(this.value);
+                        const secondary = (ent.nature_of_business ? (ent.nature_of_business + ' · ') : '') + (ent.address || '') + (ent.account_no ? (' · ' + ent.account_no) : '');
+                        const num = (index || 0) + 1;
+                        a.innerHTML = '<div class="msme-index-badge">' + num + '</div>' + (imgSrc ? '<img src="' + imgSrc + '" style="width:84px;height:56px;object-fit:cover;border-radius:6px">' : '') + '<div><div class="fw-semibold">' + (ent.name||'') + '</div><div class="small text-muted">' + (ent.summary||'') + '</div><div class="small text-muted">' + secondary + '</div></div>';
+                        a.dataset.search = ((ent.name||'') + ' ' + (ent.summary||'') + ' ' + (ent.nature_of_business||'') + ' ' + (ent.address||'') + ' ' + (ent.account_no||'')).toLowerCase();
+                        itemsWrap.appendChild(a);
                     });
-
-                    list.dataset.loaded = '1';
-                }).catch(()=>{
-                    list.innerHTML = '<div class="list-group-item small text-danger">Error loading list</div>';
+                    
+                    const more = document.createElement('div');
+                    more.style.padding = '1rem';
+                    more.style.textAlign = 'center';
+                    more.style.color = '#999';
+                    more.style.fontSize = '0.9rem';
+                    more.textContent = 'Showing all ' + allData.length + ' enterprises';
+                    itemsWrap.appendChild(more);
+                };
+                
+                renderItems(limited);
+                
+                // Search functionality
+                searchBox.addEventListener('input', function(){
+                    const q = (this.value||'').trim().toLowerCase();
+                    if(!q) {
+                        renderItems(limited);
+                    } else {
+                        const filtered = limited.filter(ent => {
+                            const text = ((ent.name||'') + ' ' + (ent.summary||'') + ' ' + (ent.nature_of_business||'') + ' ' + (ent.address||'') + ' ' + (ent.account_no||'')).toLowerCase();
+                            return text.includes(q);
+                        });
+                        renderItems(filtered);
+                    }
                 });
+                
+                loadedTabs[cat] = true;
+            })
+            .catch(()=>{
+                tabPane.innerHTML = '<div style="padding: 1rem; color: red; text-align: center;">Error loading enterprises</div>';
+            });
+    }
+
+    // Load first tab (Micro) by default
+    const firstPane = document.querySelector('[data-tab-pane="micro"]');
+    if(firstPane) {
+        loadTabData('Micro', firstPane);
+    }
+
+    // Tab switching
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function(){
+            const tabName = this.dataset.tab;
+            const catMap = { micro: 'Micro', small: 'Small', medium: 'Medium', large: 'Large' };
+            const cat = catMap[tabName];
+            
+            // Remove active class from all tabs
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabPanes.forEach(p => p.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            const targetPane = document.querySelector(`[data-tab-pane="${tabName}"]`);
+            if(targetPane) {
+                targetPane.classList.add('active');
+                loadTabData(cat, targetPane);
+            }
         });
     });
 });

@@ -30,9 +30,7 @@
                     <thead>
                         <tr>
                             <th>Group</th>
-                            <th>Key</th>
                             <th>Label</th>
-                            <th>Order</th>
                             <th>Active</th>
                             <th></th>
                         </tr>
@@ -41,9 +39,7 @@
                         @foreach($items as $it)
                             <tr>
                                 <td>{{ $it->group }}</td>
-                                <td>{{ $it->key }}</td>
                                 <td>{{ $it->label }}</td>
-                                <td>{{ $it->sort_order }}</td>
                                 <td>{{ $it->active ? 'Yes' : 'No' }}</td>
                                 <td class="text-end">
                                     <a href="{{ route('admin.select_lists.edit', $it) }}" class="btn btn-sm btn-outline-primary">Edit</a>

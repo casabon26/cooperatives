@@ -4,6 +4,11 @@
 <div class="py-4">
     <div class="container">
         @if(!empty($group) && strtolower($group) === 'cabstop')
+            @section('back-button')
+                @include('partials.back-button', ['url' => route('admin.store_locations.index'), 'label' => 'Back'])
+            @endsection
+        @endif
+        @if(!empty($group) && strtolower($group) === 'cabstop')
             <h4>Add CabStop (Place) — {{ $group }}</h4>
             <div class="alert alert-info">This form adds a <strong>place choice</strong> that appears in the Livelihood CabStop dropdown. It does <strong>not</strong> create a store location.</div>
         @else

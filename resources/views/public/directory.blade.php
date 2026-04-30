@@ -5,8 +5,8 @@
     <style>
         /* Match cooperative name styling to header nav link and center inside card */
         .coop-name-link { font-weight:600; text-decoration:none; transition: color .12s ease; }
-        .card .coop-name-link { color: #b91c1c; display:block; text-align:center; }
-        .coop-name-link:hover, .coop-name-link:focus { color:#8f1515; text-decoration:none; }
+        .card .coop-name-link { color: var(--primary); display:block; text-align:center; }
+        .coop-name-link:hover, .coop-name-link:focus { color:var(--primary-dark); text-decoration:none; }
         .coop-meta { color:#6b7280; }
         .coop-card .card-body { display:flex; flex-direction:column; }
         .coop-card .coop-description { flex:1 1 auto; }
@@ -15,15 +15,15 @@
         .memo-list { display:block; margin:0; padding:0; }
         .memo-item { display:flex; gap:.6rem; align-items:flex-start; padding:.55rem .5rem; border-radius:8px; transition:background .12s ease, box-shadow .12s ease; }
         .memo-item + .memo-item { margin-top:.45rem; }
-        .memo-item:hover { background: linear-gradient(180deg, rgba(239,68,68,0.03), rgba(0,0,0,0.01)); box-shadow: 0 8px 20px rgba(15,23,42,0.03); }
-        .memo-icon { width:44px; height:44px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; color:#b91c1c; }
+        .memo-item:hover { background: linear-gradient(180deg, rgba(var(--primary-r), 0.03), rgba(0,0,0,0.01)); box-shadow: 0 8px 20px rgba(15,23,42,0.03); }
+        .memo-icon { width:44px; height:44px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; color:var(--primary); }
         .memo-link { color:#5b1b1b; font-weight:700; display:block; text-decoration:none; overflow:hidden; }
         .memo-link { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; white-space:normal; text-overflow:ellipsis; }
         .memo-link::after { content: "click to open"; position:absolute; top:-1.6rem; right:0; background:rgba(0,0,0,0.7); color:#fff; font-size:.72rem; padding:.18rem .45rem; border-radius:6px; opacity:0; transform:translateY(6px); transition:opacity .12s ease, transform .12s ease; pointer-events:none; }
         .memo-link:hover::after, .memo-link:focus::after { opacity:1; transform:translateY(0); }
         .memo-meta { font-size:.825rem; color:#6b6b6b; margin-top:.25rem }
-        .memo-badge { background: rgba(185,28,28,0.08); color:#b91c1c; padding:.18rem .45rem; border-radius:6px; font-weight:700; font-size:.75rem }
-        .memo-item:hover .memo-badge { background:#ef4444; color:#fff; }
+        .memo-badge { background: rgba(var(--primary-r), 0.08); color:var(--primary); padding:.18rem .45rem; border-radius:6px; font-weight:700; font-size:.75rem }
+        .memo-item:hover .memo-badge { background:var(--primary); color:#fff; }
 
         /* Prevent year badge highlight on hover for PDF items */
         .no-year-hover:hover .memo-badge { background: rgba(0,0,0,0.03); color:#374151; box-shadow:none; }
@@ -31,39 +31,42 @@
         /* Make the "More About Cooperative" sidebar match memorandum circulars */
         aside > .card {
             background: linear-gradient(180deg, #fff5f6, #fff0f2);
-            border: 1px solid rgba(239,68,68,0.07);
+            border: 1px solid rgba(var(--primary-r), 0.07);
             border-radius: 12px;
-            box-shadow: 0 12px 36px rgba(185,28,28,0.06);
+            box-shadow: 0 12px 36px rgba(var(--primary-r), 0.06);
         }
         aside > .card .card-body { padding: 1rem; }
-        aside > .card .card-title { color:#7f1d1d; font-weight:700; margin-bottom:.6rem; }
+        aside > .card .card-title { color:var(--primary-dark); font-weight:700; margin-bottom:.6rem; }
         aside .memo-item { padding:.6rem; border-radius:10px; }
         /* Use the same hover and link colors as Memorandum circulars on the home page */
         aside .memo-item:hover { background: linear-gradient(180deg, rgba(239,68,68,0.03), rgba(0,0,0,0.01)); box-shadow:none; transform:none; }
         aside .memo-link { color:#5b1b1b; font-weight:700; }
-        aside .memo-link:hover, aside .memo-link:focus { background: #ef4444; color: #ffffff !important; box-shadow: 0 6px 18px rgba(239,68,68,0.12); text-decoration: none; }
-        aside .memo-badge { background: rgba(185,28,28,0.08); color:#b91c1c; padding:.18rem .45rem; border-radius:6px; font-weight:700; }
+        aside .memo-link:hover, aside .memo-link:focus { background: var(--primary); color: #ffffff !important; box-shadow: 0 6px 18px rgba(var(--primary-r), 0.12); text-decoration: none; }
+        aside .memo-badge { background: rgba(var(--primary-r), 0.08); color:var(--primary); padding:.18rem .45rem; border-radius:6px; font-weight:700; }
         aside .memo-item:hover .memo-badge { background:#ef4444; color:#fff; }
     </style>
 
     <h1 class="h4">Cooperatives Directory</h1>
-    <form class="row g-2 my-3" method="get" role="search" aria-label="Search cooperatives">
-        <div class="col-12 col-md-6"><input name="q" value="{{ request('q') }}" class="form-control" placeholder="Search by name"></div>
+    <div class="row g-2 my-3" role="search" aria-label="Search cooperatives">
+        <div class="col-12 col-md-6">
+            <input id="coopSearch" name="q" value="{{ request('q') }}" class="form-control" placeholder="Search cooperatives (type to filter)...">
+        </div>
         <div class="col-6 col-md-2">
-            <select name="per_page" class="form-select" onchange="this.form.submit()" aria-label="Results per page">
+            <select id="coopPerPage" name="per_page" class="form-select" aria-label="Results per page">
                 @foreach([12,24,34,48] as $n)
                     <option value="{{ $n }}" {{ request('per_page',12) == $n ? 'selected' : '' }}>{{ $n }} per page</option>
                 @endforeach
             </select>
         </div>
         <div class="col-6 col-md-4 text-end">
-            <button type="submit" class="btn btn-outline-secondary">Apply</button>
+            <!-- Apply button removed: search is performed via AJAX as you type -->
+            <div class="small text-muted">Results update as you type.</div>
         </div>
-    </form>
+    </div>
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="row row-cols-1 row-cols-md-3 g-3">
+            <div id="coopsGrid" class="row row-cols-1 row-cols-md-3 g-3">
                 @foreach($cooperatives as $coop)
                     <div class="col">
                         <article class="card h-100 coop-card">
@@ -119,7 +122,7 @@
                 @endforeach
             </div>
 
-            <div class="mt-3">{{ $cooperatives->links() }}</div>
+            <div id="coopsPagination" class="mt-3">{{ $cooperatives->links() }}</div>
         </div>
 
         <aside class="col-lg-4 mt-3 mt-lg-0">
@@ -131,7 +134,7 @@
                     'yearCounts' => $resourceYearCounts ?? [],
                     'selectedCount' => $resourceSelectedCount ?? ($resourceTotalCount ?? 0),
                     'totalCount' => $resourceTotalCount ?? 0,
-                    'iconColor' => '#b91c1c',
+                    'iconColor' => '#B82132',
                     'badgeGradient' => 'linear-gradient(135deg,#fee2e2,#fdd2d2)',
                     'badgeColor' => '#991b1b',
                     'actionType' => 'link',
@@ -161,6 +164,98 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            // Client-side AJAX search (debounced). Uses public JSON endpoint: route('cooperatives.search')
+            var input = document.getElementById('coopSearch');
+            var perPage = document.getElementById('coopPerPage');
+            var grid = document.getElementById('coopsGrid');
+            var pagination = document.getElementById('coopsPagination');
+            if(!input || !grid) return;
+            var timer = null;
+
+            function escapeHtml(str){
+                if(!str) return '';
+                return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+            }
+            function truncate(s, n){ if(!s) return ''; return s.length > n ? s.substring(0,n-1) + '…' : s; }
+
+            function attachModalHandlers(){
+                document.querySelectorAll('.coop-name-link').forEach(el=>{
+                    el.removeEventListener('click', el._coopClickHandler);
+                    var handler = function(ev){
+                        ev.preventDefault();
+                        const href = el.getAttribute('href');
+                        if(!href) return;
+                        const modalUrl = href.replace(/\/+$/,'') + '/modal';
+                        const modalEl = document.getElementById('coopModal');
+                        const modalBody = document.getElementById('coopModalBody');
+                        if(!modalEl || !modalBody) { window.location = href; return; }
+                        modalBody.innerHTML = '<div class="text-center text-muted py-3">Loading...</div>';
+                        fetch(modalUrl, {headers:{'X-Requested-With':'XMLHttpRequest'}})
+                            .then(r=>{ if(!r.ok) throw r; return r.text(); })
+                            .then(html=>{ modalBody.innerHTML = html; try{ const bsModal = new bootstrap.Modal(modalEl); bsModal.show(); }catch(e){} })
+                            .catch(()=>{ window.location = href; });
+                    };
+                    el.addEventListener('click', handler);
+                    el._coopClickHandler = handler;
+                });
+            }
+
+            function renderCoops(items){
+                if(!Array.isArray(items)){ items = []; }
+                if(items.length === 0){
+                    grid.innerHTML = '<div class="col"><div class="text-center text-muted">No cooperatives found.</div></div>';
+                    if(pagination) pagination.style.display = 'none';
+                    return;
+                }
+                var html = '';
+                        items.forEach(function(coop){
+                                var sector = coop.sector || '';
+                                var region = coop.region || '';
+                                var meta = sector + ((sector && region) ? ' · ' : '') + region;
+                                var imgPart = '';
+                                if (coop.image_url) {
+                                    var url = encodeURI(coop.image_url);
+                                    imgPart = '<div class="card-img-top" style="height:120px;background-image:url(' + url + ');background-size:cover;background-position:center;border-top-left-radius:.375rem;border-top-right-radius:.375rem"></div>';
+                                } else {
+                                        imgPart = '<div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height:120px;border-top-left-radius:.375rem;border-top-right-radius:.375rem">'
+                                                + '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"></path><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg>'
+                                            + '</div>';
+                                }
+
+                                html += '<div class="col">'
+                                        + '<article class="card h-100 coop-card">'
+                                            + imgPart
+                                            + '<div class="card-body text-center">'
+                                                + '<h3 class="h6 mb-2"><a class="coop-name-link" href="/cooperatives/' + coop.id + '">' + escapeHtml(coop.name) + '</a></h3>'
+                                                + '<p class="small coop-meta mb-2">' + escapeHtml(meta) + '</p>'
+                                                + '<p class="mb-0 coop-description">' + escapeHtml(truncate(coop.description || '', 120)) + '</p>'
+                                            + '</div>'
+                                        + '</article>'
+                                + '</div>';
+                        });
+                grid.innerHTML = html;
+                if(pagination) pagination.style.display = 'none';
+                attachModalHandlers();
+            }
+
+            function doSearch(q){
+                var url = new URL("{{ route('cooperatives.search') }}", window.location.origin);
+                if(q) url.searchParams.set('q', q);
+                var pp = perPage ? perPage.value : '';
+                if(pp) url.searchParams.set('per_page', pp);
+                fetch(url.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(function(r){ if(!r.ok) throw r; return r.json(); })
+                    .then(function(json){ renderCoops(json.data || []); })
+                    .catch(function(){ grid.innerHTML = '<div class="col"><div class="text-center text-muted">Search failed.</div></div>'; if(pagination) pagination.style.display = 'none'; });
+            }
+
+            input.addEventListener('input', function(){ clearTimeout(timer); timer = setTimeout(function(){ doSearch(input.value.trim()); }, 220); });
+            if(perPage){ perPage.addEventListener('change', function(){ doSearch(input.value.trim()); }); }
+
+            // Initialize modal handlers for server-rendered links
+            attachModalHandlers();
+        });
     document.addEventListener('DOMContentLoaded', function(){
         // Intercept cooperative link clicks to open modal via AJAX
         document.querySelectorAll('.coop-name-link').forEach(el=>{

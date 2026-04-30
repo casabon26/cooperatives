@@ -130,6 +130,9 @@ Route::get('/accomplishment-reports/{report}', [PublicController::class,'accompl
 Route::get('/cooperatives/{cooperative}/modal', [PublicController::class,'profileModal'])->name('cooperatives.profile.modal');
 // SLPA modal content (AJAX)
 Route::get('/slpas/{slpa}/modal', [PublicController::class,'slpaModal'])->name('slpas.modal');
+// Gallery listing and modal (public)
+Route::get('/gallery', [PublicController::class, 'galleryIndex'])->name('gallery.index');
+Route::get('/galleries/{gallery}/modal', [PublicController::class, 'galleryModal'])->name('galleries.modal');
 // SLPA full profile page
 Route::get('/slpas/{slpa}', [PublicController::class,'slpaShow'])->name('slpas.show');
 Route::get('/cooperatives/search', [PublicController::class,'search'])->name('cooperatives.search');
@@ -143,7 +146,7 @@ Route::get('/cooperative-resources/{resource}', [PublicController::class, 'coope
 Route::post('/documents/{document}/delete', [\App\Http\Controllers\DocumentController::class, 'destroy'])->middleware('auth')->name('documents.delete');
 
 // Video progress API endpoints (simple JSON endpoints used by training page)
-Route::middleware('custom.cors')->group(function(){
+Route::middleware('api')->group(function(){
     Route::get('/api/get-video-progress', [VideoProgressController::class, 'get']);
     Route::post('/api/save-video-progress', [VideoProgressController::class, 'save']);
     Route::post('/api/mark-video-complete', [VideoProgressController::class, 'complete']);
@@ -156,6 +159,9 @@ Route::middleware('custom.cors')->group(function(){
 Route::middleware(['auth','can:access-admin'])->prefix('admin')->name('admin.')->group(function(){
     Route::get('/', [AdminController::class,'dashboard'])->name('dashboard');
     // Allow full resourceful CRUD for cooperatives in the admin panel
+    // AJAX search for cooperatives (real-time letter-by-letter search)
+    Route::get('cooperatives/search', [CooperativeController::class, 'search'])->name('cooperatives.search');
+
     Route::resource('cooperatives', CooperativeController::class)->except(['show']);
     // Trashed cooperatives management
     Route::get('cooperatives/trashed', [CooperativeController::class, 'trashed'])->name('cooperatives.trashed');
@@ -200,6 +206,8 @@ Route::middleware(['auth','can:access-admin'])->prefix('admin')->name('admin.')-
     Route::resource('cooperative-resources', \App\Http\Controllers\Admin\CooperativeResourceController::class)->except(['show']);
     // Livelihood cards management (admin)
     Route::resource('livelihood', \App\Http\Controllers\Admin\LivelihoodController::class)->except(['show']);
+    // Gallery management (admin)
+    Route::resource('galleries', \App\Http\Controllers\Admin\GalleryController::class)->except(['show']);
     // Select list items (dropdown options) management
     Route::resource('select_lists', \App\Http\Controllers\Admin\SelectListController::class)->except(['show']);
     // Per-cooperative resource management (create/edit/update/destroy bound to a cooperative)
@@ -208,6 +216,9 @@ Route::middleware(['auth','can:access-admin'])->prefix('admin')->name('admin.')-
     Route::put('cooperatives/{cooperative}/resources/{resource}', [\App\Http\Controllers\Admin\CooperativeResourceController::class,'updateForCooperative'])->name('cooperatives.resources.update');
     Route::delete('cooperatives/{cooperative}/resources/{resource}', [\App\Http\Controllers\Admin\CooperativeResourceController::class,'destroyForCooperative'])->name('cooperatives.resources.destroy');
     // Store locations admin CRUD
+    // Hidden CABS MAIN Excel import (not linked anywhere; visit URL directly)
+    Route::get('store_locations/cabs-main-import', [StoreLocationController::class, 'cabsImportForm'])->name('store_locations.cabs_import_form');
+    Route::post('store_locations/cabs-main-import', [StoreLocationController::class, 'cabsImportProcess'])->name('store_locations.cabs_import');
     Route::resource('store_locations', \App\Http\Controllers\StoreLocationController::class)->except(['show']);
     // Manage store categories items (simple JSON-backed)
     Route::get('store-categories/create', [StoreCategoryController::class, 'create'])->name('store_categories.create');

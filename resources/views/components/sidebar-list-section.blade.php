@@ -5,7 +5,7 @@
     'yearCounts' => [],
     'selectedCount' => 0,
     'totalCount' => 0,
-    'iconColor' => '#b91c1c',
+    'iconColor' => '#B82132',
     'badgeGradient' => 'linear-gradient(135deg,#fee2e2,#fdd2d2)',
     'badgeColor' => '#991b1b',
     'actionType' => 'link', // 'link' or 'modal'
@@ -17,13 +17,13 @@
 
 <style>
     .memo-item { transition: background .12s ease; }
-    .memo-item:hover { background: rgba(239,68,68,0.08); }
+    .memo-item:hover { background: rgba(var(--primary-r), 0.08); }
     .memo-link { display:inline-block; border-radius:6px; padding:0 .25rem; }
     .memo-item .memo-icon { background:#fff; border-radius:8px; padding:.45rem; }
     .memo-badge { border-radius:8px !important; }
 </style>
 
-<div class="card mb-3" style="background: linear-gradient(180deg,#fff5f6,#fff0f2); border:1px solid rgba(239,68,68,0.07); border-radius:12px; box-shadow:0 12px 36px rgba(185,28,28,0.06); overflow:hidden;">
+<div class="card mb-3" style="background: linear-gradient(180deg,#fff5f6,#fff0f2); border:1px solid rgba(var(--primary-r), 0.07); border-radius:12px; box-shadow:0 12px 36px rgba(var(--primary-r), 0.06); overflow:hidden;">
     <div class="card-body" style="padding:1rem;">
         <h5 class="card-title mb-3">{{ $title }}</h5>
 

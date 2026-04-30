@@ -54,7 +54,7 @@
         .memo-link:focus {
             background: #ef4444;
             color: #ffffff !important;
-            box-shadow: 0 6px 18px rgba(239,68,68,0.12);
+            box-shadow: 0 6px 18px rgba(var(--primary-r), 0.12);
             text-decoration: none;
         }
 
@@ -69,14 +69,14 @@
         .memo-item > .flex-grow-1 { min-width: 0; }
         .memo-item + .memo-item { margin-top:.45rem; }
         .memo-item:hover { 
-            background: linear-gradient(180deg, rgba(239,68,68,0.03), rgba(0,0,0,0.01)); 
+            background: linear-gradient(180deg, rgba(var(--primary-r), 0.03), rgba(0,0,0,0.01)); 
             box-shadow: 0 8px 20px rgba(15,23,42,0.03); 
         }
         .memo-icon {
             width:44px; height:44px; border-radius:8px;
             background:linear-gradient(180deg,#fff,#fff);
             display:inline-flex; align-items:center; justify-content:center;
-            border:1px solid rgba(0,0,0,0.04); color:#b91c1c; font-weight:700
+            border:1px solid rgba(0,0,0,0.04); color:var(--primary); font-weight:700
         }
         .memo-link { 
             color: #5b1b1b; font-weight:700; display:block; 
@@ -114,8 +114,8 @@
         .memo-meta { font-size:.825rem; color: #6b6b6b; margin-top:.25rem }
         .memo-actions { display:flex; align-items:center; gap:.4rem }
         .memo-badge { 
-            background: rgba(185,28,28,0.08); 
-            color:#b91c1c; padding:.18rem .45rem; 
+            background: rgba(var(--primary-r), 0.08); 
+            color:var(--primary); padding:.18rem .45rem; 
             border-radius:6px; font-weight:700; font-size:.75rem 
         }
         .memo-item:hover .memo-badge { 
@@ -128,7 +128,7 @@
             gap: .5rem;
         }
         .memo-filter .dropdown-menu .active {
-            background-color: rgba(239,68,68,0.08);
+            background-color: rgba(var(--primary-r), 0.08);
             color: var(--danger);
             font-weight: 600;
         }
@@ -136,7 +136,7 @@
         .video-highlights-title {
             font-size: 1.4rem;
             font-weight: 700;
-            color: #991b1b;
+            color: var(--primary-dark);
             margin-bottom: 0.5rem;
         }
 
@@ -160,17 +160,17 @@
                 0 4px 16px rgba(0,0,0,0.08),
                 0 1px 3px rgba(0,0,0,0.1);
             transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
-            border: 1px solid rgba(185,28,28,0.06);
+            border: 1px solid rgba(var(--primary-r), 0.06);
         }
 
         .video-card:hover {
             transform: translateY(-8px) scale(1.02) !important;
             box-shadow: 
-                0 20px 40px rgba(185,28,28,0.22),
+                0 20px 40px rgba(var(--primary-r), 0.22),
                 0 8px 20px rgba(0,0,0,0.12) !important;
         }
         .video-card:hover .play-button-overlay {
-            background: rgba(185,28,28,0.54);
+            background: rgba(var(--primary-r), 0.54);
         }
 
         .video-thumb {
@@ -199,7 +199,7 @@
         }
 
         .play-button-overlay:hover {
-            background: rgba(185,28,28,0.6);
+            background: rgba(var(--primary-r), 0.6);
         }
 
         .video-thumb::after {
@@ -353,7 +353,7 @@
         .latest-updates-title {
             font-size: 1.4rem;
             font-weight: 700;
-            color: #991b1b;
+            color: var(--primary-dark);
             margin: 2.5rem 0 1rem;
         }
 
@@ -398,8 +398,8 @@
 
         .update-row:hover {
             transform: translateY(-6px);
-            box-shadow: 0 18px 40px rgba(185,28,28,0.16), 0 6px 20px rgba(0,0,0,0.08);
-            border-color: rgba(185,28,28,0.14);
+            box-shadow: 0 18px 40px rgba(var(--primary-r), 0.16), 0 6px 20px rgba(0,0,0,0.08);
+            border-color: rgba(var(--primary-r), 0.14);
             background: linear-gradient(180deg, rgba(255,245,245,0.9), #ffffff);
         }
 
@@ -581,7 +581,7 @@
                         'yearCounts' => $yearCounts ?? [],
                         'selectedCount' => $selectedCount ?? 0,
                         'totalCount' => $totalCount ?? 0,
-                        'iconColor' => '#b91c1c',
+                        'iconColor' => '#B82132',
                         'badgeGradient' => 'linear-gradient(135deg,#fee2e2,#fdd2d2)',
                         'badgeColor' => '#991b1b',
                         'actionType' => 'link',

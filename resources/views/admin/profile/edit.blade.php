@@ -6,7 +6,7 @@
         <div class="col-12 col-md-3">
             <!-- Sidebar Navigation -->
             <div class="list-group mb-4">
-                <a href="{{ route('admin.profile.show') }}" target="_self" class="list-group-item list-group-item-action" style="border-color: rgba(185,28,28,0.1); color: #7f1d1d; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='rgba(185,28,28,0.08)'" onmouseout="this.style.backgroundColor='transparent'">
+                <a href="{{ route('admin.profile.show') }}" target="_self" class="list-group-item list-group-item-action" style="border-color: rgba(var(--primary-r), 0.1); color: var(--primary-dark); transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='rgba(184,33,50,0.08)'" onmouseout="this.style.backgroundColor='transparent'">
                     Profile Information
                 </a>
                 <a href="{{ route('admin.profile.edit') }}" target="_self" class="list-group-item list-group-item-action active" aria-current="true" style="background: linear-gradient(135deg, rgba(185,28,28,0.12), rgba(239,68,68,0.08)); border-color: rgba(185,28,28,0.2); color: #7f1d1d;">
@@ -15,7 +15,7 @@
                 <a href="{{ route('admin.profile.change-password') }}" target="_self" class="list-group-item list-group-item-action" style="border-color: rgba(185,28,28,0.1); color: #7f1d1d; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='rgba(185,28,28,0.08)'" onmouseout="this.style.backgroundColor='transparent'">
                     Change Password
                 </a>
-                <a href="{{ url('/admin/panel') }}" target="_self" class="list-group-item list-group-item-action" style="border-color: rgba(185,28,28,0.1); color: #b91c1c; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='rgba(185,28,28,0.08)'" onmouseout="this.style.backgroundColor='transparent'">
+                <a href="{{ url('/admin/panel') }}" target="_self" class="list-group-item list-group-item-action" style="border-color: rgba(var(--primary-r), 0.1); color: var(--primary); font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='rgba(184,33,50,0.08)'" onmouseout="this.style.backgroundColor='transparent'">
                     Back to Dashboard
                 </a>
             </div>

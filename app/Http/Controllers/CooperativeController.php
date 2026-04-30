@@ -33,6 +33,7 @@ class CooperativeController extends Controller
             'image'=>'nullable|file|max:4096',
             // Use 'file' validator to avoid relying on PHP fileinfo MIME guessers; we'll whitelist extensions below
             'gallery_files.*' => 'nullable|file|max:5120',
+            'members_count' => 'nullable|integer|min:0',
         ]);
 
         if ($request->hasFile('image')) {
@@ -77,6 +78,8 @@ class CooperativeController extends Controller
         // merge profile fields into cooperative data and create the cooperative
         $createData = array_merge($data, array_filter($profileData, function($v){ return $v !== null && $v !== ''; }));
         $coop = Cooperative::create($createData);
+
+        // members_count is stored on the cooperative model (no user pivot sync)
 
         // directory overrides were removed: use cooperative fields directly
 
@@ -138,6 +141,28 @@ class CooperativeController extends Controller
         // return all cooperatives (no pagination) for admin listing
         $cooperatives = Cooperative::orderBy('name')->get();
         return view('admin.cooperatives.index', compact('cooperatives'));
+    }
+
+    /**
+     * AJAX search endpoint for cooperatives (returns HTML partial)
+     */
+    public function search(Request $request)
+    {
+        $q = trim((string)$request->query('q', ''));
+        $builder = Cooperative::orderBy('name');
+        if ($q !== '') {
+            $builder->where(function($w) use ($q){
+                $w->where('name', 'like', "%{$q}%")
+                  ->orWhere('sector', 'like', "%{$q}%")
+                  ->orWhere('region', 'like', "%{$q}%")
+                  ->orWhere('description', 'like', "%{$q}%");
+            });
+        }
+
+        $cooperatives = $builder->get();
+
+        // Return the same list markup as the index view expects (partial)
+        return view('admin.cooperatives._list', compact('cooperatives'));
     }
 
     /**
@@ -204,6 +229,7 @@ class CooperativeController extends Controller
             'status'=>'required|in:pending,active,suspended,archived',
             'image'=>'nullable|file|max:4096',
             'gallery_files.*' => 'nullable|file|max:5120',
+            'members_count' => 'nullable|integer|min:0',
         ]);
 
         if ($request->hasFile('image')) {
@@ -266,6 +292,7 @@ class CooperativeController extends Controller
         $updateData = array_merge($data, array_filter($profileData, function($v){ return $v !== null && $v !== ''; }));
         $cooperative->update($updateData);
 
+        // members_count is handled as a cooperative attribute; no pivot sync performed
         // directory overrides removed; public listing uses cooperative fields directly
 
         return redirect()->route('admin.cooperatives.index')->with('success','Updated');

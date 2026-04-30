@@ -13,10 +13,10 @@
     .livelihood-portal aside .card { background: linear-gradient(180deg,#fff,#feffff); }
 
     /* SLPA card styling to match cooperative cards (screenshot) */
-    .slpa-card { border-radius:12px; border:1px solid rgba(239,68,68,0.12); background: #fff7f7; padding:1rem; text-align:center; }
+    .slpa-card { border-radius:12px; border:1px solid rgba(var(--primary-r), 0.12); background: #fff7f7; padding:1rem; text-align:center; }
     .slpa-card .slpa-media { height:96px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#fff; border-radius:8px; margin:0 auto; width:88px; }
     .slpa-card img { max-height:64px; max-width:100%; object-fit:contain; display:block; }
-    .slpa-card .slpa-title { color:#b91c1c; font-weight:700; font-size:1rem; margin-top:.6rem; margin-bottom:.25rem; text-align:center; }
+    .slpa-card .slpa-title { color:var(--primary); font-weight:700; font-size:1rem; margin-top:.6rem; margin-bottom:.25rem; text-align:center; }
     .slpa-card .slpa-meta { color:#94a3b8; font-size:.86rem; margin-bottom:.5rem; text-align:center; }
     .slpa-card .slpa-desc { color:#0f172a; text-align:center; margin-top:.35rem; }
     .slpa-card .slpa-products { color:#475569; margin-top:.5rem; font-size:.875rem; text-align:center; }
@@ -57,6 +57,8 @@
     .see-more-caret.expanded svg {
       transform: rotate(180deg);
     }
+    /* Scrollable container for Available Stalls (show ~10 visible, scroll for more) */
+    .available-stalls-scroll { max-height: 420px; overflow-y: auto; }
   </style>
 
   <div class="row g-4">
@@ -75,12 +77,12 @@
               </ul>
 
               <div id="narrative-preview" class="small text-muted mb-2">
-                The Livelihood Division continues to show its commitment to helping the community by conducting different skills training and small business programs for cooperative members and local residents. The activities in the first quarter of 2026 show a clear effort to give more livelihood options, support small businesses, and teach useful skills that can help people earn income and improve their daily lives.
+                The Livelihood Division continues to show its commitment to helping the community by conducting different skills training and small business programs for cooperative members and local residents. The activities in the first quarter of the 2026 show a clear effort to give more livelihood options, support small businesses, and teach useful skills that can help people earn income and improve their daily lives.
               </div>
 
               <button id="see-more-btn" class="see-more-btn" aria-expanded="false" type="button">
                 <span class="see-more-label">See More</span>
-                <span class="see-more-caret" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span>
+                <span class="see-more-caret" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" string="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span>
               </button>
 
               <div id="livelihood-full" style="display:none; margin-top:0.75rem;">
@@ -93,11 +95,11 @@
 
                 <h6 class="mt-3">Narrative Report on Livelihood Trainings – First Quarter 2026</h6>
                 <div class="small text-muted">
-                  <p>The Livelihood Division continues to show its commitment to helping the community by conducting different skills training and small business programs for cooperative members and local residents. The activities in the first quarter of 2026 show a clear effort to give more livelihood options, support small businesses, and teach useful skills that can help people earn income and improve their daily lives.</p>
+                  <p>The Livelihood Division continues to show its commitment to helping the community by conducting different skills training and small business programs for cooperative members and local residents. The activities in the first quarter of the 2026 show a clear effort to give more livelihood options, support small businesses, and teach useful skills that can help people earn income and improve their daily lives.</p>
 
                   <p>In January, the division conducted a soap-making training attended by 20 members of SUMECO at the Cabuyao Retail Plaza. The training focused on teaching the proper way of making soap, with attention to good quality and efficient production. This helped participants learn how to create soap products that they can sell to earn income.</p>
 
-                  <p>In February, another training was held from February 21 to 27 for participants from Barangay Banay-banay and Barangay Bigaa. This training focused on dishwashing liquid making and meat processing. The goal was to teach participants how to make and sell these products, encouraging them to start small businesses. Proper hygiene, correct methods, and product quality were also emphasized to help them compete in the market.</p>
+                  <p>In February, another training was held from February 21 to 27 for participants from Barangay Banay-banay and Barangay Bigaa. The training focused on dishwashing liquid making and meat processing. The goal was to teach participants how to make and sell these products, encouraging them to start small businesses. Proper hygiene, correct methods, and product quality were also emphasized to help them compete in the market.</p>
 
                   <p>March was a very busy month with several training activities. On March 11, a special livelihood training was held at Cabuyao Centro Mall with 42 participants. The training included nail care, massage, and making Filipino snacks such as siopao and empanada. This aimed to give participants more livelihood choices, especially in personal services and food businesses.</p>
 
@@ -105,7 +107,7 @@
 
                   <p>In the middle of March, a large training session was conducted at the Cabuyao Integrated Learning Facility with 116 participants. The training covered meat processing, candle making, and mushroom production. The goal was to teach different skills that can help participants start various types of small businesses and earn steady income.</p>
 
-                  <p>Overall, these livelihood programs show the division’s effort to help people learn skills, start businesses, and improve their financial situation. By offering trainings based on the needs of the community, the Livelihood Division helps create more income opportunities and supports a stronger and more stable community.</p>
+                  <p>Overall, these livelihood programs show the division's effort to help people learn skills, start businesses, and improve their financial situation. By offering trainings based on the needs of the community, the Livelihood Division helps create more income opportunities and supports a stronger and more stable community.</p>
                 </div>
               </div>
 
@@ -276,8 +278,47 @@
                         });
                       });
                     });
+
+                    // Gallery thumbnails in sidebar / listing open modal via AJAX
+                    document.querySelectorAll('.gallery-thumb').forEach(el=>{
+                      el.addEventListener('click', function(ev){
+                        ev.preventDefault();
+                        const modalUrl = el.dataset.modalUrl;
+                        if(!modalUrl) return;
+                        const modalEl = document.getElementById('galleryModal');
+                        const modalBody = document.getElementById('galleryModalBody');
+                        if(!modalEl || !modalBody) return;
+                        modalBody.innerHTML = '<div class="text-center text-muted py-3">Loading...</div>';
+                        fetch(modalUrl, {headers:{'X-Requested-With':'XMLHttpRequest'}})
+                        .then(r=>{ if(!r.ok) throw r; return r.text(); })
+                        .then(html=>{
+                          modalBody.innerHTML = html;
+                          try {
+                            const img = modalBody.querySelector('[data-gallery-modal-image]');
+                            if(img){ img.addEventListener('click', function(){ img.classList.toggle('zoomed'); }); }
+                          } catch(e) { console.warn('Attach zoom handler failed', e); }
+                          try { const bsModal = new bootstrap.Modal(modalEl); bsModal.show(); } catch(e) { console.warn('Bootstrap modal unavailable', e); }
+                        }).catch(()=>{
+                          console.warn('Failed to load gallery modal');
+                        });
+                      });
+                    });
                   });
                   </script>
+                  <!-- Gallery modal (AJAX-loaded) -->
+                  <div class="modal fade" id="galleryModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Photo</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="galleryModalBody">
+                          <div class="text-center text-muted py-3">Loading...</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <script>
                     (function(){
                       var sel = document.getElementById('cabstopSelect');
@@ -289,26 +330,60 @@
                           container.innerHTML = '<div class="small text-muted">No stores found for this place.</div>';
                           return;
                         }
-                        var html = '<div class="card"><div class="card-body"><h6 class="mb-2">Stores</h6><ul class="list-unstyled mb-0">';
+                        var html = '<div class="card"><div class="card-body"><h6 class="mb-3">Available Stalls</h6><div class="available-stalls-scroll"><div class="list-group list-group-flush">';
                         list.forEach(function(it){
                           var label = it.name || it.title || '';
-                          var stype = '';
+                          var storeTypeLabel = '';
+                          var storeBadgeClass = '';
+                          
                           if(it.store_type){
-                            var labelType = (it.store_type === 'food') ? 'Food' : (it.store_type === 'non_food' ? 'Non-food' : it.store_type);
-                            var cls = (it.store_type === 'food') ? 'bg-success' : 'bg-secondary';
-                            stype = '<span class="badge ' + cls + ' ms-2">'+ labelType + '</span>';
+                            if(it.store_type === 'food'){
+                              storeTypeLabel = 'Food Stall';
+                              storeBadgeClass = 'bg-success';
+                            } else if(it.store_type === 'non_food'){
+                              storeTypeLabel = 'Non-food Stall';
+                              storeBadgeClass = 'bg-secondary';
+                            } else {
+                              storeTypeLabel = it.store_type;
+                              storeBadgeClass = 'bg-warning';
+                            }
                           }
-                          html += '<li class="py-1">' + label + (stype) + '</li>';
+                          
+                          var addressInfo = '';
+                          if(it.address){
+                            addressInfo = '<div class="small text-muted mt-1"><i class="bi bi-geo-alt"></i> ' + it.address + '</div>';
+                          }
+                          
+                          var coordsInfo = '';
+                          if(it.lat && it.lng){
+                            coordsInfo = '<div class="small text-muted mt-1"><i class="bi bi-map"></i> ' + parseFloat(it.lat).toFixed(4) + ', ' + parseFloat(it.lng).toFixed(4) + '</div>';
+                          }
+                          
+                          var descInfo = '';
+                          if(it.description){
+                            descInfo = '<div class="small mt-2">' + it.description + '</div>';
+                          }
+                          
+                          var badge = storeTypeLabel ? '<span class="badge ' + storeBadgeClass + ' ms-2">'+ storeTypeLabel + '</span>' : '';
+                          
+                          html += '<div class="list-group-item py-2">';
+                          html += '<div class="d-flex align-items-start justify-content-between">';
+                          html += '<div class="fw-bold">' + label + badge + '</div>';
+                          html += '</div>';
+                          html += addressInfo + coordsInfo + descInfo;
+                          html += '</div>';
                         });
-                        html += '</ul></div></div>';
+                        html += '</div></div></div></div>';
                         container.innerHTML = html;
                       }
 
                       // helper to fetch with optional type
                       function loadStoresFor(place, type){
-                        if(!place){ container.innerHTML = ''; return; }
+                        if(!place) { container.innerHTML = ''; return; }
                         var url = '/api/store-locations?place=' + encodeURIComponent(place);
                         if(type) url += '&store_type=' + encodeURIComponent(type);
+                        // Only return stores intended for the Livelihood listings (no coordinates)
+                        url += '&map=livelihood';
                         fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
                           .then(function(r){ if(!r.ok) throw r; return r.json(); })
                           .then(function(json){ renderStores(json || []); })
@@ -357,15 +432,37 @@
                 <option value="{{ $opt->key ?? $opt->label }}">{{ $opt->label }}</option>
               @endforeach
             </select>
-          @else
+          </if(!empty($programs) && count($programs))
             <select class="form-select" aria-label="Programs select">
-              <option selected disabled>Select Program</option>
-              <option value="program_grants">Livelihood Grants</option>
-              <option value="program_enterprise_development">Enterprise Development</option>
-              <option value="program_product_development">Product Development</option>
-              <option value="program_market_linkages">Market Linkages</option>
+
             </select>
           @endif
+        </div>
+      </div>
+      <div class="card mt-3">
+        <div class="card-body">
+          <h5 class="card-title mb-2">Gallery</h5>
+          <p class="text-muted small">Latest photos</p>
+          <div class="row g-2">
+            @if(!empty($galleries) && count($galleries))
+              @foreach($galleries as $g)
+                <div class="col-4">
+                  <a href="#" class="d-block gallery-thumb" data-modal-url="{{ url('/galleries/'.$g->id.'/modal') }}" data-id="{{ $g->id }}" title="{{ $g->title }}">
+                    @if($g->image_url)
+                      <img src="{{ $g->image_url }}" alt="{{ $g->alt_text ?: $g->title }}" class="img-fluid rounded" style="height:72px; width:100%; object-fit:cover;">
+                    @else
+                      <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height:72px">No image</div>
+                    @endif
+                  </a>
+                </div>
+              @endforeach
+            @else
+              <div class="col-12"><div class="small text-muted">No gallery photos yet.</div></div>
+            @endif
+          </div>
+          <div class="mt-2 text-end">
+            <a href="{{ route('gallery.index', ['section' => 'livelihood']) }}" class="see-more-btn">See all photos in gallery <span class="see-more-caret" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" string="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg></span></a>
+          </div>
         </div>
       </div>
 
@@ -395,3 +492,4 @@
   </div>
 </div>
 @endsection
+

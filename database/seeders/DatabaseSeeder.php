@@ -59,6 +59,11 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        // Ensure select list defaults exist (cabstop / programs / services)
+        if (class_exists(\Database\Seeders\SelectListItemsSeeder::class)) {
+            $this->call(\Database\Seeders\SelectListItemsSeeder::class);
+        }
+
         // SLPA sample data
         if (class_exists(\Database\Seeders\SlpaSeeder::class)) {
             $this->call(\Database\Seeders\SlpaSeeder::class);

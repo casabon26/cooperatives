@@ -5,7 +5,7 @@
     /* Disable card hover effects on document preview pages */
     .card:hover {
         transform: none !important;
-        box-shadow: 0 12px 32px rgba(185,28,28,0.06) !important;
+        box-shadow: 0 12px 32px rgba(var(--primary-r), 0.06) !important;
     }
     .card {
         transition: none !important;

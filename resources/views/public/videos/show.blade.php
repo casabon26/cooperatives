@@ -38,7 +38,7 @@
 
                     <button id="videoMaskBtn"
                             style="
-                                background:rgba(185,28,28,0.97);
+                                background:rgba(var(--primary-r),0.97);
                                 border:none;
                                 color:#fff;
                                 padding:20px 32px;

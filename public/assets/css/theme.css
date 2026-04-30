@@ -1,11 +1,12 @@
 /* Immediate theme overrides (deployed to public for quick preview) */
 :root{
-  --primary: #b91c1c; /* warm strong red */
+  --primary: #B82132; /* main red */
+  --primary-r: 184,33,50;
   --danger: #ef4444;  /* action red */
   --bg: #fff6f6;      /* soft pale-rose background */
   --accent: #ffd4d6;  /* soft accent to pair with red */
   --muted: #fbf2f2;
-  --card-border: rgba(185,28,28,0.08);
+  --card-border: rgba(var(--primary-r), 0.08);
   --radius: 10px;
   --text: #111827; /* darker text for contrast */
 }
@@ -14,12 +15,12 @@ html,body{background:var(--bg);color:var(--text)}
 
 .logo-circle{display:inline-flex;align-items:center;justify-content:center;border-radius:9999px;width:44px;height:44px;font-weight:600;background:linear-gradient(180deg,var(--primary),#ff7b7b);color:#fff}
 .feature-box{transition:transform .12s ease,box-shadow .12s ease}
-.card:hover{transform:none !important;box-shadow:0 12px 32px rgba(185,28,28,0.06) !important}
-.card{border:1px solid rgba(185,28,28,0.14);border-radius:var(--radius);box-shadow:0 12px 32px rgba(185,28,28,0.06);background:linear-gradient(180deg, rgba(185,28,28,0.08) 0%, rgba(255,245,245,0.95) 100%) !important;color:var(--text);overflow:hidden}
+.card:hover{transform:none !important;box-shadow:0 12px 32px rgba(var(--primary-r), 0.06) !important}
+.card{border:1px solid rgba(var(--primary-r), 0.14);border-radius:var(--radius);box-shadow:0 12px 32px rgba(var(--primary-r), 0.06);background:linear-gradient(180deg, rgba(var(--primary-r), 0.08) 0%, rgba(255,245,245,0.95) 100%) !important;color:var(--text);overflow:hidden}
 .card .card-body{background:transparent !important}
 .card h5, .card h6, .card .card-title { color: var(--text); }
 .sidebar-card{border:1px solid var(--card-border);border-radius:8px}
-.preview-large{background:linear-gradient(90deg,rgba(185,28,28,0.06),rgba(185,28,28,0.02));border-radius:10px}
+.preview-large{background:linear-gradient(90deg,rgba(var(--primary-r), 0.06),rgba(var(--primary-r), 0.02));border-radius:10px}
 .preview-small{background:linear-gradient(90deg,rgba(236,36,38,0.03),rgba(236,36,38,0.01));border-radius:8px}
 .preview-accent{background:linear-gradient(90deg,rgba(254,202,22,0.07),rgba(254,202,22,0.02));border-radius:8px}
 .preview-large, .preview-small, .preview-accent{border:1px solid var(--card-border)}
@@ -112,27 +113,54 @@ html, body {
   text-align: center;
   color: #fff;
   padding: 1.25rem 1rem;
+:root{
+  --primary: #B82132; /* main red */
+  --primary-r: 184,33,50;
+  --danger: #ef4444;  /* action red */
+  --bg: #fff6f6;      /* soft pale-rose background */
+  --accent: #ffd4d6;  /* soft accent to pair with red */
+  --muted: #fbf2f2;
+  --card-border: rgba(var(--primary-r), 0.08);
+  --radius: 10px;
+  --text: #111827; /* darker text for contrast */
+}
   border-radius: 8px;
+logo-circle{display:inline-flex;align-items:center;justify-content:center;border-radius:9999px;width:44px;height:44px;font-weight:600;background:linear-gradient(180deg,var(--primary),var(--primary-2));color:#fff}
   box-shadow: 0 12px 30px rgba(0,0,0,0.35);
-  -webkit-backdrop-filter: blur(6px);
+.card{border:1px solid rgba(var(--primary-r), 0.14);border-radius:var(--radius);box-shadow:0 12px 32px rgba(var(--primary-r), 0.06);background:linear-gradient(180deg, rgba(var(--primary-r), 0.08) 0%, rgba(255,245,245,0.95) 100%) !important;color:var(--text);overflow:hidden}
   backdrop-filter: blur(6px);
+.preview-large{background:linear-gradient(90deg,rgba(var(--primary-r), 0.06),rgba(var(--primary-r), 0.02));border-radius:10px}
 }
 .hero h1{ color: #ffffff; margin:0 0 .25rem; text-shadow:0 2px 8px rgba(0,0,0,0.45) }
 .hero p{ color: rgba(255,255,255,0.95); margin:0 }
 /* Ensure Bootstrap's .text-muted doesn't override hero subtitle color */
 .hero p.text-muted{ color: #ffffff !important }
 
+.btn-primary:hover {
+  background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+  box-shadow: 0 4px 12px rgba(var(--primary-r), 0.2);
+  transform: translateY(-1px);
+}
 /* Pagination: simple number-only styling */
 .pagination {
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
+.btn-outline-primary:hover {
+  background-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(var(--primary-r), 0.15);
+}
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
 .pagination .page-item {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.56), rgba(0,0,0,0.36)),
+    url('/assets/images/logo/hero-bg.jpg') center/cover no-repeat,
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 400'><rect width='100%25' height='100%25' fill='%23fff6f6'/><g opacity='0.9'><rect x='0' y='0' width='1600' height='400' fill='none'/></g><text x='50%25' y='46%25' text-anchor='middle' dominant-baseline='middle' font-family='Arial, Helvetica, sans-serif' font-size='48' fill='%23B82132' font-weight='700'>HERO PLACEHOLDER</text><text x='50%25' y='64%25' text-anchor='middle' dominant-baseline='middle' font-family='Arial, Helvetica, sans-serif' font-size='18' fill='%23D2665A' opacity='0.9'>Replace this file: /public/assets/images/logo/hero-bg.jpg</text></svg>") center/cover no-repeat;
   display: inline-block;
 }
 

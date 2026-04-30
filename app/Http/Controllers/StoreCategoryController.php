@@ -18,18 +18,20 @@ class StoreCategoryController extends Controller
 
     public function storeItem(Request $request)
     {
-        $request->validate([ 'category' => 'required|string', 'item' => 'required|string', 'map_url' => 'nullable|string', 'origin' => 'nullable|string' ]);
+        $request->validate([ 'category' => 'required|string', 'item' => 'required|string', 'map_url' => 'nullable|string', 'store_type' => 'nullable|string', 'origin' => 'nullable|string' ]);
         $cat = $request->input('category');
         $label = $request->input('item');
         $mapUrl = trim((string) $request->input('map_url')) ?: null;
+        $storeType = trim((string) $request->input('store_type')) ?: null;
         $origin = trim((string) $request->input('origin')) ?: null;
         $data = $this->readData();
         $items = $data[$cat] ?? [];
 
-        // Normalize new item: include map_url and optional origin when provided
-        if($mapUrl || $origin){
+        // Normalize new item: include map_url, store_type and optional origin when provided
+        if($mapUrl || $storeType || $origin){
             $new = ['label' => $label];
             if($mapUrl) $new['map_url'] = $mapUrl;
+            if($storeType) $new['store_type'] = $storeType;
             if($origin) $new['origin'] = $origin;
         } else {
             $new = $label;
@@ -51,11 +53,12 @@ class StoreCategoryController extends Controller
 
     public function updateItem(Request $request)
     {
-        $request->validate([ 'category' => 'required|string', 'old_item' => 'required|string', 'new_item' => 'required|string', 'map_url' => 'nullable|string' ]);
+        $request->validate([ 'category' => 'required|string', 'old_item' => 'required|string', 'new_item' => 'required|string', 'map_url' => 'nullable|string', 'store_type' => 'nullable|string' ]);
         $cat = $request->input('category');
         $old = $request->input('old_item');
         $newLabel = $request->input('new_item');
         $mapUrl = trim((string) $request->input('map_url')) ?: null;
+        $storeType = trim((string) $request->input('store_type')) ?: null;
         $data = $this->readData();
         if(empty($data[$cat])) return redirect()->back()->with('success','Category not found.');
         // Remove old
@@ -64,7 +67,11 @@ class StoreCategoryController extends Controller
             return $v !== $old;
         }));
         // Add new
-        $new = $mapUrl ? ['label' => $newLabel, 'map_url' => $mapUrl] : $newLabel;
+        $new = $mapUrl || $storeType ? ['label' => $newLabel] : $newLabel;
+        if(is_array($new)){
+            if($mapUrl) $new['map_url'] = $mapUrl;
+            if($storeType) $new['store_type'] = $storeType;
+        }
         $data[$cat][] = $new;
         $this->writeData($data);
         return redirect()->back()->with('success','Item updated.');

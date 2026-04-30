@@ -97,8 +97,8 @@
                                 <rect x="4" y="5.5" width="14" height="11" rx="2" fill="#fff" fill-opacity="0.13" stroke="#fff" stroke-width="1.2"/>
                                 <rect x="7" y="8" width="8" height="1.5" rx="0.75" fill="#fff" fill-opacity="0.7"/>
                                 <rect x="7" y="11" width="5" height="1.2" rx="0.6" fill="#fff" fill-opacity="0.5"/>
-                                <path d="M11 16.5l-1.2 2.2c-.13.24.13.5.38.38l1.32-.66 1.32.66c.25.12.51-.14.38-.38L13 16.5" fill="#c8102e"/>
-                                <circle cx="11" cy="15.5" r="1.2" fill="#c8102e" fill-opacity="0.9" stroke="#fff" stroke-width="0.7"/>
+                                <path d="M11 16.5l-1.2 2.2c-.13.24.13.5.38.38l1.32-.66 1.32.66c.25.12.51-.14.38-.38L13 16.5" fill="#B82132"/>
+                                <circle cx="11" cy="15.5" r="1.2" fill="#B82132" fill-opacity="0.9" stroke="#fff" stroke-width="0.7"/>
                             </svg>
                         </span>
                         Mark as Completed & Get Certificate

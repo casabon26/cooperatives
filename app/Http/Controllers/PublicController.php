@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cooperative;
 use App\Models\Slpa;
+use App\Models\Gallery;
 use App\Models\SelectListItem;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\CooperativeResource;
@@ -124,15 +125,67 @@ class PublicController extends Controller
         $perPage = intval($request->input('per_page', 100));
         $perPage = $perPage > 0 ? min($perPage, 500) : 100;
 
-        $cooperatives = $query->orderBy('name')->limit($perPage)->get(['id','name','sector','region','description','link']);
+        // If cooperative profiles table exists, eager-load profile to check for profile images
+        if (\Schema::hasTable('cooperative_profiles')) {
+            $query->with('profile');
+        }
 
-        return response()->json(['data' => $cooperatives]);
+        $cooperatives = $query->orderBy('name')->limit($perPage)->get();
+
+        $rows = $cooperatives->map(function($c){
+            $imgUrl = null;
+            // prefer cooperative image if present
+            if (!empty($c->image ?? null)) {
+                $p = ltrim($c->image, '/');
+                $storagePath = storage_path('app/public/' . $p);
+                $directPath = public_path($p);
+                $publicCopy = public_path('cooperative_images/' . basename($p));
+                if (file_exists($storagePath)) {
+                    $imgUrl = asset('storage/' . $p);
+                } elseif (file_exists($directPath)) {
+                    $imgUrl = asset($p);
+                } elseif (file_exists($publicCopy)) {
+                    $imgUrl = asset('cooperative_images/' . basename($p));
+                }
+            }
+
+            // fallback to profile image if available
+            if (!$imgUrl && !empty($c->profile->image ?? null)) {
+                $p = ltrim($c->profile->image, '/');
+                $storagePath = storage_path('app/public/' . $p);
+                $directPath = public_path($p);
+                $publicCopy = public_path('cooperative_images/' . basename($p));
+                if (file_exists($storagePath)) {
+                    $imgUrl = asset('storage/' . $p);
+                } elseif (file_exists($directPath)) {
+                    $imgUrl = asset($p);
+                } elseif (file_exists($publicCopy)) {
+                    $imgUrl = asset('cooperative_images/' . basename($p));
+                }
+            }
+
+            return [
+                'id' => $c->id,
+                'name' => $c->name,
+                'sector' => $c->sector,
+                'region' => $c->region,
+                'description' => $c->description,
+                'link' => $c->link,
+                'image_url' => $imgUrl,
+            ];
+        })->values();
+
+        return response()->json(['data' => $rows]);
     }
 
     public function profile(Cooperative $cooperative)
     {
         if (\Schema::hasTable('cooperative_profiles')) {
             $cooperative->load('profile');
+        }
+        // also load members (users) when available
+        if (\Schema::hasTable('cooperative_user')) {
+            $cooperative->load('users');
         }
         $cooperative->load('documents');
         return view('public.profile', compact('cooperative'));
@@ -291,12 +344,17 @@ class PublicController extends Controller
         $services = [];
         $cabstops = [];
         if (\Schema::hasTable('select_list_items')) {
-            $programs = SelectListItem::where('group','programs')->where('active', true)->orderBy('sort_order')->get();
-            $services = SelectListItem::where('group','services')->where('active', true)->orderBy('sort_order')->get();
-            $cabstops = SelectListItem::where('group','cabstop')->where('active', true)->orderBy('sort_order')->get();
+            $programs = SelectListItem::where('group','programs')->where('active', true)->orderBy('label')->get();
+            $services = SelectListItem::where('group','services')->where('active', true)->orderBy('label')->get();
+            $cabstops = SelectListItem::where('group','cabstop')->where('active', true)->orderBy('label')->get();
         }
 
-        return view('pages.livelihood', compact('slpas','programs','services','cabstops'));
+        $galleries = [];
+        if (\Schema::hasTable('galleries')) {
+            $galleries = Gallery::where('section','livelihood')->orderByDesc('created_at')->limit(10)->get();
+        }
+
+        return view('pages.livelihood', compact('slpas','programs','services','cabstops','galleries'));
     }
 
     /**
@@ -305,6 +363,27 @@ class PublicController extends Controller
     public function slpaModal(Slpa $slpa)
     {
         return view('public.partials.slpa_modal', compact('slpa'));
+    }
+
+    /**
+     * Gallery listing (all photos)
+     */
+    public function galleryIndex(Request $request)
+    {
+        $galleries = [];
+        if (\Schema::hasTable('galleries')) {
+            $section = $request->input('section','livelihood');
+            $galleries = Gallery::where('section',$section)->orderByDesc('created_at')->paginate(12);
+        }
+        return view('public.gallery.index', compact('galleries'));
+    }
+
+    /**
+     * Return small HTML fragment for gallery item used in AJAX modal.
+     */
+    public function galleryModal(Gallery $gallery)
+    {
+        return view('public.partials.gallery_modal', compact('gallery'));
     }
 
     /**

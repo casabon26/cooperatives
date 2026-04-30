@@ -47,6 +47,11 @@
             <div class="form-text">Upload a square-ish image. Will be used as the cooperative card header.</div>
         </div>
         <hr>
+        <div class="mb-3">
+            <label class="form-label">Members (total)</label>
+            <input type="number" name="members_count" class="form-control" min="0" value="{{ old('members_count', $cooperative->members_count ?? ($p->members_count ?? '')) }}" placeholder="e.g. 120">
+            <div class="form-text">Enter total number of members for this cooperative.</div>
+        </div>
         <h4 class="h6 mt-3">Profile / Details</h4>
         @php $p = $cooperative->profile ?? null; @endphp
         <div class="mb-3">

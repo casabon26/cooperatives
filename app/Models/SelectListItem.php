@@ -9,11 +9,10 @@ class SelectListItem extends Model
     protected $table = 'select_list_items';
 
     protected $fillable = [
-        'group', 'key', 'label', 'sort_order', 'active'
+        'group', 'label', 'active'
     ];
 
     protected $casts = [
         'active' => 'boolean',
-        'sort_order' => 'integer',
     ];
 }

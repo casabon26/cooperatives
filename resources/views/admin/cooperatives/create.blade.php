@@ -104,6 +104,11 @@
                             <textarea name="contact_info" class="form-control" rows="3">{{ old('contact_info') }}</textarea>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Members (total)</label>
+                            <input type="number" name="members_count" class="form-control" min="0" value="{{ old('members_count') }}" placeholder="e.g. 120">
+                            <div class="form-text">Enter total number of members (no names required).</div>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Status</label>
                             <select name="status" class="form-select">
                                 <option value="active">active</option>

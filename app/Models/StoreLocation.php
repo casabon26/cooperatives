@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class StoreLocation extends Model
 {
+    protected $table = 'cabstop_stores';
+    
     protected $fillable = [
-        'name', 'address', 'lat', 'lng', 'description', 'icon_url', 'category', 'tags', 'map_url', 'place', 'store_type'
+        'name', 'owner_name', 'status', 'address', 'lat', 'lng', 'description', 'icon_url', 'category', 'tags', 'map_url', 'place', 'store_type'
     ];
 }

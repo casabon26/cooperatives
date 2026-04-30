@@ -49,22 +49,6 @@
                             </div>
 
                             <div class="col-12 col-sm-6 col-md-4">
-                                <a href="{{ route('admin.select_lists.index', ['group' => 'cabstop']) }}" 
-                                   class="btn btn-outline-primary w-100 admin-action" 
-                                   role="button" 
-                                   aria-label="Manage CabStop" 
-                                   target="_self">
-                                    <div class="action-content">
-                                        <div class="action-icon">
-                                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a4 4 0 0 0-4 4v1H2v2h2v6h2v-6h4v6h2v-6h2V5h-2V4a4 4 0 0 0-4-4z"/></svg>
-                                        </div>
-                                        <div class="action-title">Manage CabStop</div>
-                                        <div class="action-sub">Manage CabStop dropdown options</div>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <div class="col-12 col-sm-6 col-md-4">
                                 <a href="{{ route('admin.select_lists.index', ['group' => 'programs']) }}" 
                                    class="btn btn-outline-primary w-100 admin-action" 
                                    role="button" 
@@ -300,15 +284,15 @@
                 <div class="admin-actions" role="group" aria-label="Store management actions">
                     <div class="row g-3">
                         <div class="col-12 col-sm-6 col-md-4">
-                            <a href="{{ route('admin.store_locations.index') }}" class="btn btn-outline-primary w-100 admin-action" role="button" aria-label="Manage store" target="_self">
+                            <a href="{{ route('admin.store_locations.index') }}" class="btn btn-outline-primary w-100 admin-action" role="button" aria-label="Manage cabstop" target="_self">
                                 <div class="action-content">
                                     <div class="action-icon">
                                         <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                                             <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2z"/>
                                         </svg>
                                     </div>
-                                    <div class="action-title">Manage Store</div>
-                                    <div class="action-sub">Categories, items & locations</div>
+                                    <div class="action-title">Manage Cabstop</div>
+                                    <div class="action-sub">Stalls, locations & details</div>
                                 </div>
                             </a>
                         </div>

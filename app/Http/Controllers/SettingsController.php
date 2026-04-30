@@ -18,7 +18,7 @@ class SettingsController extends Controller
                 'logo' => ['label' => 'Logo', 'type' => 'file'],
             ],
             'branding' => [
-                'primary_color' => ['label' => 'Primary Color', 'type' => 'color', 'placeholder' => '#b91c1c'],
+                'primary_color' => ['label' => 'Primary Color', 'type' => 'color', 'placeholder' => '#B82132'],
                 'accent_color' => ['label' => 'Accent Color', 'type' => 'color', 'placeholder' => '#fca5a5'],
             ],
             'contact' => [

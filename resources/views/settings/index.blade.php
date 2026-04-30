@@ -46,7 +46,7 @@
                         <div class="row mb-3">
                             <div class="col-md-3">
                                 <label class="form-label">Primary Color</label>
-                                <input type="color" name="primary_color" class="form-control form-control-color" value="{{ old('primary_color', $settings['primary_color'] ?? '#b91c1c') }}">
+                                <input type="color" name="primary_color" class="form-control form-control-color" value="{{ old('primary_color', $settings['primary_color'] ?? '#B82132') }}">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Accent Color</label>

@@ -13,14 +13,24 @@
     @csrf
     @method('PUT')
     @php $storeCats = @json_decode(@file_get_contents(resource_path('data/store_categories.json')), true) ?: []; @endphp
-    <div class="mb-3">
-      <label class="form-label">Category</label>
+    <div id="categoryWrapper" class="mb-3">
+      <label class="form-label">Category (optional)</label>
       <select name="category" id="categorySelect" class="form-select">
-        <option value="">-- Select category --</option>
+        <option value="">-- No category --</option>
         @foreach($storeCats as $cname => $items)
           <option value="{{ $cname }}" {{ (old('category', $location->category) == $cname) ? 'selected' : '' }}>{{ $cname }}</option>
         @endforeach
       </select>
+    </div>
+    <input type="hidden" name="item" value="{{ old('item', $location->tags ?? '') }}">
+    <div class="mb-3">
+      <label class="form-label">Display Type</label>
+      <div class="btn-group" role="group" aria-label="Display type">
+        <button type="button" class="btn btn-outline-secondary division-btn" data-division="livelihood">Livelihood</button>
+        <button type="button" class="btn btn-outline-secondary division-btn" data-division="enterprise">Enterprise</button>
+      </div>
+      <input type="hidden" name="division" id="divisionInput" value="{{ old('division', ($location->lat && $location->lng) ? 'enterprise' : 'livelihood') }}">
+      <div class="small text-muted mt-2">Choose how this store appears. Enterprise stores should include Latitude and Longitude.</div>
     </div>
     <div class="mb-3">
       <label class="form-label">Place (CabStop)</label>
@@ -43,23 +53,31 @@
         <option value="non_food" {{ (old('store_type', $location->store_type ?? '') == 'non_food') ? 'selected' : '' }}>Non-food</option>
       </select>
     </div>
-    <div class="mb-3">
-      <label class="form-label">Item (choose from category)</label>
-      <select name="item" id="itemSelect" class="form-select">
-        <option value="">-- Select item --</option>
-      </select>
-      <div class="small text-muted">Choose the item this location corresponds to so it appears when the item is clicked on the public map.</div>
-    </div>
+    
 
     <div class="mb-3">
       <label class="form-label">Name</label>
       <input name="name" class="form-control" value="{{ old('name', $location->name) }}" required>
     </div>
     <div class="mb-3">
+      <label class="form-label">Owner's Name <small class="text-muted">(admin only)</small></label>
+      <input name="owner_name" class="form-control" value="{{ old('owner_name', $location->owner_name ?? '') }}" placeholder="Owner's full name">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Status</label>
+      <select name="status" class="form-select">
+        <option value="">-- Select status (optional) --</option>
+        <option value="regular" {{ (old('status', $location->status ?? '') == 'regular') ? 'selected' : '' }}>Regular</option>
+        <option value="ongoing" {{ (old('status', $location->status ?? '') == 'ongoing') ? 'selected' : '' }}>Ongoing</option>
+        <option value="seasonal" {{ (old('status', $location->status ?? '') == 'seasonal') ? 'selected' : '' }}>Seasonal</option>
+      </select>
+      <div class="small text-muted">Regular (green) · Ongoing (blue) · Seasonal (red)</div>
+    </div>
+    <div class="mb-3">
       <label class="form-label">Address</label>
       <input name="address" class="form-control" value="{{ old('address', $location->address) }}">
     </div>
-    <div class="row">
+    <div id="coordsGroup" class="row" style="{{ old('division', ($location->lat && $location->lng) ? 'enterprise' : 'livelihood') === 'enterprise' ? '' : 'display:none' }}">
       <div class="col-md-6 mb-3">
         <label class="form-label">Latitude</label>
         <input name="lat" class="form-control" value="{{ old('lat', $location->lat) }}">
@@ -70,7 +88,7 @@
       </div>
     </div>
     
-    <div class="mb-3">
+    <div id="mapUrlWrapper" class="mb-3">
       <label class="form-label">Google Maps Link (optional)</label>
       <input name="map_url" class="form-control" value="{{ old('map_url', $location->map_url) }}" placeholder="https://www.google.com/maps/...">
       <div class="small text-muted">Paste a Google Maps link and the system will try to extract coordinates.</div>
@@ -91,30 +109,40 @@
   @section('scripts')
   <script>
     (function(){
-      const storeCats = {!! json_encode($storeCats ?? [], JSON_UNESCAPED_UNICODE) !!};
-      const latEl = document.querySelector('input[name="lat"]');
-      const lngEl = document.querySelector('input[name="lng"]');
-      const catSel = document.getElementById('categorySelect');
-      const itemSel = document.getElementById('itemSelect');
-      const nameInput = document.querySelector('input[name="name"]');
-      const preSelectedItem = {!! json_encode(old('item', $location->tags ?? request()->get('item') ?: ''), JSON_UNESCAPED_UNICODE) !!};
+      const divInput = document.getElementById('divisionInput');
+      const buttons = document.querySelectorAll('.division-btn');
+      const coordsGroup = document.getElementById('coordsGroup');
+      const form = document.querySelector('form');
 
-      function populateItemsFor(cat){
-        itemSel.innerHTML = '<option value="">-- Select item --</option>';
-        const items = storeCats[cat] || [];
-        items.forEach(it =>{
-          const label = (typeof it === 'string') ? it : (it.label || '');
-          const opt = document.createElement('option'); opt.value = label; opt.textContent = label;
-          itemSel.appendChild(opt);
-        });
-        if(preSelectedItem){
-          for(const o of itemSel.options){ if(o.value === preSelectedItem){ o.selected = true; nameInput.value = o.value; break; } }
-        }
+      function setDivision(div){
+        if(!divInput) return;
+        divInput.value = div;
+        buttons.forEach(b => b.classList.toggle('active', b.dataset.division === div));
+        if(coordsGroup) coordsGroup.style.display = (div === 'enterprise') ? '' : 'none';
+        const catWrap = document.getElementById('categoryWrapper');
+        const mapWrap = document.getElementById('mapUrlWrapper');
+        if(catWrap) catWrap.style.display = (div === 'enterprise') ? '' : 'none';
+        if(mapWrap) mapWrap.style.display = (div === 'enterprise') ? '' : 'none';
       }
-      if(catSel) catSel.addEventListener('change', function(){ populateItemsFor(this.value); });
-      if(itemSel) itemSel.addEventListener('change', function(){ const o = this.selectedOptions[0]; if(o){ nameInput.value = o.value; } });
-      // initialize items for current category
-      if(catSel && catSel.value) populateItemsFor(catSel.value);
+
+      buttons.forEach(b => b.addEventListener('click', function(){ setDivision(this.dataset.division); }));
+      // initialize using current value
+      setDivision(divInput ? divInput.value || 'livelihood' : 'livelihood');
+
+      if(form){
+        form.addEventListener('submit', function(e){
+          const isEnterprise = (divInput && divInput.value === 'enterprise');
+          if(isEnterprise){
+            const lat = (document.querySelector('input[name="lat"]') || {}).value || '';
+            const lng = (document.querySelector('input[name="lng"]') || {}).value || '';
+            if(!lat.trim() || !lng.trim()){
+              e.preventDefault();
+              alert('Enterprise stores must include Latitude and Longitude. Please enter coordinates or choose Livelihood.');
+              return false;
+            }
+          }
+        });
+      }
     })();
   </script>
   @endsection

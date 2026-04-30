@@ -42,6 +42,60 @@
         $email = $cooperative->contact_email ?? null;
         $facebook = $cooperative->facebook ?? null;
         $hours = $cooperative->operating_hours ?? null;
+        // Prepare mission/vision fallbacks (used to display beside Purpose)
+        $nameKey = strtolower(trim($cooperative->name ?? ''));
+        $isCamavemco = str_contains($nameKey, 'camavemco');
+        $coopData = [
+            'kababaihan kaibigan ng bigaa' => [
+                'mission' => "To empower women and the community of Barangay Bigaa through mutual aid, livelihood support, and social responsibility.",
+                'vision'  => "Providing essential supplies and safety equipment to members and the local community."
+            ],
+            'cabueños transport cooperative' => [
+                'mission' => "CTC is a transport cooperative formed by operators and drivers to have access to the government’s Public Utility Vehicle Modernization Program (PUVMP) aimed at providing its members with stable, sufficient and dignified livelihood while at the same time ensuring the public safe, comfortable and environmentally-friendly transport service.",
+                'vision'  => "Cabueños Transport Cooperative is a name synonymous to safe, reliable and trustworthy transport system in Cabuyao and its neighboring towns; where members are assured of stable, sufficient and dignified livelihood."
+            ],
+            'cabuyao agriculture and fishery' => [
+                'mission' => "Mapataas ang antas ng Kabuhayan ng bawat pamilya ng kasapi.\nMakapagtatag ng isang tindahan ng mga produktong pang agrikultura at pampangisdaan.\nMapagbuklod ang lahat ng mga magsasaka at mangingisda sa Lungsod ng Cabuyao.\nMatugunan ang pangangailangan sa bigas, gulay at isda ng mga mamamayan.\nMapalakas ang negosyo pamamagitan ng aktibong pakikipagugnayan sa iba pang kooperatiba.",
+                'vision'  => "Isang kooperatiba matatag, maunlad at matagumpay na nagbubuklod sa mga magsasaka, mangingisda at kaugnay na sector sa Lungsod ng Cabuyao."
+            ],
+            'mrvsacc' => [
+                'mission' => "MRVSACC is committed to providing financial assistance through loan facilities to its members most especially those who are engaged in the business sector.",
+                'vision'  => "MRVSACC aims to be one of the leading cooperatives in Cabuyao City by 2026."
+            ],
+            'nexperia employees cooperative' => [
+                'mission' => "To sustain growth within the area of operations, expand growth within the province of Laguna, provide the best services for members as well as community development programs – a continuous partner of Nexperia Cabuyao to achieve common benefits to each employee and members.",
+                'vision'  => "To be the leading institutional cooperative within the province of Laguna in terms of Return of Capital Share, Membership, Business Exposure, Other Loans and Business Services."
+            ],
+            'cabuyao ofw consumers cooperative' => [
+                'mission' => "To provide returning OFWs with opportunities for investment, business, and livelihood stability through a cooperative structure.",
+                'vision'  => "To empower OFW members to have a prosperous and sustainable life in the Philippines through shared resources and economic participation."
+            ],
+            'ja services cooperative' => [
+                'mission' => "To provide accessible and efficient services, promote economic opportunities, and strengthen cooperative values among members through responsible governance and sustainable business operations.",
+                'vision'  => "A progressive, sustainable, and competitive cooperative that empowers its members and contributes to community development."
+            ],
+            'go ladies producers cooperative' => [
+                'mission' => "GO Ladies’ Mission is to strengthen the leadership, power, voices of women. To support women to achieve their full potential, to encourage and facilitate their active involvement in business, learning and community life.",
+                'vision'  => "GO Ladies’ Vision is that all women in Cabuyao become self-sustaining and remain well recognized in their community, well respected and truly empowered."
+            ],
+        ];
+        $missionText = $cooperative->mission ?? null;
+        $visionText  = $cooperative->vision ?? null;
+        $nameKeyNorm = preg_replace('/[^a-z0-9]/', '', $nameKey);
+        foreach ($coopData as $key => $data) {
+            $kNorm = preg_replace('/[^a-z0-9]/', '', strtolower($key));
+            if ($kNorm !== '' && $nameKeyNorm !== '' && strpos($nameKeyNorm, $kNorm) !== false) {
+                $missionText = $missionText ?? $data['mission'];
+                $visionText  = $visionText  ?? $data['vision'];
+                break;
+            }
+        }
+        if ($isCamavemco) {
+            $missionText = $missionText ?? "Maisagawa ang magandang pananaw ng kooperatiba sa pamamagitan ng mga opisyal, pagpapahalaga at pagmamahal sa layunin ng kooperatiba.\n\nMaimulat ang mga kasapin at mamamayan sa magandang layunin ng kooperatiba na mapaunlad ang antas ng kabuhayan ng bawat isa sa pamamagitan ng sipag, tiyaga at pagiimpok at serbisyong maibibigay ng kooperatiba.";
+            $visionText  = $visionText  ?? "Nangunguna at pinagkakatiwalaang community-base cooperative sa lunsod ng Cabuyao.";
+        }
+        $missionText = $missionText ?? '—';
+        $visionText = $visionText ?? '—';
     @endphp
 
     <!-- Header Section -->
@@ -91,14 +145,87 @@
 
     {{-- Directory card edit removed from public profile (admin editing moved to admin panel) --}}
 
-    <!-- About / Purpose -->
+    <!-- About / Purpose with Mission & Vision to the right -->
     <section class="mb-3">
         <h2 class="h6">About / Overview</h2>
-        <div class="mb-2">{!! nl2br(e($cooperative->description ?? ($cooperative->profile->overview ?? ''))) !!}</div>
-        @if($purpose)
-            <h3 class="h6">Purpose</h3>
-            <div class="mb-2">{!! nl2br(e($purpose)) !!}</div>
-        @endif
+        <div class="row g-3">
+            <div class="col-lg-8">
+                <style>
+                    .coop-overview { line-height:1.65; color:#24303b; }
+                    .coop-overview p { margin-bottom:.75rem; }
+                    .coop-overview p.lead { font-weight:600; font-size:1.04rem; color:#0f172a; }
+                    .coop-purpose { background: linear-gradient(180deg,#fff9f6,#fffaf8); border:1px solid rgba(249,115,22,0.08); padding:1rem; border-radius:8px; }
+                    .coop-purpose .title { font-weight:700; color:#b45309; margin-bottom:.5rem; }
+                    .coop-purpose p { margin-bottom:.6rem; color:#334155; line-height:1.55; }
+                </style>
+                @php
+                    $descRaw = $cooperative->description ?? ($cooperative->profile->overview ?? '');
+                    $desc = trim((string)$descRaw);
+                    $paragraphs = [];
+                    if ($desc !== '') {
+                        // split on empty line(s) to create paragraphs
+                        $paragraphs = preg_split('/\r?\n\r?\n+/', $desc);
+                    }
+                @endphp
+
+                <div class="card mb-2">
+                    <div class="card-body coop-overview">
+                        @if($desc === '')
+                            <div class="small text-muted">No overview provided.</div>
+                        @else
+                            @foreach($paragraphs as $i => $p)
+                                <p class="{{ $i === 0 ? 'lead' : '' }}">{!! nl2br(e(trim($p))) !!}</p>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+
+                @if($purpose)
+                    <h3 class="h6">Purpose</h3>
+                    @php
+                        $purposeRaw = trim((string)$purpose);
+                        if ($purposeRaw === '') {
+                            $purposeHtml = '<div class="small text-muted">No purpose provided.</div>';
+                        } else {
+                            $paras = preg_split('/\r?\n+/', $purposeRaw);
+                            $out = '';
+                            foreach ($paras as $p) {
+                                $out .= '<p>'.nl2br(e(trim($p))).'</p>';
+                            }
+                            $purposeHtml = $out;
+                        }
+                    @endphp
+                    <div class="coop-purpose mb-3">
+                        {!! $purposeHtml !!}
+                    </div>
+                @endif
+            </div>
+
+            <div class="col-lg-4">
+                <div class="mb-3">
+                    <div class="card">
+                        <div class="card-body d-flex gap-2 align-items-start">
+                            <div style="flex:0 0 36px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fee2e2,#fdd2d2);border-radius:6px;color:#991b1b;font-weight:700;height:40px;">M</div>
+                            <div>
+                                <h6 class="mb-1">Mission</h6>
+                                <div class="small text-muted">{!! nl2br(e($missionText)) !!}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="card">
+                        <div class="card-body d-flex gap-2 align-items-start">
+                            <div style="flex:0 0 36px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#eef2ff,#e0e7ff);border-radius:6px;color:#1e3a8a;font-weight:700;height:40px;">V</div>
+                            <div>
+                                <h6 class="mb-1">Vision</h6>
+                                <div class="small text-muted">{!! nl2br(e($visionText)) !!}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <div class="row">
@@ -129,6 +256,19 @@
                     <div class="col-12 col-md-8"><strong>Notable accomplishments</strong><div class="small text-muted">{!! nl2br(e($achievements ?? '—')) !!}</div></div>
                 </div>
             </section>
+
+    <!-- Members -->
+            <section class="mb-3">
+        <h2 class="h6">Members</h2>
+        @php
+            $membersCount = $cooperative->members_count ?? (isset($cooperative->users) ? $cooperative->users->count() : null);
+        @endphp
+        @if($membersCount !== null)
+            <div class="small text-muted">Members: <strong>{{ $membersCount }}</strong></div>
+        @else
+            <div class="small text-muted">Members: not specified.</div>
+        @endif
+    </section>
 
     <!-- Location & Reach -->
             <section class="mb-3">
@@ -304,93 +444,6 @@
     @endif
         </div>
 
-        <aside class="col-lg-4">
-            {{-- Mission & Vision side cards displayed horizontally inside each card --}}
-            @php
-                // Use the same mission/vision lookup as the modal (profile value -> coopData match -> CAMAVEMCO fallback)
-                $nameKey = strtolower(trim($cooperative->name ?? ''));
-
-                $isCamavemco = str_contains($nameKey, 'camavemco');
-
-                $coopData = [
-                    'kababaihan kaibigan ng bigaa' => [
-                        'mission' => "To empower women and the community of Barangay Bigaa through mutual aid, livelihood support, and social responsibility.",
-                        'vision'  => "Providing essential supplies and safety equipment to members and the local community."
-                    ],
-                    'cabueños transport cooperative' => [
-                        'mission' => "CTC is a transport cooperative formed by operators and drivers to have access to the government’s Public Utility Vehicle Modernization Program (PUVMP) aimed at providing its members with stable, sufficient and dignified livelihood while at the same time ensuring the public safe, comfortable and environmentally-friendly transport service.",
-                        'vision'  => "Cabueños Transport Cooperative is a name synonymous to safe, reliable and trustworthy transport system in Cabuyao and its neighboring towns; where members are assured of stable, sufficient and dignified livelihood."
-                    ],
-                    'cabuyao agriculture and fishery' => [
-                        'mission' => "Mapataas ang antas ng Kabuhayan ng bawat pamilya ng kasapi.\nMakapagtatag ng isang tindahan ng mga produktong pang agrikultura at pampangisdaan.\nMapagbuklod ang lahat ng mga magsasaka at mangingisda sa Lungsod ng Cabuyao.\nMatugunan ang pangangailangan sa bigas, gulay at isda ng mga mamamayan.\nMapalakas ang negosyo pamamagitan ng aktibong pakikipagugnayan sa iba pang kooperatiba.",
-                        'vision'  => "Isang kooperatiba matatag, maunlad at matagumpay na nagbubuklod sa mga magsasaka, mangingisda at kaugnay na sector sa Lungsod ng Cabuyao."
-                    ],
-                    'mrvsacc' => [
-                        'mission' => "MRVSACC is committed to providing financial assistance through loan facilities to its members most especially those who are engaged in the business sector.",
-                        'vision'  => "MRVSACC aims to be one of the leading cooperatives in Cabuyao City by 2026."
-                    ],
-                    'nexperia employees cooperative' => [
-                        'mission' => "To sustain growth within the area of operations, expand growth within the province of Laguna, provide the best services for members as well as community development programs – a continuous partner of Nexperia Cabuyao to achieve common benefits to each employee and members.",
-                        'vision'  => "To be the leading institutional cooperative within the province of Laguna in terms of Return of Capital Share, Membership, Business Exposure, Other Loans and Business Services."
-                    ],
-                    'cabuyao ofw consumers cooperative' => [
-                        'mission' => "To provide returning OFWs with opportunities for investment, business, and livelihood stability through a cooperative structure.",
-                        'vision'  => "To empower OFW members to have a prosperous and sustainable life in the Philippines through shared resources and economic participation."
-                    ],
-                    'ja services cooperative' => [
-                        'mission' => "To provide accessible and efficient services, promote economic opportunities, and strengthen cooperative values among members through responsible governance and sustainable business operations.",
-                        'vision'  => "A progressive, sustainable, and competitive cooperative that empowers its members and contributes to community development."
-                    ],
-                    'go ladies producers cooperative' => [
-                        'mission' => "GO Ladies’ Mission is to strengthen the leadership, power, voices of women. To support women to achieve their full potential, to encourage and facilitate their active involvement in business, learning and community life.",
-                        'vision'  => "GO Ladies’ Vision is that all women in Cabuyao become self-sustaining and remain well recognized in their community, well respected and truly empowered."
-                    ],
-                ];
-
-                $missionText = $cooperative->mission ?? null;
-                $visionText  = $cooperative->vision ?? null;
-
-                // Normalize for robust matching (ignore punctuation/spacing)
-                $nameKeyNorm = preg_replace('/[^a-z0-9]/', '', $nameKey);
-                foreach ($coopData as $key => $data) {
-                    $kNorm = preg_replace('/[^a-z0-9]/', '', strtolower($key));
-                    if ($kNorm !== '' && $nameKeyNorm !== '' && strpos($nameKeyNorm, $kNorm) !== false) {
-                        $missionText = $missionText ?? $data['mission'];
-                        $visionText  = $visionText  ?? $data['vision'];
-                        break;
-                    }
-                }
-
-                if ($isCamavemco) {
-                    $missionText = $missionText ?? "Maisagawa ang magandang pananaw ng kooperatiba sa pamamagitan ng mga opisyal, pagpapahalaga at pagmamahal sa layunin ng kooperatiba.\n\nMaimulat ang mga kasapin at mamamayan sa magandang layunin ng kooperatiba na mapaunlad ang antas ng kabuhayan ng bawat isa sa pamamagitan ng sipag, tiyaga at pagiimpok at serbisyong maibibigay ng kooperatiba.";
-                    $visionText  = $visionText  ?? "Nangunguna at pinagkakatiwalaang community-base cooperative sa lunsod ng Cabuyao.";
-                }
-
-                $missionText = $missionText ?? '—';
-                $visionText = $visionText ?? '—';
-            @endphp
-            <div class="mb-3">
-                <div class="card">
-                    <div class="card-body d-flex gap-2 align-items-start">
-                        <div style="flex:0 0 32px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fee2e2,#fdd2d2);border-radius:6px;color:#991b1b;font-weight:700;height:36px;">M</div>
-                        <div>
-                            <h6 class="mb-1">Mission</h6>
-                            <div class="small text-muted">{!! nl2br(e($missionText)) !!}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-3">
-                <div class="card">
-                    <div class="card-body d-flex gap-2 align-items-start">
-                        <div style="flex:0 0 32px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#eef2ff,#e0e7ff);border-radius:6px;color:#1e3a8a;font-weight:700;height:36px;">V</div>
-                        <div>
-                            <h6 class="mb-1">Vision</h6>
-                            <div class="small text-muted">{!! nl2br(e($visionText)) !!}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </aside>
     </div>
 </div>

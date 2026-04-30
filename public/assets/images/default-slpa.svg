@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="SLPA placeholder">
   <rect width="100%" height="100%" fill="#fff7f7"/>
-  <g transform="translate(32,32)" fill="none" stroke="#b91c1c" stroke-width="4">
+  <g transform="translate(32,32)" fill="none" stroke="#B82132" stroke-width="4">
     <circle cx="96" cy="48" r="28" fill="#fff"/>
     <path d="M20 184c0-44 56-56 76-56s76 12 76 56" stroke-linecap="round"/>
   </g>
-  <text x="50%" y="87%" text-anchor="middle" fill="#7f1d1d" font-family="Segoe UI, Roboto, Arial" font-size="14">No image available</text>
+  <text x="50%" y="87%" text-anchor="middle" fill="#B82132" font-family="Segoe UI, Roboto, Arial" font-size="14">No image available</text>
 </svg>

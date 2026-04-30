@@ -27,7 +27,7 @@ class SelectListController extends Controller
         if (!empty($group)) {
             $query->where('group', $group);
         }
-        $items = $query->orderBy('group')->orderBy('sort_order')->paginate(40)->withQueryString();
+        $items = $query->orderBy('group')->orderBy('label')->paginate(40)->withQueryString();
         return view('admin.select_lists.index', compact('items','group'));
     }
 
@@ -44,14 +44,11 @@ class SelectListController extends Controller
     {
         $data = $request->validate([
             'group' => 'required|string|max:100',
-            'key' => 'nullable|string|max:150',
             'label' => 'required|string|max:191',
-            'sort_order' => 'nullable|integer',
             'active' => 'nullable|boolean',
         ]);
 
         $data['active'] = !empty($data['active']);
-        $data['sort_order'] = $data['sort_order'] ?? 0;
 
         SelectListItem::create($data);
         return redirect()->route('admin.select_lists.index')->with('success', 'List item added');
@@ -66,14 +63,11 @@ class SelectListController extends Controller
     {
         $data = $request->validate([
             'group' => 'required|string|max:100',
-            'key' => 'nullable|string|max:150',
             'label' => 'required|string|max:191',
-            'sort_order' => 'nullable|integer',
             'active' => 'nullable|boolean',
         ]);
 
         $data['active'] = !empty($data['active']);
-        $data['sort_order'] = $data['sort_order'] ?? 0;
 
         $select_list->update($data);
         return redirect()->route('admin.select_lists.index')->with('success', 'List item updated');
