@@ -21,7 +21,9 @@
                         <button formaction="{{ route('admin.users.updateRole',$u) }}" class="btn btn-sm btn-primary">Save</button>
                     </form>
                 </td>
-                <td></td>
+                <td>
+                    <a href="{{ route('admin.users.certificates', $u) }}" class="btn btn-sm btn-outline-primary">View certificates</a>
+                </td>
             </tr>
         @endforeach
         </tbody>

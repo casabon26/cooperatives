@@ -13,6 +13,8 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+        \App\Http\Middleware\TrustProxies::class,
+        \App\Http\Middleware\SecureHeaders::class,
         \Illuminate\Http\Middleware\HandleCors::class,
     ];
 
@@ -23,8 +25,14 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            // Minimal web group: bindings and audit logging. Add more middleware as needed.
+            // Standard Laravel web middleware to enable sessions, CSRF protection
+            \App\Http\Middleware\EncryptCookies::class,
+            \App\Http\Middleware\EnforceCookieAttributes::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
             \App\Http\Middleware\AuditLogMiddleware::class,
         ],
 

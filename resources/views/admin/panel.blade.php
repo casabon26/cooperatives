@@ -44,41 +44,29 @@
                                         </div>
                                         <div class="action-title">Manage SLPA</div>
                                         <div class="action-sub">SLPA entries for livelihood page</div>
+                                        <div class="action-badges"><span class="badge badge-livelihood">Livelihood</span></div>
                                     </div>
                                 </a>
                             </div>
 
                             <div class="col-12 col-sm-6 col-md-4">
-                                <a href="{{ route('admin.select_lists.index', ['group' => 'programs']) }}" 
+                                          <a href="{{ route('admin.select_lists.index', ['group' => 'programs']) }}" 
                                    class="btn btn-outline-primary w-100 admin-action" 
                                    role="button" 
-                                   aria-label="Manage Programs" 
+                                              aria-label="Manage Programs and Services (Programs tab)" 
                                    target="_self">
                                     <div class="action-content">
                                         <div class="action-icon">
                                             <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M3 2h10v2H3V2zm0 4h10v2H3V6zm0 4h10v2H3v-2z"/></svg>
                                         </div>
-                                        <div class="action-title">Manage Programs</div>
-                                        <div class="action-sub">Manage program dropdown options</div>
+                                        <div class="action-title">Programs &amp; Services</div>
+                                        <div class="action-sub">Add, edit, remove Programs &amp; Services (opens Livelihood management)</div>
+                                        <div class="action-badges"><span class="badge badge-livelihood">Livelihood</span> <span class="badge badge-services">Services</span></div>
                                     </div>
                                 </a>
                             </div>
 
-                            <div class="col-12 col-sm-6 col-md-4">
-                                <a href="{{ route('admin.select_lists.index', ['group' => 'services']) }}" 
-                                   class="btn btn-outline-primary w-100 admin-action" 
-                                   role="button" 
-                                   aria-label="Manage Services" 
-                                   target="_self">
-                                    <div class="action-content">
-                                        <div class="action-icon">
-                                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M2 2h12v2H2V2zm0 4h12v2H2V6zm0 4h8v2H2v-2z"/></svg>
-                                        </div>
-                                        <div class="action-title">Manage Services</div>
-                                        <div class="action-sub">Manage service dropdown options</div>
-                                    </div>
-                                </a>
-                            </div>
+                            
 
                         </div>
                     </div>
@@ -110,10 +98,27 @@
                                     </div>
                                     <div class="action-title">Manage News</div>
                                     <div class="action-sub">Create, edit, remove items</div>
+                                    <div class="action-badges"><span class="badge badge-news">News</span></div>
                                 </div>
                             </a>
                         </div>
 
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <a href="{{ url('/admin/manage-faqs') }}" 
+                               class="btn btn-outline-primary w-100 admin-action" 
+                               role="button" 
+                               aria-label="Manage FAQs" 
+                               target="_self">
+                                <div class="action-content">
+                                    <div class="action-icon">
+                                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM7 11.5V10h2v1.5H7zM7.75 4.5a.75.75 0 1 1 1.5 0c0 .414-.336.75-.75.75S7.75 4.914 7.75 4.5z"/></svg>
+                                    </div>
+                                    <div class="action-title">Manage FAQs</div>
+                                    <div class="action-sub">Create, edit and remove frequently asked questions</div>
+                                    <div class="action-badges"><span class="badge badge-faqs">FAQs</span></div>
+                                </div>
+                            </a>
+                        </div>
                         <div class="col-12 col-sm-6 col-md-4">
                             <a href="{{ url('/admin/manage-videos') }}" 
                                class="btn btn-outline-primary w-100 admin-action" 
@@ -128,6 +133,7 @@
                                     </div>
                                     <div class="action-title">Manage Videos</div>
                                     <div class="action-sub">Add or remove landing videos</div>
+                                    <div class="action-badges"><span class="badge badge-videos">Videos</span></div>
                                 </div>
                             </a>
                         </div>
@@ -147,6 +153,7 @@
                                     </div>
                                     <div class="action-title">Manage Training</div>
                                     <div class="action-sub">Training video CRUD & certificates</div>
+                                    <div class="action-badges"><span class="badge badge-training">Training</span></div>
                                 </div>
                             </a>
                         </div>
@@ -166,6 +173,7 @@
                                     </div>
                                     <div class="action-title">Manage Memorandums</div>
                                     <div class="action-sub">Create, edit and remove</div>
+                                    <div class="action-badges"><span class="badge badge-memorandums">Memorandums</span></div>
                                 </div>
                             </a>
                         </div>
@@ -188,6 +196,7 @@
                                     </div>
                                     <div class="action-title">Accomplishment Reports</div>
                                     <div class="action-sub">Create, edit and remove reports</div>
+                                    <div class="action-badges"><span class="badge badge-reports">Reports</span></div>
                                 </div>
                             </a>
                         </div>
@@ -218,6 +227,7 @@
                                     </div>
                                     <div class="action-title">Manage Cooperatives</div>
                                     <div class="action-sub">Create, edit and delete</div>
+                                    <div class="action-badges"><span class="badge badge-cooperatives">Cooperatives</span></div>
                                 </div>
                             </a>
                         </div>
@@ -233,6 +243,7 @@
                                     </div>
                                     <div class="action-title">Manage Enterprises</div>
                                     <div class="action-sub">Create, edit and delete</div>
+                                    <div class="action-badges"><span class="badge badge-enterprise-development">Enterprise Development</span></div>
                                 </div>
                             </a>
                         </div>
@@ -248,6 +259,7 @@
                                     </div>
                                     <div class="action-title">User Management</div>
                                     <div class="action-sub">Create, edit and assign roles</div>
+                                    <div class="action-badges"><span class="badge badge-users">Users</span></div>
                                 </div>
                             </a>
                         </div>
@@ -264,6 +276,7 @@
                                     </div>
                                     <div class="action-title">Cooperative Resources</div>
                                     <div class="action-sub">Upload and manage PDFs/PPTs</div>
+                                    <div class="action-badges"><span class="badge badge-resources">Cooperative Resources</span></div>
                                 </div>
                             </a>
                         </div>
@@ -293,6 +306,7 @@
                                     </div>
                                     <div class="action-title">Manage Cabstop</div>
                                     <div class="action-sub">Stalls, locations & details</div>
+                                    <div class="action-badges"><span class="badge badge-livelihood">Livelihood</span> <span class="badge badge-enterprise-map">Enterprise Map</span></div>
                                 </div>
                             </a>
                         </div>
@@ -358,6 +372,21 @@
                     line-height: 1.25;
                     word-break: break-word;
                 }
+                .action-badges { margin-top: .25rem; }
+                .action-badges .badge { font-size: .65rem; padding: .28rem .45rem; }
+                /* Badge color coding per connected page */
+                .action-badges .badge-livelihood { background: #f97316; color:#fff; }
+                .action-badges .badge-news { background: #0d6efd; color:#fff; }
+                .action-badges .badge-videos { background: #20c997; color:#fff; }
+                .action-badges .badge-training { background: #6f42c1; color:#fff; }
+                .action-badges .badge-memorandums { background: #6610f2; color:#fff; }
+                .action-badges .badge-reports { background: #198754; color:#fff; }
+                .action-badges .badge-cooperatives { background: #0dcaf0; color:#000; }
+                .action-badges .badge-enterprise-development { background: #e83e8c; color:#fff; }
+                .action-badges .badge-faqs { background: #0f172a; color:#fff; }
+                .action-badges .badge-users { background: #6c757d; color:#fff; }
+                .action-badges .badge-resources { background: #795548; color:#fff; }
+                .action-badges .badge-enterprise-map { background: #0d6efd; color:#fff; }
                 .admin-action:hover .action-icon {
                     color: #ffffff !important;
                 }

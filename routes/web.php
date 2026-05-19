@@ -22,12 +22,15 @@ Route::get('/phpinfo', function () {
 });
 
 
-// Design preview for the new 2026-style theme
-Route::view('/design-preview', 'demo.design_preview')->name('design.preview');
+// Design preview removed
 
 // Simple static pages (placeholders to be filled later)
 Route::view('/about', 'pages.about')->name('about');
-Route::view('/faqs', 'pages.faqs')->name('faqs');
+// FAQs: load items from DB so public page shows admin-created entries
+Route::get('/faqs', function(){
+    $items = \App\Models\Faq::orderByDesc('created_at')->get();
+    return view('pages.faqs', compact('items'));
+})->name('faqs');
 Route::get('/livelihood', [PublicController::class, 'livelihood'])->name('livelihood');
 // Enterprise Portal page
 Route::view('/enterprise-portal', 'enterprise')->name('enterprise.portal');
@@ -55,9 +58,14 @@ Route::get('/training/{video}/certificate', [\App\Http\Controllers\TrainingContr
 // User profile (authenticated)
 Route::get('/profile', [ProfileController::class, 'show'])->middleware('auth')->name('profile.show');
 
-// User account settings (authenticated)
+// User account settings (authenticated) - deprecated from dropdown; kept for compatibility
 Route::get('/settings', [UserSettingsController::class, 'show'])->middleware('auth')->name('settings.show');
 Route::post('/settings', [UserSettingsController::class, 'update'])->middleware('auth')->name('settings.update');
+
+// User profile edit and certificates
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->middleware('auth')->name('profile.edit');
+Route::post('/profile/update', [ProfileController::class, 'update'])->middleware('auth')->name('profile.update');
+Route::get('/profile/certificates', [ProfileController::class, 'certificates'])->middleware('auth')->name('profile.certificates');
 // Memorandum circulars
 Route::get('/memorandums', [\App\Http\Controllers\MemorandumController::class, 'index'])->name('memorandums.index');
 Route::get('/memorandums/{memorandum}', [\App\Http\Controllers\MemorandumController::class, 'show'])->name('memorandums.show');
@@ -66,8 +74,8 @@ Route::get('/memorandums/{memorandum}/file', [\App\Http\Controllers\MemorandumCo
 // Simple hardcoded admin login (separate from full auth)
 // Admin/simple auth routes
 Route::get('/admin/login', [SimpleAdminAuthController::class, 'showLogin']);
-Route::post('/admin/login', [SimpleAdminAuthController::class, 'login']);
-Route::post('/admin/logout', [SimpleAdminAuthController::class, 'logout']);
+Route::post('/admin/login', [SimpleAdminAuthController::class, 'login'])->middleware('throttle:10,1');
+Route::post('/admin/logout', [SimpleAdminAuthController::class, 'logout'])->middleware('throttle:30,1');
 Route::get('/admin/panel', [SimpleAdminAuthController::class, 'panel']);
 
 // Admin profile routes
@@ -79,7 +87,7 @@ Route::post('/admin/profile/update-password', [SimpleAdminAuthController::class,
 
 // Provide a generic named `login` route so Laravel's `auth` middleware can redirect unauthenticated users.
 Route::get('/login', [SimpleAdminAuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [SimpleAdminAuthController::class, 'login']);
+Route::post('/login', [SimpleAdminAuthController::class, 'login'])->middleware('throttle:10,1');
 
 // Public/user authentication (separate from simple admin session)
 Route::get('/user/login', [PublicAuthController::class, 'showLogin']);
@@ -90,12 +98,19 @@ Route::post('/logout', [PublicAuthController::class, 'logout']);
 
 // Simple admin news CRUD (session-based admin)
 use App\Http\Controllers\SimpleAdminNewsController;
-Route::prefix('admin')->group(function(){
+// Apply a throttle to simple admin routes to limit abusive traffic for session-based admin area
+Route::prefix('admin')->middleware('throttle:60,1')->group(function(){
     Route::get('manage-news', [SimpleAdminNewsController::class,'index']);
     Route::post('manage-news', [SimpleAdminNewsController::class,'store']);
     Route::get('manage-news/{news}/edit', [SimpleAdminNewsController::class,'edit']);
     Route::post('manage-news/{news}', [SimpleAdminNewsController::class,'update']);
     Route::post('manage-news/{news}/delete', [SimpleAdminNewsController::class,'destroy']);
+    // Simple admin FAQ management (JSON-backed)
+    Route::get('manage-faqs', [\App\Http\Controllers\SimpleAdminFaqsController::class,'index']);
+    Route::post('manage-faqs', [\App\Http\Controllers\SimpleAdminFaqsController::class,'store']);
+    Route::get('manage-faqs/{id}/edit', [\App\Http\Controllers\SimpleAdminFaqsController::class,'edit']);
+    Route::post('manage-faqs/{id}', [\App\Http\Controllers\SimpleAdminFaqsController::class,'update']);
+    Route::post('manage-faqs/{id}/delete', [\App\Http\Controllers\SimpleAdminFaqsController::class,'destroy']);
     // Simple admin video management (session-based)
     Route::get('manage-videos', [\App\Http\Controllers\SimpleAdminVideosController::class,'index']);
     Route::get('manage-videos/create', [\App\Http\Controllers\SimpleAdminVideosController::class,'create']);
@@ -192,6 +207,10 @@ Route::middleware(['auth','can:access-admin'])->prefix('admin')->name('admin.')-
     Route::get('users/create', [\App\Http\Controllers\UserController::class,'create'])->name('users.create');
     Route::post('users', [\App\Http\Controllers\UserController::class,'store'])->name('users.store');
     Route::post('users/{user}/role', [\App\Http\Controllers\UserController::class,'updateRole'])->name('users.updateRole');
+    Route::get('users/{user}/certificates', [\App\Http\Controllers\UserController::class,'certificates'])->name('users.certificates');
+    Route::get('users/{user}/certificates/{video}/open', [\App\Http\Controllers\UserController::class,'certificateOpen'])->name('users.certificates.open');
+    Route::get('users/{user}/certificates/{video}/download', [\App\Http\Controllers\UserController::class,'certificateDownload'])->name('users.certificates.download');
+    Route::get('users/{user}/certificates/{video}/print', [\App\Http\Controllers\UserController::class,'certificatePrint'])->name('users.certificates.print');
 
     // Admin memorandum CRUD
     Route::resource('memorandums', \App\Http\Controllers\Admin\MemorandumController::class)->except(['show']);
@@ -209,7 +228,23 @@ Route::middleware(['auth','can:access-admin'])->prefix('admin')->name('admin.')-
     // Gallery management (admin)
     Route::resource('galleries', \App\Http\Controllers\Admin\GalleryController::class)->except(['show']);
     // Select list items (dropdown options) management
-    Route::resource('select_lists', \App\Http\Controllers\Admin\SelectListController::class)->except(['show']);
+    // Dedicated pages for Programs and Services for easier access
+    // Legacy paths: redirect to friendly URLs
+    Route::redirect('select_lists/programs', 'programs', 302)->name('select_lists.programs');
+    Route::redirect('select_lists/services', 'services', 302)->name('select_lists.services');
+    // Friendly routes for quick access
+    Route::get('programs', function(\Illuminate\Http\Request $request){ $request->merge(['group'=>'programs']); return app(\App\Http\Controllers\Admin\SelectListController::class)->index($request); })->name('programs');
+    Route::get('services', function(\Illuminate\Http\Request $request){ $request->merge(['group'=>'services']); return app(\App\Http\Controllers\Admin\SelectListController::class)->index($request); })->name('services');
+    // Keep CRUD endpoints for select list items (explicit routes) so existing views
+    // that call route('admin.select_lists.*') still work, but keep the listing
+    // pages redirected to the friendly URIs above.
+    // Index route for select lists (missing previously) - named so admin.select_lists.index works
+    Route::get('select_lists', [\App\Http\Controllers\Admin\SelectListController::class, 'index'])->name('select_lists.index');
+    Route::get('select_lists/create', [\App\Http\Controllers\Admin\SelectListController::class, 'create'])->name('select_lists.create');
+    Route::post('select_lists', [\App\Http\Controllers\Admin\SelectListController::class, 'store'])->name('select_lists.store');
+    Route::get('select_lists/{select_list}/edit', [\App\Http\Controllers\Admin\SelectListController::class, 'edit'])->name('select_lists.edit');
+    Route::put('select_lists/{select_list}', [\App\Http\Controllers\Admin\SelectListController::class, 'update'])->name('select_lists.update');
+    Route::delete('select_lists/{select_list}', [\App\Http\Controllers\Admin\SelectListController::class, 'destroy'])->name('select_lists.destroy');
     // Per-cooperative resource management (create/edit/update/destroy bound to a cooperative)
     Route::post('cooperatives/{cooperative}/resources', [\App\Http\Controllers\Admin\CooperativeResourceController::class,'storeForCooperative'])->name('cooperatives.resources.store');
     Route::get('cooperatives/{cooperative}/resources/{resource}/edit', [\App\Http\Controllers\Admin\CooperativeResourceController::class,'editForCooperative'])->name('cooperatives.resources.edit');

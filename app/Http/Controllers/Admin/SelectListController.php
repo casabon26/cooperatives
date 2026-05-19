@@ -28,6 +28,10 @@ class SelectListController extends Controller
             $query->where('group', $group);
         }
         $items = $query->orderBy('group')->orderBy('label')->paginate(40)->withQueryString();
+        // If AJAX request, return only the table fragment for faster tab switching
+        if ($request->ajax()) {
+            return view('admin.select_lists._table', compact('items','group'));
+        }
         return view('admin.select_lists.index', compact('items','group'));
     }
 

@@ -1,56 +1,74 @@
 @extends('layouts.app')
 
+@section('hero')
+  <div class="container mt-3">
+    <div class="py-4">
+      <h1 class="m-0">News</h1>
+      <p class="text-muted">Latest updates and announcements</p>
+    </div>
+  </div>
+@endsection
+
 @section('content')
   <div class="py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h1 class="m-0">News</h1>
-      <small class="text-muted">Latest announcements</small>
+    <div id="newsList" class="row g-3">
+      @include('public.news._list', ['news' => $news])
     </div>
 
-    @if($news->count())
-      <div class="row g-3">
-        @foreach($news as $item)
-          <div class="col-12 col-md-6 col-lg-4">
-            <article class="card h-100">
-              @php
-                $imgUrl = null;
-                if($item->image){
-                  $storagePath = public_path('storage/'.$item->image);
-                  $directPath = public_path($item->image);
-                  $publicNewsPath = public_path('assets/images/news/'.basename($item->image));
-                  if(file_exists($storagePath)){
-                    $imgUrl = asset('storage/'.$item->image);
-                  } elseif(file_exists($directPath)){
-                    $imgUrl = asset($item->image);
-                  } elseif(file_exists($publicNewsPath)){
-                    $imgUrl = asset('assets/images/news/'.basename($item->image));
-                  }
-                }
-              @endphp
-              @if($item->image_data)
-                <img src="data:{{ $item->image_mime }};base64,{{ $item->image_data }}" class="card-img-top" alt="" style="height:200px; object-fit:cover;">
-              @elseif($imgUrl)
-                <img src="{{ $imgUrl }}" class="card-img-top" alt="" style="height:200px; object-fit:cover;">
-              @endif
-              <div class="card-body d-flex flex-column">
-                <div class="mb-2 small text-muted">{{ optional($item->published_at ?? $item->created_at)->toDayDateTimeString() }}</div>
-                <p class="card-text text-muted mb-3">{{ Str::limit($item->summary ?? $item->body, 120) }}</p>
-
-                <div class="mt-auto d-flex justify-content-between align-items-center pt-2 border-top">
-                  <h5 class="h6 mb-0" style="font-size:1rem;">{{ $item->title }}</h5>
-                  <a href="{{ route('news.show', $item) }}" class="btn btn-sm btn-primary">Read more</a>
-                </div>
-              </div>
-            </article>
-          </div>
-        @endforeach
-      </div>
-
-      <div class="mt-4">
-        {{ $news->links() }}
-      </div>
-    @else
-      <div class="alert alert-info">No news items yet.</div>
-    @endif
+    <div class="mt-4 text-center" id="newsPager">
+      @if($news->hasMorePages())
+        <button id="loadMoreNews" class="btn btn-outline-primary">Load more</button>
+      @endif
+    </div>
   </div>
+@endsection
+
+@section('styles')
+  .news-figure{ height:140px; background-size:cover; background-position:center; border-radius:12px 12px 0 0 }
+  .news-card{ display:flex; flex-direction:column; overflow:hidden }
+  .btn-readmore{ background: linear-gradient(90deg,#C8102E,#E30613); color:#fff; border-radius:999px; padding:8px 14px }
+  .news-title{ font-size:1.05rem; margin-bottom:0.25rem }
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const lazyBackgrounds = [].slice.call(document.querySelectorAll('.news-figure[data-bg]'));
+  if('IntersectionObserver' in window && lazyBackgrounds.length){
+    let bgObserver = new IntersectionObserver(function(entries, observer){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          const el = entry.target;
+          const url = el.dataset.bg;
+          if(url){ el.style.backgroundImage = `url('${url}')`; el.removeAttribute('data-bg'); }
+          observer.unobserve(el);
+        }
+      });
+    }, {rootMargin:'200px'});
+    lazyBackgrounds.forEach(bg=>bgObserver.observe(bg));
+    window.bgObserver = bgObserver;
+  }
+
+  const loadBtn = document.getElementById('loadMoreNews');
+  if(loadBtn){
+    let nextPage = 2;
+    loadBtn.addEventListener('click', function(){
+      const url = new URL(window.location.href);
+      url.searchParams.set('page', nextPage);
+      fetch(url.toString(), {headers:{'X-Requested-With':'XMLHttpRequest'}})
+        .then(r=>{ if(!r.ok) throw r; return r.text(); })
+        .then(html=>{
+          const container = document.getElementById('newsList');
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = html;
+          while(wrapper.firstChild){ container.appendChild(wrapper.firstChild); }
+          nextPage++;
+          if(html.trim().length < 50) { loadBtn.style.display='none'; }
+          const newLazy = [].slice.call(container.querySelectorAll('.news-figure[data-bg]'));
+          newLazy.forEach(el=>{ if(window.bgObserver) window.bgObserver.observe(el); });
+        }).catch(()=>{ loadBtn.textContent = 'Failed to load'; setTimeout(()=>loadBtn.textContent='Load more',1500); });
+    });
+  }
+});
+</script>
 @endsection

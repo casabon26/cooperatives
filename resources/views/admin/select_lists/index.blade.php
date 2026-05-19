@@ -4,12 +4,11 @@
 <div class="py-4">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4>Manage Dropdown Lists @if(!empty($group)) — {{ $group }} @endif</h4>
-            @if(!empty($group) && strtolower($group) === 'cabstop')
-                <a href="{{ route('admin.select_lists.create', ['group' => $group]) }}" class="btn btn-primary">Add CabStop</a>
-            @else
-                <a href="{{ route('admin.select_lists.create', ['group' => $group]) }}" class="btn btn-primary">Add Item</a>
-            @endif
+            <div>
+                <h4 class="mb-0">{{ !empty($group) ? ucfirst($group) : 'Manage Options' }}</h4>
+            </div>
+            @php $createLabel = (!empty($group) && strtolower($group) === 'cabstop') ? 'Add CabStop' : (!empty($group) ? ('Add '.ucfirst($group)) : 'Add Item'); @endphp
+            <a href="{{ route('admin.select_lists.create', ['group' => $group]) }}" class="btn btn-primary">{{ $createLabel }}</a>
         </div>
 
         @if(!empty($missingTable))
@@ -24,41 +23,46 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <div class="card">
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead>
-                        <tr>
-                            <th>Group</th>
-                            <th>Label</th>
-                            <th>Active</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($items as $it)
-                            <tr>
-                                <td>{{ $it->group }}</td>
-                                <td>{{ $it->label }}</td>
-                                <td>{{ $it->active ? 'Yes' : 'No' }}</td>
-                                <td class="text-end">
-                                    <a href="{{ route('admin.select_lists.edit', $it) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-                                    <form action="{{ route('admin.select_lists.destroy', $it) }}" method="post" style="display:inline" data-confirm="Delete list item?">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+        {{-- Tabs to switch groups without changing URL --}}
+        <div class="mb-3">
+            <ul class="nav nav-tabs" id="selectListTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ (empty($group) || $group==='programs') ? 'active' : '' }}" data-group="programs" type="button">Programs</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ ($group==='services') ? 'active' : '' }}" data-group="services" type="button">Services</button>
+                </li>
+                
+            </ul>
         </div>
 
-        <div class="mt-3">
-            {{ $items->links() }}
+        <div id="selectListsTableContainer">
+            @include('admin.select_lists._table', ['items' => $items, 'group' => $group])
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    const tabs = document.querySelectorAll('#selectListTabs [data-group]');
+    const container = document.getElementById('selectListsTableContainer');
+    tabs.forEach(function(btn){
+        btn.addEventListener('click', function(){
+            const group = btn.dataset.group;
+            // update active state
+            tabs.forEach(t=>t.classList.remove('active'));
+            btn.classList.add('active');
+            // fetch table fragment
+            const url = new URL("{{ route('admin.select_lists.index') }}", window.location.origin);
+            url.searchParams.set('group', group);
+            fetch(url.toString(), {headers:{'X-Requested-With':'XMLHttpRequest'}})
+                .then(r=>{ if(!r.ok) throw r; return r.text(); })
+                .then(html=>{ container.innerHTML = html; })
+                .catch(()=>{ alert('Failed to load items'); });
+        });
+    });
+});
+</script>
 @endsection

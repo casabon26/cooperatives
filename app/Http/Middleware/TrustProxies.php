@@ -2,14 +2,24 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use Illuminate\Http\Request;
+use Fideloper\Proxy\TrustProxies as FideloperTrustProxies;
 
-class TrustProxies
+class TrustProxies extends FideloperTrustProxies
 {
-    public function handle(Request $request, Closure $next)
-    {
-        // Minimal stub for proxy trust; in production use framework's TrustProxies
-        return $next($request);
-    }
+    /**
+     * The trusted proxies for this application.
+     * Use '*' to trust all proxies when behind a load balancer configured correctly.
+     * In production, prefer specific proxy IPs.
+     *
+     * @var array|string|null
+     */
+    protected $proxies = '*';
+
+    /**
+     * The headers that should be used to detect proxies.
+     *
+     * @var int
+     */
+    protected $headers = Request::HEADER_X_FORWARDED_ALL;
 }

@@ -1,11 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">User Login</h5>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">User Login</h5>
 
                 @if(session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
@@ -36,8 +37,8 @@
                         <input type="password" name="password" class="form-control" required>
                     </div>
 
-                    <div class="mb-2">
-                        <button class="btn btn-primary">Login</button>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <button class="btn btn-danger">Login</button>
                     </div>
 
                     <div>

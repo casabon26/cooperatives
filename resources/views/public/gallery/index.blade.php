@@ -3,9 +3,14 @@
 @section('content')
   <div class="py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <div class="d-flex align-items-center">
+      <div>
         @if(request()->query('section') === 'livelihood')
-          <a href="{{ route('livelihood') }}" class="me-3 text-decoration-none">Back</a>
+          <a href="{{ route('livelihood') }}" class="d-inline-flex align-items-center mb-2 text-decoration-none" style="background:#fff;border-radius:999px;padding:.25rem .75rem;box-shadow:0 6px 20px rgba(0,0,0,0.06);">
+            <span style="width:44px;height:44px;background:#d23a3a;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;margin-right:.5rem;flex:0 0 44px;">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+            </span>
+            <span style="color:#d23a3a;font-weight:600;">Back</span>
+          </a>
         @endif
         <h1 class="m-0">Gallery</h1>
       </div>
@@ -46,7 +51,7 @@
             <div class="card h-100">
               <a href="#" class="gallery-thumb d-block" data-modal-url="{{ url('/galleries/'.$g->id.'/modal') }}">
                 @if($g->image_url)
-                  <img src="{{ $g->image_url }}" alt="{{ $g->alt_text ?: $g->title }}" class="card-img-top" style="height:180px; object-fit:cover;">
+                  <img src="{{ $g->image_url }}" alt="{{ $g->alt_text ?: $g->title }}" class="card-img-top" style="height:180px; object-fit:cover;" loading="lazy">
                 @else
                   <div class="d-flex align-items-center justify-content-center p-3">No image</div>
                 @endif
@@ -97,8 +102,8 @@
                 @foreach($galleries as $g)
                   <div class="col-6 col-sm-4 col-md-3">
                     <div class="card h-100">
-                      @if($g->image_url)
-                        <img src="{{ $g->image_url }}" class="card-img-top" style="height:140px; object-fit:cover;" alt="{{ $g->alt_text ?: $g->title }}">
+                        @if($g->image_url)
+                        <img src="{{ $g->image_url }}" class="card-img-top" style="height:140px; object-fit:cover;" alt="{{ $g->alt_text ?: $g->title }}" loading="lazy">
                       @else
                         <div class="d-flex align-items-center justify-content-center p-3">No image</div>
                       @endif

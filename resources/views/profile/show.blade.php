@@ -48,8 +48,10 @@
                 </dl>
 
                 <div class="mt-3">
-                    <a href="/settings" class="btn btn-outline-primary">Account settings</a>
-                    <a href="/training" class="btn btn-outline-secondary">My trainings</a>
+                    <!-- Account settings removed per request -->
+                    @if(!in_array($user->role ?? 'user', ['gov_admin','cooperative_admin','admin']))
+                        <a href="/profile/certificates" class="btn btn-outline-secondary">My certificates</a>
+                    @endif
                 </div>
             </div>
 
@@ -81,7 +83,7 @@
 
                 <div class="d-grid gap-2">
                     <a href="/profile/edit" class="btn btn-primary">Edit profile</a>
-                    <a href="/settings" class="btn btn-outline-secondary">Account settings</a>
+                    <!-- Account settings removed per request -->
                 </div>
             </div>
 

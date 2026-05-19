@@ -7,6 +7,16 @@
         <a href="{{ route('admin.livelihood.create') }}" class="btn btn-primary">Add SLPA</a>
     </div>
 
+    <div class="mb-4">
+        <h6 class="small text-muted">Manage Programs & Services</h6>
+        <div class="d-flex gap-2 mt-2">
+            <a href="{{ route('admin.select_lists.programs') }}" class="btn btn-outline-secondary">Manage Programs</a>
+            <a href="{{ route('admin.select_lists.services') }}" class="btn btn-outline-secondary">Manage Services</a>
+            <a href="{{ route('admin.select_lists.create', ['group' => 'programs']) }}" class="btn btn-sm btn-outline-primary">Add Program</a>
+            <a href="{{ route('admin.select_lists.create', ['group' => 'services']) }}" class="btn btn-sm btn-outline-primary">Add Service</a>
+        </div>
+    </div>
+
     {{-- success flash is shown via the global dynamic popup in the layout; remove inline duplicate --}}
 
     @if($slpas->count())

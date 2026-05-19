@@ -47,10 +47,12 @@
 @endphp
 
 @if(!empty($backUrl))
-<a href="{{ $backUrl }}" class="btn btn-back d-inline-flex align-items-center {{ $extraClass }}" role="button" aria-label="{{ $label }}" title="{{ $label }}">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.4" style="margin-right:8px;">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-    </svg>
-    <span>{{ $label }}</span>
+<a href="{{ $backUrl }}" class="btn btn-back {{ $extraClass }}" role="button" aria-label="{{ $label }}" title="{{ $label }}">
+    <span class="btn-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" style="display:block;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+    </span>
+    <span class="btn-label">{{ $label }}</span>
 </a>
 @endif

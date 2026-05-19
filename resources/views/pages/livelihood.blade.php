@@ -279,11 +279,15 @@
                       });
                     });
 
-                    // Gallery thumbnails in sidebar / listing open modal via AJAX
-                    document.querySelectorAll('.gallery-thumb').forEach(el=>{
-                      el.addEventListener('click', function(ev){
+                    // Gallery thumbnails in sidebar / listing open modal via AJAX (delegated)
+                    (function(){
+                      const galleryContainer = document.getElementById('livelihoodGalleryPreview');
+                      if(!galleryContainer) return;
+                      galleryContainer.addEventListener('click', function(ev){
+                        const thumb = ev.target.closest('.gallery-thumb');
+                        if(!thumb) return;
                         ev.preventDefault();
-                        const modalUrl = el.dataset.modalUrl;
+                        const modalUrl = thumb.dataset.modalUrl;
                         if(!modalUrl) return;
                         const modalEl = document.getElementById('galleryModal');
                         const modalBody = document.getElementById('galleryModalBody');
@@ -302,7 +306,7 @@
                           console.warn('Failed to load gallery modal');
                         });
                       });
-                    });
+                    })();
                   });
                   </script>
                   <!-- Gallery modal (AJAX-loaded) -->
@@ -423,33 +427,60 @@
     <aside class="col-12 col-lg-4">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title mb-2">Programs</h5>
-          <p class="text-muted small">Select a program below.</p>
-          @if(!empty($programs) && count($programs))
-            <select class="form-select" aria-label="Programs select">
-              <option selected disabled>Select Program</option>
-              @foreach($programs as $opt)
-                <option value="{{ $opt->key ?? $opt->label }}">{{ $opt->label }}</option>
-              @endforeach
-            </select>
-          </if(!empty($programs) && count($programs))
-            <select class="form-select" aria-label="Programs select">
-
-            </select>
-          @endif
+          <h5 class="card-title mb-2">Programs & Services</h5>
+          <p class="text-muted small">Choose a program or service below.</p>
+          <div class="mb-3">
+            @if(!empty($programs) && count($programs))
+              <label class="form-label small mb-1">Program</label>
+              <select class="form-select" aria-label="Programs select">
+                <option selected disabled>Select Program</option>
+                @foreach($programs as $opt)
+                  <option value="{{ $opt->key ?? $opt->label }}">{{ $opt->label }}</option>
+                @endforeach
+              </select>
+            @else
+              <label class="form-label small mb-1">Program</label>
+              <select class="form-select" aria-label="Programs select">
+                <option selected disabled>No programs available</option>
+              </select>
+            @endif
+          </div>
+          <div>
+            @if(!empty($services) && count($services))
+              <label class="form-label small mb-1">Service</label>
+              <select class="form-select" aria-label="Services select">
+                <option selected disabled>Select Service</option>
+                @foreach($services as $opt)
+                  <option value="{{ $opt->key ?? $opt->label }}">{{ $opt->label }}</option>
+                @endforeach
+              </select>
+            @else
+              <label class="form-label small mb-1">Service</label>
+              <select class="form-select" aria-label="Services select">
+                <option selected disabled>Select Service</option>
+                <option value="service_training">Training & Capacity Building</option>
+                <option value="service_business_planning">Business Planning Assistance</option>
+                <option value="service_market_linkages">Market Linkages & Referrals</option>
+                <option value="service_registration">Registration & Legal Support</option>
+              </select>
+            @endif
+          </div>
         </div>
       </div>
       <div class="card mt-3">
         <div class="card-body">
           <h5 class="card-title mb-2">Gallery</h5>
           <p class="text-muted small">Latest photos</p>
-          <div class="row g-2">
+          <div class="row g-2" id="livelihoodGalleryPreview">
             @if(!empty($galleries) && count($galleries))
               @foreach($galleries as $g)
+                @if($loop->index >= 9)
+                  @break
+                @endif
                 <div class="col-4">
                   <a href="#" class="d-block gallery-thumb" data-modal-url="{{ url('/galleries/'.$g->id.'/modal') }}" data-id="{{ $g->id }}" title="{{ $g->title }}">
                     @if($g->image_url)
-                      <img src="{{ $g->image_url }}" alt="{{ $g->alt_text ?: $g->title }}" class="img-fluid rounded" style="height:72px; width:100%; object-fit:cover;">
+                      <img src="{{ $g->image_url }}" alt="{{ $g->alt_text ?: $g->title }}" class="img-fluid rounded" loading="lazy" decoding="async" style="height:72px; width:100%; object-fit:cover; aspect-ratio:16/9;">
                     @else
                       <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height:72px">No image</div>
                     @endif
@@ -466,28 +497,7 @@
         </div>
       </div>
 
-      <div class="card mt-3">
-        <div class="card-body">
-          <h5 class="card-title mb-2">Services</h5>
-          <p class="text-muted small">Select a service below.</p>
-          @if(!empty($services) && count($services))
-            <select class="form-select" aria-label="Services select">
-              <option selected disabled>Select Service</option>
-              @foreach($services as $opt)
-                <option value="{{ $opt->key ?? $opt->label }}">{{ $opt->label }}</option>
-              @endforeach
-            </select>
-          @else
-            <select class="form-select" aria-label="Services select">
-              <option selected disabled>Select Service</option>
-              <option value="service_training">Training & Capacity Building</option>
-              <option value="service_business_planning">Business Planning Assistance</option>
-              <option value="service_market_linkages">Market Linkages & Referrals</option>
-              <option value="service_registration">Registration & Legal Support</option>
-            </select>
-          @endif
-        </div>
-      </div>
+      
     </aside>
   </div>
 </div>

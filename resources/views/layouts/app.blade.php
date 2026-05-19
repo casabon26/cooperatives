@@ -6,9 +6,23 @@
     <title>{{ config('app.name', 'CCLDO - Cabuyao') }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    @php
+        $localBootstrapCss = public_path('assets/vendor/bootstrap/css/bootstrap.min.css');
+        $localBootstrapIcons = public_path('assets/vendor/bootstrap-icons/bootstrap-icons.css');
+    @endphp
+    @if(file_exists($localBootstrapCss))
+        <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}">
+    @else
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    @endif
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    @if(file_exists($localBootstrapIcons))
+        <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+    @else
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    @endif
 
     <style>
         :root {
@@ -233,6 +247,51 @@
             }
             .logo-main { font-size: 26px; }
         }
+
+        /* Modern back button styling (pill, subtle gradient, icon badge) */
+        .btn-back {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #fff 0%, #fff 60%);
+            border: none;
+            color: var(--primary);
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(16,16,16,0.06), 0 2px 6px rgba(200,16,46,0.06) inset;
+            text-decoration: none;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .btn-back .btn-icon {
+            display: inline-grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            box-shadow: 0 6px 18px rgba(200,16,46,0.18);
+            flex-shrink: 0;
+        }
+
+        .btn-back .btn-label { font-size: 0.98rem; }
+
+        .btn-back svg { vertical-align: middle; }
+
+        .btn-back:hover,
+        .btn-back:focus {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(200,16,46,0.12), 0 4px 10px rgba(16,16,16,0.04) inset;
+            text-decoration: none;
+            color: var(--primary-dark);
+        }
+
+        @media (max-width: 576px) {
+            .btn-back { padding: 8px 12px; gap: 8px; }
+            .btn-back .btn-icon { width: 32px; height: 32px; }
+        }
     </style>
 
     @php
@@ -307,7 +366,7 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             @auth
                                 <li><a class="dropdown-item" href="/profile">My Profile</a></li>
-                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                                <!-- Settings removed from user dropdown per request -->
                                 <li><hr class="dropdown-divider"></li>
                                 @if(session('admin_authenticated') && (Auth::user()->role ?? '') === 'gov_admin')
                                     <li><a class="dropdown-item" href="/admin/panel">Admin Panel</a></li>
@@ -335,7 +394,7 @@
 
     @yield('hero')
 
-    @if(request()->is('admin/*') && !request()->is('admin/panel'))
+    @if((request()->is('admin/*') && !request()->is('admin/panel')) || request()->is('user/login') || request()->is('news/*'))
         <div class="container mt-3">
             @hasSection('back-button')
                 @yield('back-button')
@@ -363,10 +422,21 @@
         @yield('content')
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @php $localBootstrapJs = public_path('assets/vendor/bootstrap/js/bootstrap.bundle.min.js'); @endphp
+    @if(file_exists($localBootstrapJs))
+        <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    @else
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @endif
     <script src="{{ asset('assets/js/theme.js') }}"></script>
 
-    @yield('scripts')
+        <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            document.querySelectorAll('img:not([loading])').forEach(function(img){ img.setAttribute('loading','lazy'); });
+        });
+        </script>
+
+        @yield('scripts')
 
 </body>
 </html>

@@ -206,11 +206,27 @@ class PublicController extends Controller
     public function news()
     {
         $news = News::whereNotNull('published_at')->orderByDesc('published_at')->paginate(12);
+        if (request()->ajax()) {
+            if (view()->exists('public.news._list')) {
+                return view('public.news._list', compact('news'));
+            }
+            // Partial view removed — return empty 204 for AJAX callers
+            return response('', 204);
+        }
+
+        // If the full news view was removed, redirect to home with an informational message
+        if (!view()->exists('public.news.index')) {
+            return redirect('/')->with('error', 'News is currently unavailable.');
+        }
+
         return view('public.news.index', compact('news'));
     }
 
     public function newsShow(News $news)
     {
+        if (!view()->exists('public.news.show')) {
+            return redirect('/')->with('error', 'News is currently unavailable.');
+        }
         return view('public.news.show', compact('news'));
     }
 
